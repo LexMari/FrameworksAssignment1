@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\legos\\RiderProjects\\FrameworksAssignment1\\FrameworksAssignment1\\FrameworksAssignment1.csproj": {}
+    "C:\\Users\\legos\\OneDrive\\Documents\\GitHub\\FrameworksAssignment1\\FrameworksAssignment1\\FrameworksAssignment1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\legos\\RiderProjects\\FrameworksAssignment1\\FrameworksAssignment1\\FrameworksAssignment1.csproj": {
+    "C:\\Users\\legos\\OneDrive\\Documents\\GitHub\\FrameworksAssignment1\\FrameworksAssignment1\\FrameworksAssignment1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\legos\\RiderProjects\\FrameworksAssignment1\\FrameworksAssignment1\\FrameworksAssignment1.csproj",
+        "projectUniqueName": "C:\\Users\\legos\\OneDrive\\Documents\\GitHub\\FrameworksAssignment1\\FrameworksAssignment1\\FrameworksAssignment1.csproj",
         "projectName": "FrameworksAssignment1",
-        "projectPath": "C:\\Users\\legos\\RiderProjects\\FrameworksAssignment1\\FrameworksAssignment1\\FrameworksAssignment1.csproj",
+        "projectPath": "C:\\Users\\legos\\OneDrive\\Documents\\GitHub\\FrameworksAssignment1\\FrameworksAssignment1\\FrameworksAssignment1.csproj",
         "packagesPath": "C:\\Users\\legos\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\legos\\RiderProjects\\FrameworksAssignment1\\FrameworksAssignment1\\obj\\",
+        "outputPath": "C:\\Users\\legos\\OneDrive\\Documents\\GitHub\\FrameworksAssignment1\\FrameworksAssignment1\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\legos\\AppData\\Roaming\\NuGet\\NuGet.Config",

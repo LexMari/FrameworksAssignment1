@@ -1,4 +1,5 @@
-namespace FrameworksAssignment1.Domain.Components;
+namespace FrameworksAssignment1.Domain.Entities;
+using Domain.Enums;
 
 public class FlashCard
 {
