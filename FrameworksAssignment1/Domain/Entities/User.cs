@@ -8,10 +8,20 @@ public class User
     
     public bool Admin { get; set; }
 
+    #region Constructors
     public User()
     {
         
     }
+    
+    public User(
+        string username
+        ) : this()
+    {
+        Username = username;
+    }
+    
+    #endregion
 }
 
 
