@@ -342,4 +342,5 @@ ASALocalRun/
 healthchecksdb
 
 # Specific project ignores
-src/compose/.env
+server/compose/.env
+server/docker_volumes/postgres

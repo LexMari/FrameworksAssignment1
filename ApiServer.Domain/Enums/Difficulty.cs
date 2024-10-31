@@ -1,4 +1,4 @@
-namespace FrameworksAssignment1.Domain.Enums;
+namespace ApiServer.Domain.Enums;
 
 public enum Difficulty
 {
