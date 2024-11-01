@@ -8,11 +8,11 @@ public class FlashcardSetEntityConfiguration : IEntityTypeConfiguration<Flashcar
 {
     public void Configure(EntityTypeBuilder<FlashcardSet> builder)
     {
-        builder.ToTable("Flashcard Sets");
+        builder.ToTable("FlashcardSets");
 
         builder.Property(x => x.Id)
             .HasColumnName("FlashcardSetId")
-            .UseIdentityAlwaysColumn()
+            .ValueGeneratedOnAdd()
             .IsRequired();
         
         builder.HasKey(x => x.Id);

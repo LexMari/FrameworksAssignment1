@@ -10,7 +10,7 @@ public static class InfrastructureExtensions
     {
         services.AddDbContext<ApiContext>(options =>
             options
-                .UseNpgsql(
+                .UseSqlite(
                     configuration.GetConnectionString("ApiContext"),
                     b =>
                     {
