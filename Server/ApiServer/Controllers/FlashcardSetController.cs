@@ -1,0 +1,125 @@
+using System.Net;
+using ApiServer.Domain.Entities;
+using ApiServer.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+
+namespace ApiServer.Controllers;
+
+public class FlashcardSetController : Controller
+{
+    private ILogger<FlashcardSetController> _logger;
+    private readonly ApiContext _context;
+
+    #region Constructor
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="dbContext"></param>
+    public FlashcardSetController(ILogger<FlashcardSetController> logger, ApiContext dbContext)
+    {
+        _logger = logger;
+        _context = dbContext;
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Get all Flashcard Sets
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetFlashcardSets()
+    {
+        var setData = _context.FlashcardSets;
+        return Ok(JsonConvert.SerializeObject(setData));
+    }
+
+    /// <summary>
+    /// Create a flashcard set
+    /// </summary>
+    /// <param name="setData"></param>
+    /// <returns></returns>
+    [HttpPost]
+    [Route("")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(FlashcardSet), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+    public async Task<IActionResult> CreateFlashcardSet([FromBody] CreateSetDto setData)
+    {
+        var user = await _context.Users.FindAsync(setData.UserId);
+        if (user is null)
+        {
+            _logger.LogError("Invalid user ID [{UserId}] passed to create Flashcard set", setData.UserId);
+            return BadRequest("User does not exist");
+        }
+
+        if (!user.IsAdministrator &&
+            _context.FlashcardSets.Count(x => x.UserId == user.Id) > 20)
+        {
+            _logger.LogWarning("User Id [{UserId}] has exceeded their maximum flashcard set allowance", setData.UserId);
+            HttpContext.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
+            return new ObjectResult(new ErrorDto("User has exceeded their maximum flashcard set allowance"));
+        }
+
+        var flashcardSet = new FlashcardSet(setData.Id, setData.Name, setData.UserId);
+        try
+        {
+            await _context.FlashcardSets.AddAsync(flashcardSet);
+            await _context.SaveChangesAsync();
+            return Created(nameof(GetFlashcardSets), JsonConvert.SerializeObject(flashcardSet));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to create flashcard set");
+            return BadRequest("Unable to create user record");
+        } 
+    }
+
+    /// <summary>
+    /// Get a flashcard set by Id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("{id:int}")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(FlashcardSet), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetFlashcardSet(int id)
+    {
+        var flashcardSet = await _context.FlashcardSets
+            .FindAsync(id);
+
+        if (flashcardSet is null)
+        {
+            return NotFound();
+        }
+        return Ok(JsonConvert.SerializeObject(flashcardSet));
+    }
+    
+    #region DTOs
+
+    /// <summary>
+    /// Dto for creating set
+    /// </summary>
+    /// <param name="Id"></param>
+    /// <param name="Name"></param>
+    /// <param name="UserId"></param>
+    public record CreateSetDto(int Id, string Name, int UserId);
+
+    /// <summary>
+    /// Dto for error messages
+    /// </summary>
+    /// <param name="Message"></param>
+    public record ErrorDto(string Message);
+
+    #endregion
+
+}
