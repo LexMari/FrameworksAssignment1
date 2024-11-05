@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 
 namespace ApiServer.Controllers;
 
+[Route("flashcardsets")]
+[ApiController]
 public class FlashcardSetController : Controller
 {
     private ILogger<FlashcardSetController> _logger;

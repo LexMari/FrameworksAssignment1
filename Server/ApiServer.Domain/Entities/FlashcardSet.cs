@@ -14,8 +14,8 @@ public class FlashcardSet
     public DateTime UpdatedAt { get; private set; }
 
     //Flashcards that make up this set
-    private readonly List<FlashCard> _cards;
-    public IReadOnlyCollection<FlashCard> Cards => _cards;
+    private readonly List<Flashcard> _cards;
+    public IReadOnlyCollection<Flashcard> Cards => _cards;
     
     //Comments on this flashcard set
     private readonly List<Comment> _comments;
@@ -36,7 +36,7 @@ public class FlashcardSet
         Id = default;
         Name = string.Empty;
         UserId = default;
-        _cards = new List<FlashCard>();
+        _cards = new List<Flashcard>();
         _comments = new List<Comment>();
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;

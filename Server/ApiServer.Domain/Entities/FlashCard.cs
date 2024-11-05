@@ -2,7 +2,7 @@ using ApiServer.Domain.Enums;
 
 namespace ApiServer.Domain.Entities;
 
-public class FlashCard
+public class Flashcard
 {
     //Id for this Flashcard
     public int Id { get; set; }
@@ -23,7 +23,7 @@ public class FlashCard
     #region Constructors
 
     //Default Constructor
-    public FlashCard()
+    public Flashcard()
     {
         Question = string.Empty;
         Answer = string.Empty;
@@ -31,7 +31,7 @@ public class FlashCard
     }
     
     //Constructor with Parameters
-    public FlashCard(
+    public Flashcard(
         FlashcardSet flashcardSet,
         string question,
         string answer,

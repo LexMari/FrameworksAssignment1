@@ -1,4 +1,3 @@
-
 using ApiServer.Domain.Entities;
 using ApiServer.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
