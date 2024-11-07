@@ -26,4 +26,18 @@ public class FlashcardController : Controller
         _context = dbContext;
     }
     #endregion
+    
+    /// <summary>
+    /// Get all Flashcards
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("")]
+    [Produces("application/json")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public IActionResult GetFlashcards()
+    {
+        var setData = _context.Flashcards;
+        return Ok(JsonConvert.SerializeObject(setData));
+    }
 }
