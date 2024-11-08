@@ -35,9 +35,48 @@ public class FlashcardController : Controller
     [Route("")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetFlashcards()
+    public async Task<IActionResult> GetFlashcards()
     {
-        var setData = _context.Flashcards;
-        return Ok(JsonConvert.SerializeObject(setData));
+        var responseData = await _context.Flashcards
+            .Select(x=> new FlashcardDto(x.Id, x.Question, x.Answer, x.FlashcardSetId))
+            .ToListAsync();
+        
+        return Ok(JsonConvert.SerializeObject(responseData));
     }
+
+    /// <summary>
+    /// Create a flashcard
+    /// </summary>
+    /// <param name="createFlashcard"></param>
+    /// <returns></returns>
+    public async Task<IActionResult> CreateFlashcard([FromBody] CreateFlashcardDto createFlashcard)
+    {
+        var flashcard = new Flashcard(
+            createFlashcard.Id,
+            createFlashcard.Question,
+            createFlashcard.Answer,
+            createFlashcard.Difficulty,
+            createFlashcard.FlashcardSetId);
+        try
+        {
+            await _context.Flashcards.AddAsync(flashcard);
+            await _context.SaveChangesAsync();
+            var responseData = new FlashcardDto(flashcard.Id, flashcard.Question, flashcard.Answer,
+                flashcard.FlashcardSetId);
+            return Created(nameof(GetFlashcards), JsonConvert.SerializeObject(responseData));
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(exception, "Failed to create flashcard");
+            return BadRequest("Unable to create flashcard record");
+        }
+    }
+    
+    #region DTO
+
+    private record FlashcardDto(int Id, string Question, string Answer, int FlashcardSetId);
+
+    public record CreateFlashcardDto(int Id, string Question, string Answer, string Difficulty, int FlashcardSetId);
+
+    #endregion
 }
