@@ -1,4 +1,5 @@
 using ApiServer.Domain.Entities;
+using ApiServer.Domain.Enums;
 using ApiServer.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,20 +50,27 @@ public class FlashcardController : Controller
     /// </summary>
     /// <param name="createFlashcard"></param>
     /// <returns></returns>
+    [HttpPost]
+    [Route("")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(FlashcardDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateFlashcard([FromBody] CreateFlashcardDto createFlashcard)
     {
-        var flashcard = new Flashcard(
-            createFlashcard.Id,
-            createFlashcard.Question,
-            createFlashcard.Answer,
-            createFlashcard.Difficulty,
-            createFlashcard.FlashcardSetId);
+        var flashcardSet = await _context.FlashcardSets.FindAsync(createFlashcard.FlashcardSetId);
+        if (flashcardSet == null)
+        {
+            return BadRequest("Invalid FlashcardSetId");
+        }
+        
+        var flashcard = new Flashcard(flashcardSet, createFlashcard.Question, createFlashcard.Answer, createFlashcard.Difficulty);
         try
         {
             await _context.Flashcards.AddAsync(flashcard);
             await _context.SaveChangesAsync();
             var responseData = new FlashcardDto(flashcard.Id, flashcard.Question, flashcard.Answer,
                 flashcard.FlashcardSetId);
+            
             return Created(nameof(GetFlashcards), JsonConvert.SerializeObject(responseData));
         }
         catch (Exception exception)
@@ -76,7 +84,7 @@ public class FlashcardController : Controller
 
     private record FlashcardDto(int Id, string Question, string Answer, int FlashcardSetId);
 
-    public record CreateFlashcardDto(int Id, string Question, string Answer, string Difficulty, int FlashcardSetId);
+    public record CreateFlashcardDto(int Id, string Question, string Answer, Difficulty Difficulty, int FlashcardSetId);
 
     #endregion
 }
