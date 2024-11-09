@@ -26,4 +26,8 @@
     <ItemGroup>
         <ProjectReference Include="..\ApiServer.Infrastructure\ApiServer.Infrastructure.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Remove These Things pls" />
+    </ItemGroup>
 </Project>

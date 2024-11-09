@@ -1,7 +1,9 @@
 using System.Net;
 using ApiServer.Domain.Entities;
+using ApiServer.Domain.Enums;
 using ApiServer.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace ApiServer.Controllers;
@@ -105,6 +107,42 @@ public class FlashcardSetController : Controller
         }
         return Ok(JsonConvert.SerializeObject(flashcardSet));
     }
+
+    /// <summary>
+    /// Update a flashcard set by Id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="updateData"></param>
+    /// <returns></returns>
+    [HttpPut]
+    [Route("{id:int}")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(FlashcardSet), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateFlashcardSet(int id, [FromBody] FlashcardSet updateData)
+    {
+        var existingFlashcardSet = await _context.FlashcardSets.FindAsync(id);
+
+        if (existingFlashcardSet == null)
+        {
+            return NotFound(new ErrorDto("Flashcard set not found"));
+        }
+
+        try
+        {
+            existingFlashcardSet.Name = updateData.Name;
+            // Add other properties here
+            
+            _context.FlashcardSets.Update(existingFlashcardSet);
+            await _context.SaveChangesAsync();
+            return Ok(existingFlashcardSet);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to update flashcard set");
+            return BadRequest(new ErrorDto("Unable to update flashcard set"));
+        }
+    }
     
     #region DTOs
 
@@ -121,7 +159,7 @@ public class FlashcardSetController : Controller
     /// </summary>
     /// <param name="Message"></param>
     public record ErrorDto(string Message);
-
+    
     #endregion
 
 }

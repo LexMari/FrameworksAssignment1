@@ -4,7 +4,7 @@ public class FlashcardSet
 {
     public int Id { get; private set; }
     
-    public string Name { get; private set; }
+    public string Name { get; set; }
     
     //User that created this set
     public int UserId { get; private set; }
