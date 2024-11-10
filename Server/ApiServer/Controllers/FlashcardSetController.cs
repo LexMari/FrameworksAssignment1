@@ -176,6 +176,41 @@ public class FlashcardSetController : Controller
             return BadRequest(new ErrorDto("Unable to delete flashcard set"));
         }
     }
+
+    [HttpPost]
+    [Route("{id:int}/comment")]
+    [ProducesResponseType(typeof(Comment), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> CreateComment([FromBody] CreateCommentDto commentData)
+    {
+        var flashcardSet = await _context.FlashcardSets.FindAsync();
+
+        if (flashcardSet == null)
+        {
+            return NotFound(new ErrorDto("Flashcard set not found"));
+        }
+
+        var comment = new Comment(
+            flashcardSet,
+            commentData.CommentText,
+            commentData.Name);
+
+        comment.FlashcardSetId = flashcardSet.Id;
+
+        try
+        {
+            await _context.Comments.AddAsync(comment);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(CreateComment), new { id = comment.Id }, comment);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to create comment");
+            return BadRequest(new ErrorDto("Unable to create comment"));
+        }
+
+    }
     
     #region DTOs
 
@@ -186,6 +221,14 @@ public class FlashcardSetController : Controller
     /// <param name="Name"></param>
     /// <param name="UserId"></param>
     public record CreateSetDto(int Id, string Name, int UserId);
+
+    /// <summary>
+    /// Dto for Creating Comment
+    /// </summary>
+    /// <param name="FlashcardsetId"></param>
+    /// <param name="Name"></param>
+    /// <param name="CommentText"></param>
+    public record CreateCommentDto(int FlashcardsetId, string Name, string CommentText);
 
     /// <summary>
     /// Dto for error messages

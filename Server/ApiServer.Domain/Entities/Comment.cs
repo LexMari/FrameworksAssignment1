@@ -4,13 +4,13 @@ public class Comment
 {
     public int Id { get; private set; }
     
-    public int FlashcardSetId { get; private set; }
+    public int FlashcardSetId { get; set; }
     
     public FlashcardSet FlashcardSet { get; private set; }
     
     public string CommentText { get; private set; }
     
-    public int Username { get; private set; }
+    public string Username { get; private set; }
     
     public DateTime CreatedAt { get; set; }
     
@@ -27,7 +27,7 @@ public class Comment
     public Comment(
         FlashcardSet flashcardSet,
         string commentText,
-        int username
+        string username
     ) : this()
     {
         CommentText = commentText;

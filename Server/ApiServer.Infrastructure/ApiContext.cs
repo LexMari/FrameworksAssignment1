@@ -20,6 +20,8 @@ public class ApiContext : DbContext
     
     public DbSet<Flashcard> Flashcards { get; set; }
     
+    public DbSet<Comment> Comments { get; set; }
+    
     #endregion
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
