@@ -11,7 +11,7 @@ public class FlashcardSet
     
     public DateTime CreatedAt { get; private set; }
     
-    public DateTime UpdatedAt { get; private set; }
+    public DateTime UpdatedAt { get; set; }
 
     //Flashcards that make up this set
     private readonly List<Flashcard> _cards;

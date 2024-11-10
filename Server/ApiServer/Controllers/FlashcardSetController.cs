@@ -131,6 +131,7 @@ public class FlashcardSetController : Controller
         try
         {
             existingFlashcardSet.Name = updateData.Name;
+            existingFlashcardSet.UpdatedAt = DateTime.Now;
             // Add other properties here
             
             _context.FlashcardSets.Update(existingFlashcardSet);
@@ -141,6 +142,38 @@ public class FlashcardSetController : Controller
         {
             _logger.LogError(ex, "Failed to update flashcard set");
             return BadRequest(new ErrorDto("Unable to update flashcard set"));
+        }
+    }
+
+    /// <summary>
+    /// Delete flashcard set
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    [HttpDelete]
+    [Route("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteFlashcardSet(int id)
+    {
+        var flashcardSet = await _context.FlashcardSets.FindAsync(id);
+
+        if (flashcardSet == null)
+        {
+            return NotFound(new ErrorDto("Flashcard set not found"));
+        }
+
+        _context.FlashcardSets.Remove(flashcardSet);
+
+        try
+        {
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to delete flashcard set");
+            return BadRequest(new ErrorDto("Unable to delete flashcard set"));
         }
     }
     
