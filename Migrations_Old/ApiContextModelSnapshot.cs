@@ -19,25 +19,31 @@ namespace ApiServer.Infrastructure.Migrations
 
             modelBuilder.Entity("ApiServer.Domain.Entities.Comment", b =>
                 {
-                    b.Property<int?>("FlashcardSetId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("CommentId");
 
                     b.Property<string>("CommentText")
                         .IsRequired()
                         .HasMaxLength(1000)
                         .IsUnicode(false)
-                        .HasColumnType("TEXT")
-                        .HasAnnotation("Relational:JsonPropertyName", "comment");
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("FlashcardSetId", "UserId");
+                    b.Property<int>("FlashcardSetId")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("UserId");
+                    b.Property<int>("Username")
+                        .HasMaxLength(500)
+                        .IsUnicode(false)
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FlashcardSetId");
 
                     b.ToTable("Comments", (string)null);
                 });
@@ -46,10 +52,13 @@ namespace ApiServer.Infrastructure.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("FlashcardId");
 
                     b.Property<string>("Answer")
                         .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Difficulty")
@@ -60,13 +69,15 @@ namespace ApiServer.Infrastructure.Migrations
 
                     b.Property<string>("Question")
                         .IsRequired()
+                        .HasMaxLength(100)
+                        .IsUnicode(false)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FlashcardSetId");
 
-                    b.ToTable("Flashcard");
+                    b.ToTable("Flashcards", (string)null);
                 });
 
             modelBuilder.Entity("ApiServer.Domain.Entities.FlashcardSet", b =>
@@ -93,8 +104,6 @@ namespace ApiServer.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FlashcardSets", (string)null);
-
-                    b.HasAnnotation("Relational:JsonPropertyName", "set");
                 });
 
             modelBuilder.Entity("ApiServer.Domain.Entities.User", b =>
@@ -105,8 +114,7 @@ namespace ApiServer.Infrastructure.Migrations
                         .HasColumnName("UserId");
 
                     b.Property<bool>("IsAdministrator")
-                        .HasColumnType("INTEGER")
-                        .HasAnnotation("Relational:JsonPropertyName", "admin");
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -129,8 +137,6 @@ namespace ApiServer.Infrastructure.Migrations
                     b.HasAlternateKey("Username");
 
                     b.ToTable("Users", (string)null);
-
-                    b.HasAnnotation("Relational:JsonPropertyName", "set");
                 });
 
             modelBuilder.Entity("ApiServer.Domain.Entities.Comment", b =>
@@ -140,14 +146,6 @@ namespace ApiServer.Infrastructure.Migrations
                         .HasForeignKey("FlashcardSetId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("ApiServer.Domain.Entities.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Author");
 
                     b.Navigation("FlashcardSet");
                 });

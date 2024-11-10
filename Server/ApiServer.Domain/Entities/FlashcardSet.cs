@@ -1,36 +1,61 @@
+using System.Text.Json.Serialization;
+
 namespace ApiServer.Domain.Entities;
 
 public class FlashcardSet
 {
+    /// <summary>
+    /// Unique identifier for flashcard set
+    /// </summary>
     public int Id { get; private set; }
     
+    /// <summary>
+    /// Name or title of flashcard set
+    /// </summary>
     public string Name { get; set; }
     
-    //User that created this set
+    /// <summary>
+    /// User that created the flashcard set
+    /// </summary>
     public int UserId { get; private set; }
     
+    /// <summary>
+    /// Creation time
+    /// </summary>
     public DateTime CreatedAt { get; private set; }
     
+    /// <summary>
+    /// Updated time
+    /// </summary>
     public DateTime UpdatedAt { get; set; }
 
-    //Flashcards that make up this set
+    /// <summary>
+    /// Flashcards that make up this set
+    /// </summary>
     private readonly List<Flashcard> _cards;
     public IReadOnlyCollection<Flashcard> Cards => _cards;
     
-    //Comments on this flashcard set
+    /// <summary>
+    /// Comments on the flashcard set
+    /// </summary>
     private readonly List<Comment> _comments;
     public IReadOnlyCollection<Comment> Comment => _comments;
     
     #region Readonly properties
     
-    //Flag denoting whether the set has any cards
+    /// <summary>
+    /// Denoting if the set has any cards
+    /// </summary>
+    [JsonIgnore]
     public bool HasCards => Cards.Count > 0;
     
     #endregion
     
     #region Constructors
     
-    //Default constructor
+    /// <summary>
+    /// Default constructor
+    /// </summary>
     public FlashcardSet()
     {
         Id = default;
@@ -42,7 +67,12 @@ public class FlashcardSet
         UpdatedAt = DateTime.UtcNow;
     }
 
-    //Constructor with parameters
+    /// <summary>
+    /// Constructor with parameters
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="name"></param>
+    /// <param name="userId"></param>
     public FlashcardSet(
         int id,
         string name,

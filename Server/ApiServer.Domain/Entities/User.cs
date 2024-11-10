@@ -1,18 +1,37 @@
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace ApiServer.Domain.Entities;
 
 public class User
 {
+    /// <summary>
+    /// Unique user ID
+    /// </summary>
     public int Id { get; private set; }
     
+    /// <summary>
+    /// Username
+    /// </summary>
     public string Username { get; private set; }
     
+    /// <summary>
+    /// Hashed Password
+    /// </summary>
+    [JsonIgnore]
     public string PasswordHash { get; private set; }
     
+    /// <summary>
+    /// Salt used to hash the password
+    /// </summary>
+    [JsonIgnore]
     public string PasswordSalt { get; private set; }
     
+    /// <summary>
+    /// Flag to denote if the user is an admin
+    /// </summary>
+    [JsonPropertyName("admin")]
     public bool IsAdministrator { get; set; }
     
     #region Constructors
@@ -41,6 +60,24 @@ public class User
         PasswordHash = HashPassword(password, out byte[] salt);
         PasswordSalt = Convert.ToBase64String(salt);
     }
+    #endregion
+    
+    #region Mutator methods
+
+    /// <summary>
+    /// Update the user
+    /// </summary>
+    /// <param name="username"></param>
+    /// <param name="password"></param>
+    /// <param name="isAdministrator"></param>
+    public void Update(string username, string password, bool isAdministrator)
+    {
+        Username = username;
+        IsAdministrator = isAdministrator;
+        PasswordHash = HashPassword(password, out byte[] salt);
+        PasswordSalt = Convert.ToBase64String(salt);
+    }
+    
     #endregion
     
     #region Static methods for password hashing and verification

@@ -1,28 +1,45 @@
+using System.Text.Json.Serialization;
 using ApiServer.Domain.Enums;
 
 namespace ApiServer.Domain.Entities;
 
 public class Flashcard
 {
-    //Id for this Flashcard
+    /// <summary>
+    /// Id of this flashcard
+    /// </summary>
+    [JsonIgnore]
     public int Id { get; set; }
     
-    //The set this Flashcard is a member of
+    /// <summary>
+    /// Set the flashcard is a member of
+    /// </summary>
+    [JsonIgnore]
     public int FlashcardSetId { get; private set; }
     
+    [JsonIgnore]
     public FlashcardSet FlashcardSet { get; private set; }
    
-    //Question on the Flashcard
+    /// <summary>
+    /// Flashcard question
+    /// </summary>
     public string Question { get; private set; }
     
-    //Answer on the Flashcard
+    /// <summary>
+    /// Answer on the flashcard
+    /// </summary>
     public string Answer { get; private set; }
 
+    /// <summary>
+    /// Difficulty of the question
+    /// </summary>
     public Difficulty Difficulty { get; private set; }
     
     #region Constructors
 
-    //Default Constructor
+    /// <summary>
+    /// Default constructor
+    /// </summary>
     public Flashcard()
     {
         Question = string.Empty;
@@ -30,7 +47,13 @@ public class Flashcard
         Difficulty = Difficulty.Easy;
     }
     
-    //Constructor with Parameters
+    /// <summary>
+    /// Constructor with parameterse
+    /// </summary>
+    /// <param name="flashcardSet"></param>
+    /// <param name="question"></param>
+    /// <param name="answer"></param>
+    /// <param name="difficulty"></param>
     public Flashcard(
         FlashcardSet flashcardSet,
         string question,

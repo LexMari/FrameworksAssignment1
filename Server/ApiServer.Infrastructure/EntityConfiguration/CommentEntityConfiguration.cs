@@ -10,21 +10,16 @@ public class CommentEntityConfiguration : IEntityTypeConfiguration<Comment>
     {
         builder.ToTable("Comments");
 
-        builder.Property(x => x.Id)
-            .HasColumnName("CommentId")
-            .IsRequired();
-
-        builder.HasKey(x => x.Id);
+        // Composite key
+        builder.HasKey(c => new { c.FlashcardSetId, c.UserId });
 
         builder.Property(x => x.FlashcardSetId)
             .IsRequired();
-
-        builder.Property(x => x.CreatedAt)
+        
+        builder.Property(x => x.UserId)
             .IsRequired();
-
-        builder.Property(x => x.Username)
-            .HasMaxLength(500)
-            .IsUnicode(false)
+        
+        builder.Property(x => x.CreatedAt)
             .IsRequired();
 
         builder.Property(x => x.CommentText)
