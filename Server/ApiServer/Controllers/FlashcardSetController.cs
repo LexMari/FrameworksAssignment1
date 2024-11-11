@@ -1,14 +1,13 @@
 using System.Net;
 using ApiServer.Domain.Entities;
-using ApiServer.Domain.Enums;
 using ApiServer.Infrastructure;
+using ApiServer.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace ApiServer.Controllers;
 
-[Route("flashcardsets")]
+[Route("sets")]
 [ApiController]
 public class FlashcardSetController : Controller
 {
@@ -30,6 +29,8 @@ public class FlashcardSetController : Controller
 
     #endregion
 
+    #region Base /set routes
+
     /// <summary>
     /// Get all Flashcard Sets
     /// </summary>
@@ -47,7 +48,7 @@ public class FlashcardSetController : Controller
     /// <summary>
     /// Create a flashcard set
     /// </summary>
-    /// <param name="setData"></param>
+    /// <param name="flashcardSet"></param>
     /// <returns></returns>
     [HttpPost]
     [Route("")]
@@ -55,24 +56,25 @@ public class FlashcardSetController : Controller
     [ProducesResponseType(typeof(FlashcardSet), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-    public async Task<IActionResult> CreateFlashcardSet([FromBody] CreateSetDto setData)
+    public async Task<IActionResult> CreateFlashcardSet([FromBody] FlashcardSet flashcardSet)
     {
-        var user = await _context.Users.FindAsync(setData.UserId);
+        var user = await _context.Users.FindAsync(flashcardSet.UserId);
         if (user is null)
         {
-            _logger.LogError("Invalid user ID [{UserId}] passed to create Flashcard set", setData.UserId);
+            _logger.LogError("Invalid user ID [{UserId}] passed to create Flashcard set", flashcardSet.UserId);
             return BadRequest("User does not exist");
         }
 
         if (!user.IsAdministrator &&
             _context.FlashcardSets.Count(x => x.UserId == user.Id) > 20)
         {
-            _logger.LogWarning("User Id [{UserId}] has exceeded their maximum flashcard set allowance", setData.UserId);
+            _logger.LogWarning("User Id [{UserId}] has exceeded their maximum flashcard set allowance",
+                flashcardSet.UserId);
             HttpContext.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
-            return new ObjectResult(new ErrorDto("User has exceeded their maximum flashcard set allowance"));
+            var error = new Error("User has exceeded their maximum flashcard set allowance");
+            return new ObjectResult(JsonConvert.SerializeObject(error));
         }
 
-        var flashcardSet = new FlashcardSet(setData.Id, setData.Name, setData.UserId);
         try
         {
             await _context.FlashcardSets.AddAsync(flashcardSet);
@@ -83,57 +85,65 @@ public class FlashcardSetController : Controller
         {
             _logger.LogError(ex, "Failed to create flashcard set");
             return BadRequest("Unable to create user record");
-        } 
+        }
     }
+
+    #endregion
+
+    #region /set/{setId} routes
 
     /// <summary>
     /// Get a flashcard set by Id
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="setId">Id of the flashcard set</param>
+    /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("{id:int}")]
+    [Route("{setId:int}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(FlashcardSet), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetFlashcardSet(int id)
+    public async Task<IActionResult> GetFlashcardSet(int setId, CancellationToken cancellationToken)
     {
         var flashcardSet = await _context.FlashcardSets
-            .FindAsync(id);
+            .FindAsync(setId, cancellationToken);
 
         if (flashcardSet is null)
         {
-            return NotFound();
+            var error = new Error("Cannot find Flashcard set with ID [" + setId + "]");
+            return NotFound(JsonConvert.SerializeObject(error));
         }
+
         return Ok(JsonConvert.SerializeObject(flashcardSet));
     }
 
     /// <summary>
-    /// Update a flashcard set by Id
+    /// Update a flashcard set
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="updateData"></param>
+    /// <param name="setId"></param>
+    /// <param name="flashcardSet"></param>
     /// <returns></returns>
     [HttpPut]
-    [Route("{id:int}")]
+    [Route("{setId:int}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(FlashcardSet), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateFlashcardSet(int id, [FromBody] FlashcardSet updateData)
+    public async Task<IActionResult> UpdateFlashcardSet(int setId, [FromBody] FlashcardSet flashcardSet)
     {
-        var existingFlashcardSet = await _context.FlashcardSets.FindAsync(id);
+        var existingFlashcardSet = await _context.FlashcardSets.FindAsync(setId);
 
         if (existingFlashcardSet == null)
         {
-            return NotFound(new ErrorDto("Flashcard set not found"));
+            var error = new Error("Cannot find Flashcard set with ID [" + setId + "]");
+            return NotFound(JsonConvert.SerializeObject(error));
         }
 
         try
         {
-            existingFlashcardSet.Name = updateData.Name;
+            existingFlashcardSet.Name = flashcardSet.Name;
             existingFlashcardSet.UpdatedAt = DateTime.Now;
             // Add other properties here
-            
+
             _context.FlashcardSets.Update(existingFlashcardSet);
             await _context.SaveChangesAsync();
             return Ok(existingFlashcardSet);
@@ -141,26 +151,27 @@ public class FlashcardSetController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to update flashcard set");
-            return BadRequest(new ErrorDto("Unable to update flashcard set"));
+            return BadRequest("Unable to update flashcard set");
         }
     }
 
     /// <summary>
     /// Delete flashcard set
     /// </summary>
-    /// <param name="id"></param>
+    /// <param name="setId"></param>
     /// <returns></returns>
     [HttpDelete]
-    [Route("{id:int}")]
+    [Route("{setId:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> DeleteFlashcardSet(int id)
+    public async Task<IActionResult> DeleteFlashcardSet(int setId)
     {
-        var flashcardSet = await _context.FlashcardSets.FindAsync(id);
+        var flashcardSet = await _context.FlashcardSets.FindAsync(setId);
 
         if (flashcardSet == null)
         {
-            return NotFound(new ErrorDto("Flashcard set not found"));
+            var error = new Error("Cannot find Flashcard set with ID [" + setId + "]");
+            return NotFound(JsonConvert.SerializeObject(error));
         }
 
         _context.FlashcardSets.Remove(flashcardSet);
@@ -173,26 +184,76 @@ public class FlashcardSetController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to delete flashcard set");
-            return BadRequest(new ErrorDto("Unable to delete flashcard set"));
+            return BadRequest("Unable to delete flashcard set");
         }
     }
-    
-    #region DTOs
 
-    /// <summary>
-    /// Dto for creating set
-    /// </summary>
-    /// <param name="Id"></param>
-    /// <param name="Name"></param>
-    /// <param name="UserId"></param>
-    public record CreateSetDto(int Id, string Name, int UserId);
-
-    /// <summary>
-    /// Dto for error messages
-    /// </summary>
-    /// <param name="Message"></param>
-    public record ErrorDto(string Message);
-    
     #endregion
 
+    #region /set/{setId}/comment routes
+
+    /// <summary>
+    /// Add a comment to a flashcard set
+    /// </summary>
+    /// <returns>The created user</returns>
+    [HttpPost]
+    [Route("{setId:int}/comment")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(FlashcardSet), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddComment(int setId,
+        [FromBody] string comment,
+        CancellationToken cancellationToken)
+    {
+        var flashcardSet = await _context.FlashcardSets
+            .FindAsync(setId, cancellationToken);
+
+        if (flashcardSet is null)
+        {
+            var error = new Error("Cannot find Flashcard set with ID [" + setId + "]");
+            return NotFound(JsonConvert.SerializeObject(error));
+        }
+
+        // Determine the current user from authentication
+
+        /*
+         var comment = new Comment(comment, flashcardSet, user);
+        _context.Comments.Add(comment);
+        await _context.SaveChangesAsync(cancellationToken);
+        return Created(comment);
+        */
+
+        throw new NotImplementedException();
+    }
+
+    #endregion
+
+    #region /set/(setId}/cards route actions
+    
+    /// <summary>
+    /// Get the cards for the flashcard set
+    /// </summary>
+    /// <param name="setId">The ID of the flashcard set</param>
+    /// <param name="cancellationToken"></param>
+    [HttpGet]
+    [Route("{setId:int}/cards")]
+    [Produces("application/json")]
+    [ProducesResponseType(typeof(FlashcardSet), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetFlashCards(int setId,
+        CancellationToken cancellationToken)
+    {
+        var flashcardSet = await _context.FlashcardSets
+            .FindAsync(setId, cancellationToken);
+
+        if (flashcardSet is null)
+        {
+            var error = new Error("Cannot find Flashcard set with ID [" + setId + "]");
+            return NotFound(JsonConvert.SerializeObject(error));
+        }
+        
+        return Ok(JsonConvert.SerializeObject(flashcardSet.Cards));
+    }
+    
+    #endregion
 }
