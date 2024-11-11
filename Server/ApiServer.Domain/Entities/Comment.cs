@@ -16,7 +16,7 @@ public class Comment
     /// <summary>
     /// The comment text
     /// </summary>
-    [JsonPropertyName("comment")]
+    [JsonPropertyName("commentText")]
     public string CommentText { get; private set; }
     
     /// <summary>
@@ -25,7 +25,7 @@ public class Comment
     [JsonIgnore]
     public int? UserId { get; private set; }
 
-    [JsonPropertyName("set")]
+    [JsonPropertyName("author")]
     public User? Author { get; private set; }
     
     /// <summary>

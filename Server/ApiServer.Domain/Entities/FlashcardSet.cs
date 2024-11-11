@@ -17,7 +17,7 @@ public class FlashcardSet
     /// <summary>
     /// User that created the flashcard set
     /// </summary>
-    public int UserId { get; private set; }
+    public int UserId { get; set; }
     
     /// <summary>
     /// Creation time
