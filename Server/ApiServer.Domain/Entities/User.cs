@@ -70,7 +70,9 @@ public class User
     /// <param name="username"></param>
     /// <param name="password"></param>
     /// <param name="isAdministrator"></param>
-    public void Update(string username, string password, bool isAdministrator)
+    public void Update(string username,
+        string password,
+        bool isAdministrator)
     {
         Username = username;
         IsAdministrator = isAdministrator;

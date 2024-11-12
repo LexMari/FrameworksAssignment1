@@ -3,7 +3,7 @@ using ApiServer.Domain.Enums;
 
 namespace ApiServer.Domain.Entities;
 
-public class Flashcard
+public class FlashCard
 {
     /// <summary>
     /// Id of this flashcard
@@ -16,7 +16,6 @@ public class Flashcard
     /// </summary>
     [JsonIgnore]
     public int FlashcardSetId { get; private set; }
-    
     [JsonIgnore]
     public FlashcardSet FlashcardSet { get; private set; }
    
@@ -33,37 +32,40 @@ public class Flashcard
     /// <summary>
     /// Difficulty of the question
     /// </summary>
-    public Difficulty Difficulty { get; private set; }
+    public Difficulty? Difficulty { get; private set; }
     
     #region Constructors
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public Flashcard()
+    public FlashCard()
     {
         Question = string.Empty;
         Answer = string.Empty;
-        Difficulty = Difficulty.Easy;
     }
     
     /// <summary>
-    /// Constructor with parameterse
+    /// Constructor with parameters
     /// </summary>
     /// <param name="flashcardSet"></param>
     /// <param name="question"></param>
     /// <param name="answer"></param>
     /// <param name="difficulty"></param>
-    public Flashcard(
+    public FlashCard(
         FlashcardSet flashcardSet,
         string question,
         string answer,
-        Difficulty difficulty)
+        Difficulty? difficulty)
     {
         FlashcardSetId = flashcardSet.Id;
         FlashcardSet = flashcardSet;
+
+        question = question.Trim();
+        question = (question.EndsWith('?') ? question : $"{question}");
         Question = question;
-        Answer = answer;
+
+        Answer = answer.Trim();
         Difficulty = difficulty;
     }
     

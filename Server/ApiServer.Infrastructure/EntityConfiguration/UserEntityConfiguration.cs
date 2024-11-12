@@ -12,6 +12,7 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.Id)
             .HasColumnName("UserId")
+            .ValueGeneratedOnAdd()
             .IsRequired();
 
         builder.HasKey(x => x.Id);
@@ -33,5 +34,9 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 
         builder.Property(x => x.IsAdministrator)
             .IsRequired();
+
+        builder.HasData(
+            new User(1, "student", "password", false),
+            new User(2, "admin", "password", true));
     }
 }

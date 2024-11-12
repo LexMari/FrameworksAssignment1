@@ -1,9 +1,13 @@
 using System.Text.Json.Serialization;
+using ApiServer.Domain.Enums;
 
 namespace ApiServer.Domain.Entities;
 
 public class FlashcardSet
 {
+    
+    #region Properties 
+    
     /// <summary>
     /// Unique identifier for flashcard set
     /// </summary>
@@ -32,14 +36,16 @@ public class FlashcardSet
     /// <summary>
     /// Flashcards that make up this set
     /// </summary>
-    private readonly List<Flashcard> _cards;
-    public IReadOnlyCollection<Flashcard> Cards => _cards;
+    private readonly List<FlashCard> _cards;
+    public IReadOnlyCollection<FlashCard> Cards => _cards;
     
     /// <summary>
     /// Comments on the flashcard set
     /// </summary>
     private readonly List<Comment> _comments;
     public IReadOnlyCollection<Comment> Comment => _comments;
+    
+    #endregion
     
     #region Readonly properties
     
@@ -61,8 +67,7 @@ public class FlashcardSet
         Id = default;
         Name = string.Empty;
         UserId = default;
-        _cards = new List<Flashcard>();
-        _comments = new List<Comment>();
+        _cards = new List<FlashCard>();
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
@@ -74,15 +79,50 @@ public class FlashcardSet
     /// <param name="name"></param>
     /// <param name="userId"></param>
     public FlashcardSet(
-        int id,
         string name,
         int userId
     ) : this()
     {
-        //Id = id;
-        Name = name;
+        Name = name.Trim();
         UserId = userId;
     }
 
+    #endregion
+    
+    #region Mutator Methods
+
+    /// <summary>
+    /// Update properties of the flashcard set
+    /// </summary>
+    /// <param name="name"></param>
+    public void Update(string name)
+    {
+        Name = name.Trim();
+        UpdatedAt = DateTime.UtcNow;
+    }
+    
+    #endregion
+    
+    #region Flashcard management
+
+    /// <summary>
+    /// Remove all cards from the flashcard set
+    /// </summary>
+    public void ClearCards()
+    {
+        _cards.Clear();
+    }
+
+    /// <summary>
+    /// Add a new card to the end of the flashcard set
+    /// </summary>
+    /// <param name="question"></param>
+    /// <param name="answer"></param>
+    /// <param name="difficulty"></param>
+    public void AddCard(string question, string answer, Difficulty difficulty)
+    {
+        _cards.Add(new FlashCard(this, question, answer, difficulty));
+    }
+    
     #endregion
 }

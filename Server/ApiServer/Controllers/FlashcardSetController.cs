@@ -213,9 +213,7 @@ public class FlashcardSetController : Controller
             var error = new Error("Cannot find Flashcard set with ID [" + setId + "]");
             return NotFound(JsonConvert.SerializeObject(error));
         }
-
-        // Determine the current user from authentication
-
+        
         /*
          var comment = new Comment(comment, flashcardSet, user);
         _context.Comments.Add(comment);

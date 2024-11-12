@@ -4,12 +4,14 @@ namespace ApiServer.Domain.Entities;
 
 public class Comment
 {
+    [JsonIgnore]
+    public int Id { get; private set; }
+    
     /// <summary>
     /// Set the comment is a member of
     /// </summary>
     [JsonIgnore]
     public int? FlashcardSetId { get; private set; }
-    
     [JsonPropertyName("set")]
     public FlashcardSet? FlashcardSet { get; private set; }
     
@@ -23,8 +25,7 @@ public class Comment
     /// User who made the comment
     /// </summary>
     [JsonIgnore]
-    public int? UserId { get; private set; }
-
+    public int? AuthorId { get; private set; }
     [JsonPropertyName("author")]
     public User? Author { get; private set; }
     
@@ -51,11 +52,13 @@ public class Comment
     /// <param name="commentText"></param>
     /// <param name="flashcardSet"></param>
     /// <param name="user"></param>
-    public Comment(string commentText, FlashcardSet? flashcardSet, User? user) : this()
+    public Comment(string commentText,
+        FlashcardSet? flashcardSet,
+        User? user) : this()
     {
         CommentText = commentText;
         FlashcardSetId = flashcardSet?.Id;
-        UserId = user?.Id;
+        AuthorId = user?.Id;
     }
     
     #endregion

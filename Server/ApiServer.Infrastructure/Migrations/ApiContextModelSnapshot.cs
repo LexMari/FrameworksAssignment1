@@ -19,54 +19,66 @@ namespace ApiServer.Infrastructure.Migrations
 
             modelBuilder.Entity("ApiServer.Domain.Entities.Comment", b =>
                 {
-                    b.Property<int?>("FlashcardSetId")
-                        .HasColumnType("INTEGER");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("CommentId");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int?>("AuthorId")
+                        .IsRequired()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CommentText")
                         .IsRequired()
-                        .HasMaxLength(1000)
+                        .HasMaxLength(500)
                         .IsUnicode(false)
                         .HasColumnType("TEXT")
-                        .HasAnnotation("Relational:JsonPropertyName", "comment");
+                        .HasAnnotation("Relational:JsonPropertyName", "commentText");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("FlashcardSetId", "UserId");
+                    b.Property<int?>("FlashcardSetId")
+                        .HasColumnType("INTEGER");
 
-                    b.HasIndex("UserId");
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("FlashcardSetId");
 
                     b.ToTable("Comments", (string)null);
                 });
 
-            modelBuilder.Entity("ApiServer.Domain.Entities.Flashcard", b =>
+            modelBuilder.Entity("ApiServer.Domain.Entities.FlashCard", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("FlashCardId");
 
                     b.Property<string>("Answer")
                         .IsRequired()
+                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Difficulty")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Difficulty")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("FlashcardSetId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Question")
                         .IsRequired()
+                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FlashcardSetId");
 
-                    b.ToTable("Flashcard");
+                    b.ToTable("FlashCards", (string)null);
                 });
 
             modelBuilder.Entity("ApiServer.Domain.Entities.FlashcardSet", b =>
@@ -130,29 +142,45 @@ namespace ApiServer.Infrastructure.Migrations
 
                     b.ToTable("Users", (string)null);
 
-                    b.HasAnnotation("Relational:JsonPropertyName", "set");
+                    b.HasAnnotation("Relational:JsonPropertyName", "author");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsAdministrator = false,
+                            PasswordHash = "w3zLSWUZ4dLP20icJT593RgHRq7buV0nXKRbf10uxpf8flMhTuegV94NUdUSHHDW0FbinvVAINAaX0B9mjo0dQ==",
+                            PasswordSalt = "cYeT914bXdEvj7TYm4UWuOsICmhUrcsQqP6UXjsy4GKXRVJeG9u93OT5mpQ9UBBcoYl3g7h4icOi50zjTHL+MA==",
+                            Username = "student"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsAdministrator = true,
+                            PasswordHash = "TXNqvMXo1b5mH7O7/iI8UquPY3XR/2sNNtvk5y/F5SFskW9CaFM0wasY+tP132RGbycLBxIeh1pPLDSzspadgg==",
+                            PasswordSalt = "sapB/Ozr4IJsQflqc/+yfekih1w2eMIqqrvNJ9smmExxRZMB7oGuogMUVkfu7SdB/gk97meNI4WaHCEMzfjyMg==",
+                            Username = "admin"
+                        });
                 });
 
             modelBuilder.Entity("ApiServer.Domain.Entities.Comment", b =>
                 {
-                    b.HasOne("ApiServer.Domain.Entities.FlashcardSet", "FlashcardSet")
-                        .WithMany("Comment")
-                        .HasForeignKey("FlashcardSetId")
+                    b.HasOne("ApiServer.Domain.Entities.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ApiServer.Domain.Entities.User", "Author")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("ApiServer.Domain.Entities.FlashcardSet", "FlashcardSet")
+                        .WithMany("Comment")
+                        .HasForeignKey("FlashcardSetId");
 
                     b.Navigation("Author");
 
                     b.Navigation("FlashcardSet");
                 });
 
-            modelBuilder.Entity("ApiServer.Domain.Entities.Flashcard", b =>
+            modelBuilder.Entity("ApiServer.Domain.Entities.FlashCard", b =>
                 {
                     b.HasOne("ApiServer.Domain.Entities.FlashcardSet", "FlashcardSet")
                         .WithMany("Cards")
