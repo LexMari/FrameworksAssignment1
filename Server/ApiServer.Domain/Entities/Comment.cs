@@ -11,9 +11,9 @@ public class Comment
     /// Set the comment is a member of
     /// </summary>
     [JsonIgnore]
-    public int? FlashcardSetId { get; private set; }
+    public int FlashcardSetId { get; private set; }
     [JsonPropertyName("set")]
-    public FlashcardSet? FlashcardSet { get; private set; }
+    public FlashcardSet FlashcardSet { get; private set; }
     
     /// <summary>
     /// The comment text
@@ -53,11 +53,11 @@ public class Comment
     /// <param name="flashcardSet"></param>
     /// <param name="user"></param>
     public Comment(string commentText,
-        FlashcardSet? flashcardSet,
+        FlashcardSet flashcardSet,
         User? user) : this()
     {
         CommentText = commentText;
-        FlashcardSetId = flashcardSet?.Id;
+        FlashcardSetId = flashcardSet.Id;
         AuthorId = user?.Id;
     }
     

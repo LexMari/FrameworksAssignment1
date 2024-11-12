@@ -4,6 +4,7 @@ using ApiServer.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using ApiServer.Api.FlashcardsSets.Models;
 
@@ -20,6 +21,8 @@ public class FlashcardSetController : Controller
     {
         PropertyNameCaseInsensitive = true,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
         Converters =
         {
             new JsonStringEnumConverter()
@@ -101,13 +104,14 @@ public class FlashcardSetController : Controller
     [HttpGet]
     [Route("{setId:int}")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(FlashcardSet), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FlashcardSetDto), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Error),StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetFlashcardSet(int setId,
         CancellationToken cancellationToken)
     {
         var flashcardSet = await _context.FlashcardSets
             .Include(x => x.Cards)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == setId, cancellationToken);
         
         if (flashcardSet is null)
@@ -116,7 +120,14 @@ public class FlashcardSetController : Controller
             return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
         }
 
-        return Ok(JsonSerializer.Serialize(flashcardSet, _jsonSerializerOptions));
+        var comments = await _context.Comments
+            .Include(x => x.Author)
+            .Where(x => x.FlashcardSetId == setId)
+            .ToListAsync(cancellationToken);
+
+        var responseDto = new FlashcardSetDto(flashcardSet, comments);
+
+        return Ok(JsonSerializer.Serialize(responseDto, _jsonSerializerOptions));
     }
 
     /// <summary>
@@ -136,6 +147,7 @@ public class FlashcardSetController : Controller
     {
         var flashcardSet = await _context.FlashcardSets
             .Include(x => x.Cards)
+            .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == setId, cancellationToken);
 
         if (flashcardSet == null)
@@ -178,7 +190,6 @@ public class FlashcardSetController : Controller
         }
 
         /* TODO: Verify the current user is the set author */
-        /* TODO: Delete the comments for the set */
 
         _context.FlashcardSets.Remove(flashcardSet);
         await _context.SaveChangesAsync(cancellationToken);
@@ -202,11 +213,13 @@ public class FlashcardSetController : Controller
     [ProducesResponseType(typeof(Comment), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddComment(int setId, 
-        [FromBody] string comment, 
+        [FromBody] string commentText, 
         CancellationToken cancellationToken)
     {
         var flashcardSet = await _context.FlashcardSets
-            .FindAsync(setId, cancellationToken);
+            .Include(x => x.Cards)
+            .AsSplitQuery()
+            .FirstOrDefaultAsync(x=> x.Id == setId, cancellationToken);
 
         if (flashcardSet is null)
         {
@@ -214,16 +227,16 @@ public class FlashcardSetController : Controller
             return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
         }
 
-        // Determine the current user from authentication
-        
-        /*
-         var comment = new Comment(comment, flashcardSet, user);
+        var user = await _context.Users.FirstAsync(cancellationToken);
+
+        var comment = new Comment(commentText, flashcardSet, user);
         _context.Comments.Add(comment);
         await _context.SaveChangesAsync(cancellationToken);
-        return Created(comment);
-        */
-        
-        throw new NotImplementedException();
+
+        return CreatedAtAction(
+            nameof(GetFlashcardSet),
+            new { setId = flashcardSet.Id },
+            JsonSerializer.Serialize(comment, _jsonSerializerOptions));
     }
 
     #endregion
@@ -244,7 +257,8 @@ public class FlashcardSetController : Controller
     public async Task<IActionResult> GetFlashCards(int setId, CancellationToken cancellationToken)
     {
         var flashcardSet = await _context.FlashcardSets
-            .FindAsync(setId, cancellationToken);
+            .Include(x => x.Cards)
+            .FirstOrDefaultAsync(x => x.Id == setId, cancellationToken);
 
         if (flashcardSet is null)
         {

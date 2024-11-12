@@ -30,5 +30,10 @@ public class CommentEntityConfiguration : IEntityTypeConfiguration<Comment>
             .WithMany()
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(x => x.FlashcardSet)
+            .WithMany()
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
