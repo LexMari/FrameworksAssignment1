@@ -78,7 +78,7 @@ public class FlashcardSetController : Controller
         [FromBody] FlashcardSetData createCommand,
         CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FindAsync(cancellationToken);
+        var user = await _context.Users.FirstAsync(cancellationToken);
         
         var flashcardSet = new FlashcardSet(createCommand.Name, user.Id);
         createCommand.Cards.ForEach(x => flashcardSet.AddCard(x.Question, x.Answer, x.Difficulty));
