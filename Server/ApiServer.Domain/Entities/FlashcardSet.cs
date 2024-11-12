@@ -39,12 +39,6 @@ public class FlashcardSet
     private readonly List<FlashCard> _cards;
     public IReadOnlyCollection<FlashCard> Cards => _cards;
     
-    /// <summary>
-    /// Comments on the flashcard set
-    /// </summary>
-    private readonly List<Comment> _comments;
-    public IReadOnlyCollection<Comment> Comment => _comments;
-    
     #endregion
     
     #region Readonly properties

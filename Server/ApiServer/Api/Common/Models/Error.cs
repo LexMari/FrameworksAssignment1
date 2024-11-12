@@ -1,4 +1,4 @@
-namespace ApiServer.Models;
+namespace ApiServer.Api.Common.Models;
 
 /// <summary>
 /// API Error record

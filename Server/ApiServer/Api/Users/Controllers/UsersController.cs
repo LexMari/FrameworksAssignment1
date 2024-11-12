@@ -1,18 +1,29 @@
+using System.Text.Json;
+using ApiServer.Api.Common.Models;
+using ApiServer.Api.FlashcardSets.Controllers;
+using ApiServer.Api.Users.Models;
 using ApiServer.Domain.Entities;
 using ApiServer.Infrastructure;
-using ApiServer.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
-namespace ApiServer.Controllers;
+namespace ApiServer.Api.Users.Controllers;
 
+/// <summary>
+/// Controller to implement /users API endpoints
+/// </summary>
 [ApiController]
 [Route("users")]
 public class UsersController : Controller
 {
-    private ILogger<UsersController> _logger;
+    private ILogger<FlashcardSetController> _logger;
     private readonly ApiContext _context;
+
+    private JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web)
+    {
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    };
 
     #region Constructor
     
@@ -21,7 +32,8 @@ public class UsersController : Controller
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="dbContext"></param>
-    public UsersController(ILogger<UsersController> logger, ApiContext dbContext)
+    public UsersController(ILogger<FlashcardSetController> logger,
+        ApiContext dbContext)
     {
         _logger = logger;
         _context = dbContext;
@@ -37,13 +49,13 @@ public class UsersController : Controller
     [HttpGet]
     [Route("")]
     [Produces("application/json")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<User>),StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
     {
         var userData = await _context.Users
             .ToListAsync(cancellationToken);
-        
-        return Ok(JsonConvert.SerializeObject(userData));
+
+        return Ok(JsonSerializer.Serialize(userData, _jsonSerializerOptions));
     }
 
     /// <summary>
@@ -58,7 +70,7 @@ public class UsersController : Controller
     [Route("")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Error),StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateUser(
         [FromBody] UserParametersRecord data,
         CancellationToken cancellationToken)
@@ -68,13 +80,13 @@ public class UsersController : Controller
         {
             await _context.Users.AddAsync(user, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return Created(nameof(GetUser), JsonConvert.SerializeObject(user));
+            return Created(nameof(GetUser), JsonSerializer.Serialize(user, _jsonSerializerOptions));
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to create users");
             var error = new Error("Unable to create user record");
-            return BadRequest(error);
+            return BadRequest(JsonSerializer.Serialize(error, _jsonSerializerOptions));
         }
     }
     
@@ -90,8 +102,8 @@ public class UsersController : Controller
     [HttpGet]
     [Route("{userId:int}")]
     [Produces("application/json")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(User),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Error),StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUser(int userId, CancellationToken cancellationToken)
     {
         var user = await _context.Users
@@ -100,14 +112,14 @@ public class UsersController : Controller
         if (user is null)
         {
             var error = new Error("Cannot find User with ID [" + userId + "]");
-            return NotFound(JsonConvert.SerializeObject(error));
+            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
         }
-        
-        return Ok(JsonConvert.SerializeObject(user));
+
+        return Ok(JsonSerializer.Serialize(user, _jsonSerializerOptions));
     }
     
     /// <summary>
-    /// Update a user
+    /// Update a user and password
     /// </summary>
     /// <param name="userId">The ID of the user</param>
     /// <param name="data"></param>
@@ -115,8 +127,8 @@ public class UsersController : Controller
     [HttpPut]
     [Route("{userId:int}")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(FlashcardSet), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUser(int userId, 
         [FromBody] UserParametersRecord data,
         CancellationToken cancellationToken)
@@ -127,24 +139,24 @@ public class UsersController : Controller
         if (user is null)
         {
             var error = new Error("Cannot find User with ID [" + userId + "]");
-            return NotFound(JsonConvert.SerializeObject(error));
+            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
         }
         
         user.Update(data.User.Username, data.Password, data.User.Admin);
         await _context.SaveChangesAsync(cancellationToken);
-        
-        return Ok(JsonConvert.SerializeObject(user));
+
+        return Ok(JsonSerializer.Serialize(user, _jsonSerializerOptions));
     }
     
     /// <summary>
-    /// Delete the flashcard set with the passed ID
+    /// Delete the user with the passed ID
     /// </summary>
     /// <param name="userId">The ID of the user</param>
     /// <param name="cancellationToken"></param>
     [HttpDelete]
     [Route("{userId:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Error),StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUser(int userId, CancellationToken cancellationToken)
     {
         var user = await _context.Users
@@ -152,8 +164,8 @@ public class UsersController : Controller
 
         if (user is null)
         {
-            var error = new Error("Cannot find Flashcard set with ID [" + userId + "]");
-            return NotFound(JsonConvert.SerializeObject(error));
+            var error = new Error("Cannot find user with ID [" + userId + "]");
+            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
         }
 
         // Remove comments for the user
@@ -182,8 +194,8 @@ public class UsersController : Controller
     [HttpGet]
     [Route("{userId:int}/sets")]
     [Produces("application/json")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(List<FlashcardSet>),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Error),StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserFlashcardSets(int userId, CancellationToken cancellationToken)
     {
         var user = await _context.Users
@@ -192,14 +204,14 @@ public class UsersController : Controller
         if (user is null)
         {
             var error = new Error("Cannot find User with ID [" + userId + "]");
-            return NotFound(JsonConvert.SerializeObject(error));
+            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
         }
         
         var sets = await _context.FlashcardSets
             .Where(s => s.UserId == userId)
             .ToListAsync(cancellationToken);
-        
-        return Ok(sets);
+
+        return Ok(JsonSerializer.Serialize(sets, _jsonSerializerOptions));
     }
     
     #endregion

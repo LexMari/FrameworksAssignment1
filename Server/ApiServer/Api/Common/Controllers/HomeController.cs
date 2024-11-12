@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace ApiServer.Controllers;
+namespace ApiServer.Api.Common.Controllers;
 
 /// <summary>
 /// API server root route controller
