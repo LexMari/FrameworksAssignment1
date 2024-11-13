@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using ApiServer.Api.Common.Models;
 using ApiServer.Api.FlashcardSets.Controllers;
 using ApiServer.Api.Users.Models;
@@ -22,7 +23,13 @@ public class UsersController : Controller
     private JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web)
     {
         PropertyNameCaseInsensitive = true,
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        ReferenceHandler = ReferenceHandler.IgnoreCycles,
+        Converters =
+        {
+            new JsonStringEnumConverter()
+        }
     };
 
     #region Constructor
@@ -72,10 +79,10 @@ public class UsersController : Controller
     [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(Error),StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateUser(
-        [FromBody] UserParametersRecord data,
+        [FromBody] UserRequest createUser,
         CancellationToken cancellationToken)
     {
-        var user = new User(data.User.Id, data.User.Username, data.Password, data.User.Admin);
+        var user = new User(createUser.Username, createUser.Password, createUser.Admin);
         try
         {
             await _context.Users.AddAsync(user, cancellationToken);
@@ -122,7 +129,7 @@ public class UsersController : Controller
     /// Update a user and password
     /// </summary>
     /// <param name="userId">The ID of the user</param>
-    /// <param name="data"></param>
+    /// <param name="updateUser"></param>
     /// <param name="cancellationToken"></param>
     [HttpPut]
     [Route("{userId:int}")]
@@ -130,7 +137,7 @@ public class UsersController : Controller
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUser(int userId, 
-        [FromBody] UserParametersRecord data,
+        [FromBody] UserRequest updateUser,
         CancellationToken cancellationToken)
     {
         var user = await _context.Users
@@ -142,7 +149,7 @@ public class UsersController : Controller
             return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
         }
         
-        user.Update(data.User.Username, data.Password, data.User.Admin);
+        user.Update(updateUser.Username, updateUser.Password, updateUser.Admin);
         await _context.SaveChangesAsync(cancellationToken);
 
         return Ok(JsonSerializer.Serialize(user, _jsonSerializerOptions));
@@ -168,17 +175,15 @@ public class UsersController : Controller
             return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
         }
 
-        // Remove comments for the user
-        // Remove collections for the user
-        // Remove flashcards sets for the user
+        var sets = await _context.FlashcardSets
+            .Where(x=>x.UserId == userId)
+            .ToListAsync(cancellationToken);
         
-        /*
+        _context.FlashcardSets.RemoveRange(sets);
+
         _context.Users.Remove(user);
         await _context.SaveChangesAsync(cancellationToken);
         return new NoContentResult();
-        */
-        
-        throw new NotImplementedException();
     }
     
     #endregion
@@ -208,6 +213,7 @@ public class UsersController : Controller
         }
         
         var sets = await _context.FlashcardSets
+            .Include(x => x.Cards)
             .Where(s => s.UserId == userId)
             .ToListAsync(cancellationToken);
 

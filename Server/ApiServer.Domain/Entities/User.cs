@@ -48,13 +48,11 @@ public class User
     
     //Constructor with parameters
     public User(
-        int userId,
         string username,
         string password,
         bool isAdministrator
     ) : this()
     {
-        Id = userId;
         Username = username;
         IsAdministrator = isAdministrator;
         PasswordHash = HashPassword(password, out byte[] salt);
