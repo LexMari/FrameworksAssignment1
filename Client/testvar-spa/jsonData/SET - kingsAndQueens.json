@@ -1,0 +1,55 @@
+{
+  "name": "Kings and Queens",
+  "cards": [
+    {
+      "question": "Mary, Queen of Scots, was brought up in which country between the ages of 6 and 18",
+      "answer": "France",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "Who was the first wife of King Henry VIII",
+      "answer": "Catherine of Aragon",
+      "difficulty": "easy"
+    },
+    {
+      "question": "At which battle in 1485 was Richard III killed",
+      "answer": "Battle of Bosworth",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "The 'Gunpowder Plot' was intended to kill which king",
+      "answer": "King James I of England",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Who was the King of France at the time of the French Revolution",
+      "answer": "Louis XVI",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Who was tried and executed in 1587 at Fotheringhay Castle?",
+      "answer": "Mary, Queen of Scots",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "Who was the mother of Edward VI of England",
+      "answer": "Jane Seymour",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "Who was the English King at the time of the Battle of Hastings in 1066",
+      "answer": "Harold Godwinson (Harold II)",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "Which King of England was killed by an arrow whilst hunting in the New Forest",
+      "answer": "King William II",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "Who was the first British Monarch to travel in a submarine?",
+      "answer": "James I (in 1620)",
+      "difficulty": "Hard"
+    }
+  ]
+}

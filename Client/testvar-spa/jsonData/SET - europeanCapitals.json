@@ -1,0 +1,40 @@
+{
+  "name": "European Capital Cities",
+  "cards": [
+    {
+      "question": "What is the capital of the United Kingdom",
+      "answer": "London",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the capital of France",
+      "answer": "Paris",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the capital of the Netherlands?",
+      "answer": "Amsterdam",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What is the capital of Iceland",
+      "answer": "Reykjavik",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What is the capital of Poland?",
+      "answer": "Warsaw",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What is the capital of Slovakia",
+      "answer": "Bratislava",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "What is the capital of North Macedonia",
+      "answer": "Skopje",
+      "difficulty": "Hard"
+    }
+  ]
+}

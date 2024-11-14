@@ -1,0 +1,30 @@
+{
+  "name": "Symbols in the Periodic Table",
+  "cards": [
+    {
+      "question": "What element has the symbol H",
+      "answer": "Hydrogen",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What element has the symbol Cu",
+      "answer": "Copper",
+      "difficulty": "easy"
+    },
+    {
+      "question": "What element has the symbol Si",
+      "answer": "Silicon",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "What element has the symbol Pb?",
+      "answer": "Lead",
+      "difficulty": "medium"
+    },
+    {
+      "question": "What element has the symbol Np",
+      "answer": "Neptunium",
+      "difficulty": "hard"
+    }
+  ]
+}

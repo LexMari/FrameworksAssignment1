@@ -1,0 +1,50 @@
+{
+  "name": "Political History",
+  "cards": [
+    {
+      "question": "Between 1981 and 2000, thousands of women protested against the siting of nuclear weapons at which RAF base in Berkshire?",
+      "answer": "Greenham Common",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "Which President of the United States spent the longest time in office",
+      "answer": "Franklin D. Roosevelt",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "Which politician is frequently described as the founder of the NHS",
+      "answer": "Aneurin Bevan",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "Who followed Gordon Brown as Chancellor of the Exchequer?",
+      "answer": "Alastair Darling",
+      "difficulty": "Hard"
+    },
+    {
+      "question": "Which British Prime Minister said 'History will be kind to me, for I intend to write it'",
+      "answer": "Winston Churchill",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "Who was the last viceroy of India",
+      "answer": "Lord Louis Mountbatten",
+      "difficulty": "Medium"
+    },
+    {
+      "question": "Who is the only President of the United States to have resigned mid-term",
+      "answer": "Richar Nixon",
+      "difficulty": "easy"
+    },
+    {
+      "question": "Who was the eighth and last leader of the Soviet Union?",
+      "answer": "Mikhail Gorbachev",
+      "difficulty": "Medium"
+    },
+    {
+      "question": " Which former US President was born in Honolulu, Hawaii in 1961",
+      "answer": "Barack Obama",
+      "difficulty": "Easy"
+    }
+  ]
+}
