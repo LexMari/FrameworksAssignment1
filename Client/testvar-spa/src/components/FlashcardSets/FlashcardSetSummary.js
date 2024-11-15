@@ -11,7 +11,7 @@ const FlashcardSetSummary = ({setId, name, count}) => {
     }
 
     return (
-        <Link to={"sets/"+ setId} style={{ textDecoration: 'none' }}>
+        <Link to={{ pathname: `/sets/${setId}`}} style={{ textDecoration: 'none' }}>
             <Box sx={{
                 alignItems: 'center',
                 mt: 1, p: 1,

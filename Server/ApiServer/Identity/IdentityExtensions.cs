@@ -45,7 +45,7 @@ public static class IdentityExtensions
             })
             .AddValidation(options =>
             {
-                options.SetIssuer("https://localhost:7233/");
+                options.SetIssuer("https://localhost:7222/");
                 options.AddAudiences("apiserver");
 
                 options.AddEncryptionKey(new SymmetricSecurityKey(

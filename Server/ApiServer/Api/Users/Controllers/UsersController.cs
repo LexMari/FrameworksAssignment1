@@ -14,23 +14,11 @@ namespace ApiServer.Api.Users.Controllers;
 /// Controller to implement /users API endpoints
 /// </summary>
 [ApiController]
-[Route("users")]
+[Route("api/users")]
 public class UsersController : Controller
 {
     private ILogger<FlashcardSetController> _logger;
     private readonly ApiContext _context;
-
-    private JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web)
-    {
-        PropertyNameCaseInsensitive = true,
-        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters =
-        {
-            new JsonStringEnumConverter()
-        }
-    };
 
     #region Constructor
     
@@ -62,13 +50,13 @@ public class UsersController : Controller
         var userData = await _context.Users
             .ToListAsync(cancellationToken);
 
-        return Ok(JsonSerializer.Serialize(userData, _jsonSerializerOptions));
+        return Ok(userData);
     }
 
     /// <summary>
     /// Create a new user
     /// </summary>
-    /// <param name="data"></param>
+    /// <param name="createUser"></param>
     /// <param name="cancellationToken"></param>
     /// <returns>The created user</returns>
     /// <response code="201">Returns the newly created user</response>
@@ -87,13 +75,14 @@ public class UsersController : Controller
         {
             await _context.Users.AddAsync(user, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return Created(nameof(GetUser), JsonSerializer.Serialize(user, _jsonSerializerOptions));
+            return Created(nameof(GetUser), 
+                user);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to create users");
             var error = new Error("Unable to create user record");
-            return BadRequest(JsonSerializer.Serialize(error, _jsonSerializerOptions));
+            return BadRequest(error);
         }
     }
     
@@ -119,10 +108,10 @@ public class UsersController : Controller
         if (user is null)
         {
             var error = new Error("Cannot find User with ID [" + userId + "]");
-            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
+            return NotFound(error);
         }
 
-        return Ok(JsonSerializer.Serialize(user, _jsonSerializerOptions));
+        return Ok(user);
     }
     
     /// <summary>
@@ -146,13 +135,13 @@ public class UsersController : Controller
         if (user is null)
         {
             var error = new Error("Cannot find User with ID [" + userId + "]");
-            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
+            return NotFound(error);
         }
         
         user.Update(updateUser.Username, updateUser.Password, updateUser.Admin);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return Ok(JsonSerializer.Serialize(user, _jsonSerializerOptions));
+        return Ok(user);
     }
     
     /// <summary>
@@ -172,7 +161,7 @@ public class UsersController : Controller
         if (user is null)
         {
             var error = new Error("Cannot find user with ID [" + userId + "]");
-            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
+            return NotFound(error);
         }
 
         var sets = await _context.FlashcardSets
@@ -209,7 +198,7 @@ public class UsersController : Controller
         if (user is null)
         {
             var error = new Error("Cannot find User with ID [" + userId + "]");
-            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
+            return NotFound(error);
         }
         
         var sets = await _context.FlashcardSets
@@ -217,7 +206,7 @@ public class UsersController : Controller
             .Where(s => s.UserId == userId)
             .ToListAsync(cancellationToken);
 
-        return Ok(JsonSerializer.Serialize(sets, _jsonSerializerOptions));
+        return Ok(sets);
     }
     
     #endregion

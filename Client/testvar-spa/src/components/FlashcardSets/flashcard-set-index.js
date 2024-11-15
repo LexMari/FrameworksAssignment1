@@ -5,25 +5,34 @@ import {useEffect, useState} from "react";
 import SortService from "../../services/SortService";
 import PageTitle from "../common/PageTitle";
 import FlashcardSetSummary from "./FlashcardSetSummary";
+import {getUser} from "../../services/AuthService";
+import {getFlashcardSets} from "../../api/FlashcardSetApi";
 
 const FlashcardSetIndex = () => {
-
     const [flashcardSets, setFlashcardSets] = useState([]);
+    const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [sort, setSort] = useState({ field: 'name', direction: 'asc' });
 
+
+    async function fetchData() {
+        const user = await getUser();
+        const accessToken = user?.access_token;
+
+        setUser(user);
+
+        if (accessToken) {
+            const data = await getFlashcardSets(accessToken);
+            const sortedData = SortService.sortFlashcardSets(data, sort);
+            setFlashcardSets(data);
+        }
+
+        setIsLoading(false);
+    }
+
     useEffect(() => {
-        const apiCollection =  "https://localhost:7233/api/sets";
-        fetch(apiCollection)
-            .then((response) => response.json())
-            .then((result) => {
-                const sortedData = SortService.sortFlashcardSets(result, sort);
-                console.log(sortedData);
-                setFlashcardSets(result);
-            })
-            .catch((err) => {
-                console.log(err.message);
-            });
-    }, [sort]);
+        fetchData();
+    }, [isLoading, sort]);
 
     return (
         <>
@@ -32,8 +41,8 @@ const FlashcardSetIndex = () => {
             <Grid container maxWidth={true} spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 1 }}>
                 {flashcardSets.map((set) => {
                     return (
-                        <Grid item size={{ xs: 6, md: 4 }}>
-                            <FlashcardSetSummary name={set.name} count={set.cards.length} />
+                        <Grid item size={{ xs: 6, md: 4 }} key={set.id}>
+                            <FlashcardSetSummary setId={set.id} name={set.name} count={set.cards.length} />
                         </Grid>
                     );
                 })}

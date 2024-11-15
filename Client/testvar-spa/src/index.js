@@ -10,7 +10,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import FlashcardSetIndex from './components/FlashcardSets/flashcard-set-index';
 import FlashcardSetDisplay from './components/FlashcardSets/flashcard-set-display';
-import RouterErrorPage from "./pages/router-error-page";
+import RouterErrorPage from "./pages/router/router-error-page";
 
 const router = createBrowserRouter([
     {
@@ -20,11 +20,11 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <FlashcardSetIndex />,
+                element: <FlashcardSetIndex />
             },
             {
                 path: "sets/:setId",
-                element: <FlashcardSetDisplay/>,
+                element: <FlashcardSetDisplay />,
             }
         ]
     }
@@ -33,10 +33,9 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <App/>
     </React.StrictMode>
 );
-
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

@@ -18,19 +18,7 @@ public class FlashcardSetController : Controller
 {
     private ILogger<FlashcardSetController> _logger;
     private readonly ApiContext _context;
-
-    private readonly JsonSerializerOptions _jsonSerializerOptions = new(JsonSerializerDefaults.Web)
-    {
-        PropertyNameCaseInsensitive = true,
-        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-        ReferenceHandler = ReferenceHandler.IgnoreCycles,
-        Converters =
-        {
-            new JsonStringEnumConverter()
-        }
-    };
-
+    
     #region Constructor
 
     /// <summary>
@@ -62,7 +50,7 @@ public class FlashcardSetController : Controller
             .Include(x => x.Cards)
             .ToListAsync(cancellationToken);
         
-        return Ok(JsonSerializer.Serialize(setData, _jsonSerializerOptions));
+        return Ok(setData);
     }
 
     /// <summary>
@@ -90,7 +78,7 @@ public class FlashcardSetController : Controller
         return CreatedAtAction(
             nameof(GetFlashcardSet),
             new { setId = flashcardSet.Id },
-            JsonSerializer.Serialize(flashcardSet, _jsonSerializerOptions));
+            flashcardSet);
     }
 
     #endregion
@@ -119,7 +107,7 @@ public class FlashcardSetController : Controller
         if (flashcardSet is null)
         {
             var error = new Error("Cannot find Flashcard set with ID [" + setId + "]");
-            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
+            return NotFound(error);
         }
 
         var comments = await _context.Comments
@@ -129,7 +117,7 @@ public class FlashcardSetController : Controller
 
         var responseDto = new FlashcardSetDto(flashcardSet, comments);
 
-        return Ok(JsonSerializer.Serialize(responseDto, _jsonSerializerOptions));
+        return Ok(responseDto);
     }
 
     /// <summary>
@@ -147,27 +135,37 @@ public class FlashcardSetController : Controller
         [FromBody] FlashcardSetData updateCommand,
         CancellationToken cancellationToken)
     {
+        var username = HttpContext.User.Identity!.Name;
+        _logger.LogDebug("User [{username}] requested PUT /sets/{setId}", username, setId);
+        
         var flashcardSet = await _context.FlashcardSets
-            .Include(x => x.Cards)
+            .Include(x  => x.Cards)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == setId, cancellationToken);
-
-        if (flashcardSet == null)
+        
+        if (flashcardSet is null)
         {
+            _logger.LogError("Non existent flashcard set [{setId}]", setId);
             var error = new Error("Cannot find Flashcard set with ID [" + setId + "]");
-            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
+            return NotFound(error);
         }
         
-        /* TODO:Verify current user is the set author */
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username, cancellationToken);
+        if (user is null || flashcardSet.UserId != user.Id)
+        {
+            _logger.LogError("Attempt to update flashcard set not made by owner [{username}]", username);
+            var error = new Error("You cannot update a flashcard set that you do not own");
+            return BadRequest(error);
+        }
         
         flashcardSet.Update(updateCommand.Name);
         flashcardSet.ClearCards();
         await _context.SaveChangesAsync(cancellationToken);
-
+        
         updateCommand.Cards.ForEach(x => flashcardSet.AddCard(x.Question, x.Answer, x.Difficulty));
         await _context.SaveChangesAsync(cancellationToken);
 
-        return Ok(JsonSerializer.Serialize(flashcardSet, _jsonSerializerOptions));
+        return Ok(flashcardSet);
     }
 
     /// <summary>
@@ -182,16 +180,25 @@ public class FlashcardSetController : Controller
     [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteFlashcardSet(int setId, CancellationToken cancellationToken)
     {
+        var username = HttpContext.User.Identity!.Name;
+        _logger.LogDebug("User [{username}] requested DELETE /sets/{setId}", username, setId);
+        
         var flashcardSet = await _context.FlashcardSets
             .FindAsync(setId, cancellationToken);
 
-        if (flashcardSet == null)
+        if (flashcardSet is null)
         {
             var error = new Error("Cannot find Flashcard set with ID [" + setId + "]");
-            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
+            return NotFound(error);
         }
-
-        /* TODO: Verify the current user is the set author */
+        
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username, cancellationToken);
+        if (user is null || flashcardSet.UserId != user.Id)
+        {
+            _logger.LogError("Attempt to update flashcard set not made by owner [{username}]", username);
+            var error = new Error("You cannot update a flashcard set that you do not own");
+            return BadRequest(error);
+        }
 
         _context.FlashcardSets.Remove(flashcardSet);
         await _context.SaveChangesAsync(cancellationToken);
@@ -226,7 +233,7 @@ public class FlashcardSetController : Controller
         if (flashcardSet is null)
         {
             var error = new Error($"Cannot find Flashcard set with ID [{setId}]");
-            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
+            return NotFound(error);
         }
 
         var user = await _context.Users.FirstAsync(cancellationToken);
@@ -238,7 +245,7 @@ public class FlashcardSetController : Controller
         return CreatedAtAction(
             nameof(GetFlashcardSet),
             new { setId = flashcardSet.Id },
-            JsonSerializer.Serialize(comment, _jsonSerializerOptions));
+            comment);
     }
 
     #endregion
@@ -265,10 +272,10 @@ public class FlashcardSetController : Controller
         if (flashcardSet is null)
         {
             var error = new Error("Cannot find Flashcard set with ID [" + setId + "]");
-            return NotFound(JsonSerializer.Serialize(error, _jsonSerializerOptions));
+            return NotFound(error);
         }
         
-        return Ok(JsonSerializer.Serialize(flashcardSet.Cards, _jsonSerializerOptions));
+        return Ok(flashcardSet.Cards);
     }
     
     #endregion
