@@ -21,6 +21,7 @@ public class FlashcardSet
     /// <summary>
     /// User that created the flashcard set
     /// </summary>
+    [JsonIgnore]
     public int UserId { get; set; }
     
     /// <summary>

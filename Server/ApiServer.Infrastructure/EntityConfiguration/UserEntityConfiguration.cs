@@ -36,7 +36,7 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
 
         builder.HasData(
-            new User("student", "password", false),
-            new User("admin", "password", true));
+            new User(1,"student", "password", false),
+            new User(2,"admin", "password", true));
     }
 }

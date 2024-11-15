@@ -61,4 +61,4 @@ const FlashcardSetDisplay = () => {
         </>
     )
 }
-export default FlashcardSeDisplay;
+export default FlashcardSetDisplay;

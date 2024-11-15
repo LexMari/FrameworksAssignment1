@@ -1,0 +1,25 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.Extensions.Primitives
+
+<div class="container py-5 py-sm-7">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-5">
+            <!-- Card -->
+            <div class="card card-lg mb-5">
+                <div class="card-body">
+                    <h1>Log out</h1>
+                    <p class="lead text-left">Are you sure you want to sign out?</p>
+                    <form asp-controller="Authorisation" asp-action="LogoutPost" method="post">
+                        @* Flow the request parameters so they can be received by the LogoutPost action: *@
+                        @foreach (var parameter in Context.Request.HasFormContentType ?
+                                      (IEnumerable<KeyValuePair<string, StringValues>>) Context.Request.Form : Context.Request.Query)
+                        {
+                            <input type="hidden" name="@parameter.Key" value="@parameter.Value" />
+                        }
+                        <input class="btn btn-lg btn-success" name="Confirm" type="submit" value="Yes" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

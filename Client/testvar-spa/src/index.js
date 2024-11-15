@@ -9,6 +9,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import FlashcardSetIndex from './components/FlashcardSets/flashcard-set-index';
+import FlashcardSetDisplay from './components/FlashcardSets/flashcard-set-display';
 import RouterErrorPage from "./pages/router-error-page";
 
 const router = createBrowserRouter([
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
             {
                 index: true,
                 element: <FlashcardSetIndex />,
+            },
+            {
+                path: "sets/:setId",
+                element: <FlashcardSetDisplay/>,
             }
         ]
     }

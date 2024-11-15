@@ -58,6 +58,28 @@ public class User
         PasswordHash = HashPassword(password, out byte[] salt);
         PasswordSalt = Convert.ToBase64String(salt);
     }
+    
+    /// <summary>
+    /// Constructor with parameters used for seeding data
+    /// </summary>
+    /// <param name="userId"></param>
+    /// <param name="username"></param>
+    /// <param name="password"></param>
+    /// <param name="isAdministrator"></param>
+    public User(
+        int userId,
+        string username,
+        string password,
+        bool isAdministrator
+    ) : this()
+    {
+        Id = userId;
+        Username = username;
+        IsAdministrator = isAdministrator;
+        PasswordHash = HashPassword(password, out byte[] salt);
+        PasswordSalt = Convert.ToBase64String(salt);
+    }
+    
     #endregion
     
     #region Mutator methods

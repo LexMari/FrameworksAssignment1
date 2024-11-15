@@ -5,7 +5,7 @@ namespace ApiServer.Api.Common.Controllers;
 /// <summary>
 /// API server root route controller
 /// </summary>
-[Route("/")]
+[Route("api/")]
 [ApiController]
 public class HomeController : Controller
 {
@@ -36,7 +36,7 @@ public class HomeController : Controller
     [Route("")]
     [Produces("application/json")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IActionResult GetFlashcardSets()
+    public IActionResult GetApiVersion()
     {
         var result = new { version = _configuration.GetValue<string>("Version") };
         return Ok(result);

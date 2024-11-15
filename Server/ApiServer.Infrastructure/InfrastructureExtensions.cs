@@ -17,7 +17,8 @@ public static class InfrastructureExtensions
                         b.CommandTimeout((int)TimeSpan.FromMinutes(2).TotalSeconds);
                         b.MigrationsAssembly(typeof(ApiContext).Assembly.FullName);
                     })
-        );
+                .UseOpenIddict()
+            );
         
         return services;
     }

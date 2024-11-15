@@ -4,14 +4,16 @@ using ApiServer.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using ApiServer.Api.FlashcardsSets.Models;
+using OpenIddict.Validation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiServer.Api.FlashcardSets.Controllers;
 
-[Route("sets")]
+[Route("api/sets")]
 [ApiController]
+[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 public class FlashcardSetController : Controller
 {
     private ILogger<FlashcardSetController> _logger;
@@ -134,7 +136,7 @@ public class FlashcardSetController : Controller
     /// Update a flashcard set
     /// </summary>
     /// <param name="setId"></param>
-    /// <param name="flashcardSet"></param>
+    /// <param name="updateCommand"></param>
     /// <returns></returns>
     [HttpPut]
     [Route("{setId:int}")]
