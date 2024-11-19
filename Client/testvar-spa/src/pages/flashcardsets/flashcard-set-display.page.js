@@ -1,4 +1,4 @@
-import { useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import PageTitle from "../../components/common/PageTitle";
 import * as React from "react";
@@ -6,6 +6,7 @@ import Grid from "@mui/material/Grid2";
 import FlashCard from "../../components/flashcardsets/FlashCard";
 import {getFlashcardSet} from "../../api/FlashcardSetApi";
 import {useAuth} from "../../hooks/AuthProvider";
+import {Button} from "@mui/material";
 
 const FlashcardSeDisplay = () => {
     let { setId } = useParams();
@@ -27,7 +28,9 @@ const FlashcardSeDisplay = () => {
 
     return (
         <>
-            <PageTitle title={flashcardSet.name} sx={{bgcolor: 'primary.dark'}}></PageTitle>
+            <PageTitle title={flashcardSet.name} sx={{color: 'success.main'}}>
+                <Button size={"large"} variant={"outlined"} secondary>Comment</Button>
+            </PageTitle>
             <Grid container spacing={2} sx={{ ml: 3, mr: 3, mt: 2}}>
                 {flashcardSet.cards?.map((_, index) => {
                     return (

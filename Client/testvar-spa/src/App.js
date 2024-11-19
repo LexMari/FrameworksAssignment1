@@ -3,15 +3,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import UnAuthenticated from './pages/auth/unauthenticated.page';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import OAuthCallback from './pages/auth/oauth-callback.page';
-import MasterLayout from "./layouts/master-layout";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import FlashcardSetIndex from "../src/components/flashcardsets/flashcard-set-index.page";
-import FlashcardSeDisplay from "../src/components/flashcardsets/flashcard-set-display.page";
-import EmptyLayout from "./layouts/empty-layout";
+import FlashcardSetIndex from "../src/pages/flashcardsets/flashcard-set-index.page";
+import FlashcardSeDisplay from "../src/pages/flashcardsets/flashcard-set-display.page";
+import EmptyLayout from "./components/layouts/empty-layout";
 import AuthProvider from "./hooks/AuthProvider";
 import UserFlashcardSetIndex from "./pages/users/user-flashcardset-index.page";
-import TestLayout from "./layouts/test-layout"
+import DrawerLayout from "./components/layouts/drawer-layout";
 
 const darkTheme = createTheme({
     palette: {
@@ -24,14 +22,13 @@ const darkTheme = createTheme({
 export default function App() {
     return (
         <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
             <BrowserRouter>
                 <AuthProvider>
                     <Routes>
                         <Route element={<EmptyLayout />}>
                             <Route path={'/'} element={<UnAuthenticated />} />
                         </Route>
-                        <Route element={<TestLayout />}>
+                        <Route element={<DrawerLayout />}>
                             <Route path={'/sets'} element={
                                 <ProtectedRoute redirectPath='/'>
                                     <FlashcardSetIndex />

@@ -14,15 +14,13 @@ const AuthProvider = ({ children }) => {
         setUser(user);
 
         const accessToken = user?.access_token;
-        const role = user.profile?.roles;
+        const role = user.profile?.role;
         if (accessToken) {
             setIsAuthenticated(true);
             setToken(accessToken);
             setUsername(user.profile?.username);
             setUserId(user.profile?.nickname);
-
-            if (role)
-                setIsAdmin(role.contains("Administrator"));
+            setIsAdmin(role === "Administrator");
         }
         else
         {

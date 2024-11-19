@@ -66,14 +66,15 @@ const FlashCard = ({card}) => {
                 </Typography>
                 <Typography
                     variant={"body1"}
+                    fontWeight={"bold"}
                     sx={{
                         p: 2,
                         textAlign: 'center',
-                        border: 0,
-                        borderBottomRightRadius: 4,
-                        borderBottomLeftRadius: 4,
                         visibility: isRevealed ? 'visible' : 'hidden',
                         display: isRevealed ? 'block' : 'none',
+                        border: 0,
+                        borderBottomLeftRadius: 8,
+                        borderBottomRightRadius: 8,
                         bgcolor: getBorderColour(card.difficulty.toLowerCase())
                     }}
                 >

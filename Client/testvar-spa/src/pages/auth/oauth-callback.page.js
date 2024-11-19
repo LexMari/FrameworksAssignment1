@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { getUser, handleOAuthCallback, isAuthenticated } from "../../services/AuthService"
+import { getUser, handleOAuthCallback } from "../../services/AuthService"
 import { useAuth } from "../../hooks/AuthProvider";
 
 function OAuthCallback() {

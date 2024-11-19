@@ -8,16 +8,12 @@ const PageTitle = ({title, sx, children}) => {
         <Container maxWidth={false}>
             <Box sx={{
                 display: 'flex',
-                alignItems: 'center',
-                mt: 2, p: 2,
-                borderRadius: 1,
-                border: 1,
-                borderColor: 'text.primary',
-                bgcolor: 'success.main',
+                alignContent: 'flex-end',
+                mb: 1,
                 ...sx
             }}>
-                <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>{title}</Typography>
-                <Box sx={{flexShrink: 1}}>
+                <Typography variant="h3" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>{title}</Typography>
+                <Box sx={{flexShrink: 1, alignContent: 'flex-end'}}>
                     {children}
                 </Box>
             </Box>
