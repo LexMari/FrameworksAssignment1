@@ -28,7 +28,7 @@ const FlashcardSeDisplay = () => {
 
     return (
         <>
-            <PageTitle title={flashcardSet.name} sx={{color: 'success.main'}}>
+            <PageTitle title={flashcardSet.name}>
                 <Button size={"large"} variant={"outlined"} secondary>Comment</Button>
             </PageTitle>
             <Grid container spacing={2} sx={{ ml: 3, mr: 3, mt: 2}}>

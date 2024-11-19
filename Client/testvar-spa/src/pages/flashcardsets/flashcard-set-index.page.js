@@ -7,6 +7,7 @@ import FlashcardSetSummary from "../../components/flashcardsets/FlashcardSetSumm
 import {getFlashcardSets} from "../../api/FlashcardSetApi";
 import {useAuth} from "../../hooks/AuthProvider";
 import {Button} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 const FlashcardSetIndex = () => {
     const auth = useAuth();
@@ -29,8 +30,10 @@ const FlashcardSetIndex = () => {
 
     return (
         <>
-            <PageTitle title={"Flashcard Sets"} sx={{color: 'success.main'}}>
-                <Button size={"large"} variant={"outlined"} secondary>Create Flashcard Set</Button>
+            <PageTitle title={`Flashcard Sets`}>
+                <Button variant={"outlined"} secondary startIcon={<AddIcon />} title={"Create new flashcard set"}>
+                    Create Set
+                </Button>
             </PageTitle>
             <Grid container maxWidth={true} spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 1 }}>
                 {flashcardSets.map((_, index) => {

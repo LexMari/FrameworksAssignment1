@@ -1,23 +1,26 @@
 import React from "react";
-import Container from "@mui/material/Container";
-import Box from '@mui/material/Box'
 import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid2";
 
-const PageTitle = ({title, sx, children}) => {
+const PageTitle = ({title, children}) => {
     return (
-        <Container maxWidth={false}>
-            <Box sx={{
-                display: 'flex',
-                alignContent: 'flex-end',
-                mb: 1,
-                ...sx
-            }}>
-                <Typography variant="h3" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>{title}</Typography>
-                <Box sx={{flexShrink: 1, alignContent: 'flex-end'}}>
-                    {children}
-                </Box>
-            </Box>
-        </Container>
+        <Grid container maxWidth={true} sx={{ml: 3, mr: 3, mb: 1, alignItems: 'end'}} columns={{xs:1, sm: 2}} >
+            <Grid item sx={{flexGrow: 1}}>
+                <Typography variant="h3" component="div" sx={
+                    {fontWeight: 'bold', color: 'success.main', display: 
+                            { xs: 'none', sm: 'block' }, 
+                    }}>{title}
+                </Typography>
+                <Typography variant="h4" component="div" sx={
+                    {fontWeight: 'bold', color: 'success.main', display:
+                            { xs: 'block', sm: 'none' }, mb: 1
+                    }}>{title}
+                </Typography>
+            </Grid>
+            <Grid item>
+                {children}
+            </Grid>
+        </Grid>
     );
 };
 
