@@ -8,15 +8,14 @@ using OpenIddict.Server.AspNetCore;
 
 namespace ApiServer.Controllers;
 
-[Authorize(AuthenticationSchemes = 
-    OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)]
 public class UserInfoController : Controller
 {
     private readonly ApiContext _dbContext;
 
     public UserInfoController(ApiContext dbContext)
         => _dbContext = dbContext;
-    
+
     [HttpGet("~/connect/userinfo")]
     [HttpPost("~/connect/userinfo")]
     [Produces("application/json")]
@@ -38,7 +37,7 @@ public class UserInfoController : Controller
 
         var claims = new Dictionary<string, object>(StringComparer.Ordinal)
         {
-            //the "sub" claim is a mandatory claim and must be included in the JSON response.
+            // Note: the "sub" claim is a mandatory claim and must be included in the JSON response.
             [OpenIddictConstants.Claims.Subject] = user.Username
         };
 

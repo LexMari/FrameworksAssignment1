@@ -5,23 +5,22 @@ using ApiServer.Api.FlashcardSets.Controllers;
 using ApiServer.Api.Users.Models;
 using ApiServer.Domain.Entities;
 using ApiServer.Infrastructure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
-using OpenIddict.Server.AspNetCore;
 using OpenIddict.Validation.AspNetCore;
 
 namespace ApiServer.Api.Users.Controllers;
 
 /// <summary>
-/// Controller to implement /users API endpoints
+/// Controller to  implement the /users API endpoints
 /// </summary>
-[ApiController]
 [Route("api/users")]
-[Authorize(AuthenticationSchemes = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)]
+[ApiController]
+[Authorize(AuthenticationSchemes = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme)]
 public class UsersController : Controller
 {
-    private ILogger<FlashcardSetController> _logger;
+    private readonly ILogger<FlashcardSetController> _logger;
     private readonly ApiContext _context;
 
     #region Constructor
@@ -31,7 +30,8 @@ public class UsersController : Controller
     /// </summary>
     /// <param name="logger"></param>
     /// <param name="dbContext"></param>
-    public UsersController(ILogger<FlashcardSetController> logger,
+    public UsersController(
+        ILogger<FlashcardSetController> logger, 
         ApiContext dbContext)
     {
         _logger = logger;
@@ -40,20 +40,21 @@ public class UsersController : Controller
     
     #endregion
     
-    #region Base /users routes
+    #region  Base /users routes
     
     /// <summary>
     /// Get all users
     /// </summary>
+    /// <returns></returns>
     [HttpGet]
     [Route("")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(List<User>),StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
     {
         var userData = await _context.Users
             .ToListAsync(cancellationToken);
-
+        
         return Ok(userData);
     }
 
@@ -69,7 +70,7 @@ public class UsersController : Controller
     [Route("")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(Error),StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     [AllowAnonymous]
     public async Task<IActionResult> CreateUser(
         [FromBody] UserRequest createUser,
@@ -80,31 +81,31 @@ public class UsersController : Controller
         {
             await _context.Users.AddAsync(user, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return Created(nameof(GetUser), 
-                user);
+            return Created(nameof(GetUser), user);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to create users");
-            var error = new Error("Unable to create user record");
+            var error = new Error("Unable to create the user record");
             return BadRequest(error);
         }
     }
-    
+
     #endregion
     
-    #region /users/{userId} routes
+    #region /users/{userId} routes actions
 
     /// <summary>
     /// Get a user by ID
     /// </summary>
     /// <param name="userId">The ID of the user</param>
     /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpGet]
     [Route("{userId:int}")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(User),StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Error),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUser(int userId, CancellationToken cancellationToken)
     {
         var user = await _context.Users
@@ -115,16 +116,17 @@ public class UsersController : Controller
             var error = new Error("Cannot find User with ID [" + userId + "]");
             return NotFound(error);
         }
-
+        
         return Ok(user);
     }
-    
+
     /// <summary>
-    /// Update a user and password
+    /// Update a user and their password
     /// </summary>
     /// <param name="userId">The ID of the user</param>
     /// <param name="updateUser"></param>
     /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpPut]
     [Route("{userId:int}")]
     [Produces("application/json")]
@@ -145,19 +147,20 @@ public class UsersController : Controller
         
         user.Update(updateUser.Username, updateUser.Password, updateUser.Admin);
         await _context.SaveChangesAsync(cancellationToken);
-
+        
         return Ok(user);
     }
     
     /// <summary>
-    /// Delete the user with the passed ID
+    /// Delete the flashcard set with the passed ID
     /// </summary>
     /// <param name="userId">The ID of the user</param>
     /// <param name="cancellationToken"></param>
+    /// <returns></returns>
     [HttpDelete]
     [Route("{userId:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(Error),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteUser(int userId, CancellationToken cancellationToken)
     {
         var user = await _context.Users
@@ -165,16 +168,18 @@ public class UsersController : Controller
 
         if (user is null)
         {
-            var error = new Error("Cannot find user with ID [" + userId + "]");
+            var error = new Error("Cannot find Flashcard set with ID [" + userId + "]");
             return NotFound(error);
         }
 
-        var sets = await _context.FlashcardSets
-            .Where(x=>x.UserId == userId)
-            .ToListAsync(cancellationToken);
+        /* TODO: Remove collections for this user */
         
+        // Remove any flashcard sets (and comments)
+        var sets = await _context.FlashcardSets
+            .Where(x => x.UserId == userId)
+            .ToListAsync(cancellationToken);
         _context.FlashcardSets.RemoveRange(sets);
-
+        
         _context.Users.Remove(user);
         await _context.SaveChangesAsync(cancellationToken);
         return new NoContentResult();
@@ -182,7 +187,7 @@ public class UsersController : Controller
     
     #endregion
     
-    #region /users/{userId}/sets routes
+    #region /user/{userId}/sets route actions
     
     /// <summary>
     /// Get all the flashcard sets created a user by ID
@@ -193,13 +198,11 @@ public class UsersController : Controller
     [HttpGet]
     [Route("{userId:int}/sets")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(List<FlashcardSet>),StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Error),StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(List<FlashcardSet>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserFlashcardSets(int userId, CancellationToken cancellationToken)
     {
-        var user = await _context.Users
-            .FindAsync(userId, cancellationToken);
-
+        var user = await _context.Users.FindAsync(userId, cancellationToken);
         if (user is null)
         {
             var error = new Error("Cannot find User with ID [" + userId + "]");
@@ -210,7 +213,7 @@ public class UsersController : Controller
             .Include(x => x.Cards)
             .Where(s => s.UserId == userId)
             .ToListAsync(cancellationToken);
-
+        
         return Ok(sets);
     }
     

@@ -1,10 +1,9 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid2';
-
 import {useEffect, useState} from "react";
 import SortService from "../../services/SortService";
 import PageTitle from "../../components/common/PageTitle";
-import FlashcardSetSummary from "../../components/FlashcardSets/FlashcardSetSummary";
+import FlashcardSetSummary from "../flashcardsets/FlashcardSetSummary";
 import {getFlashcardSets} from "../../api/FlashcardSetApi";
 import {useAuth} from "../../hooks/AuthProvider";
 

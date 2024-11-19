@@ -1,6 +1,7 @@
+using ApiServer.Api.FlashcardSets.Models;
 using ApiServer.Domain.Entities;
 
-namespace ApiServer.Api.FlashcardsSets.Models;
+namespace ApiServer.Api.FlashcardSets.Models;
 
 /// <summary>
 /// API Response DTO containing Flashcard set data

@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using ApiServer.Api.FlashcardsSets.Models;
+using ApiServer.Api.FlashcardSets.Models;
+using ApiServer.Api.FlashcardSets.Models;
 using OpenIddict.Validation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 

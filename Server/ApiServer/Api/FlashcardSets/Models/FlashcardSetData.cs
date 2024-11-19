@@ -1,6 +1,6 @@
 using ApiServer.Domain.Enums;
 
-namespace ApiServer.Api.FlashcardsSets.Models;
+namespace ApiServer.Api.FlashcardSets.Models;
 
 /// <summary>
 /// Data passed into the API to create/update a flashcard

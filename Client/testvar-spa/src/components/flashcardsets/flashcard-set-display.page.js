@@ -3,23 +3,22 @@ import {useEffect, useState} from "react";
 import PageTitle from "../../components/common/PageTitle";
 import * as React from "react";
 import Grid from "@mui/material/Grid2";
-import FlashCard from "../../components/FlashcardSets/FlashCard";
+import FlashCard from "../../components/flashcardsets/FlashCard";
 import {getFlashcardSet} from "../../api/FlashcardSetApi";
 import {useAuth} from "../../hooks/AuthProvider";
 
-const FlashcardSetDisplay = () => {
+const FlashcardSeDisplay = () => {
     let { setId } = useParams();
     const auth = useAuth();
     const [flashcardSet, setFlashcardSets] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     async function fetchData() {
-       if (auth.token) {
-           const data = await getFlashcardSet(auth.token, setId);
-           
-           setFlashcardSets(data);
-       }
-       setIsLoading(false);
+        if (auth.token) {
+            const data = await getFlashcardSet(auth.token, setId);
+            setFlashcardSets(data);
+        }
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -42,4 +41,4 @@ const FlashcardSetDisplay = () => {
         </>
     )
 }
-export default FlashcardSetDisplay;
+export default FlashcardSeDisplay;

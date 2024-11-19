@@ -6,9 +6,9 @@ import OAuthCallback from './pages/auth/oauth-callback.page';
 import MasterLayout from "./layouts/master-layout";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import FlashcardSetIndex from "../src/components/FlashcardSets/flashcard-set-index"
-import FlashcardSetDisplay from "../src/components/FlashcardSets/flashcard-set-display"
-import EmptyLayout from "../src/layouts/emtpy-layout";
+import FlashcardSetIndex from "../src/components/flashcardsets/flashcard-set-index.page";
+import FlashcardSeDisplay from "../src/components/flashcardsets/flashcard-set-display.page";
+import EmptyLayout from "./layouts/empty-layout";
 import AuthProvider from "./hooks/AuthProvider";
 import UserFlashcardSetIndex from "./pages/users/user-flashcardset-index.page";
 
@@ -38,7 +38,7 @@ export default function App() {
                             } />
                             <Route path={'/sets/:setId'} element={
                                 <ProtectedRoute redirectPath='/'>
-                                    <FlashcardSetDisplay />
+                                    <FlashcardSeDisplay />
                                 </ProtectedRoute>
                             } />
                             <Route path={'/users/:userId/sets'} element={

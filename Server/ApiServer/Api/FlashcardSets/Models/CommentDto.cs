@@ -1,6 +1,6 @@
 using ApiServer.Domain.Entities;
 
-namespace ApiServer.Api.FlashcardsSets.Models;
+namespace ApiServer.Api.FlashcardSets.Models;
 
 /// <summary>
 /// API Response DTO representing a comment
