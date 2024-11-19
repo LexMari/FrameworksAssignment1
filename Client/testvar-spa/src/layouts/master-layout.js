@@ -1,13 +1,13 @@
-import {AppBar, Container, IconButton, Toolbar, Typography} from "@mui/material";
+import {AppBar, Button, Container, IconButton, Toolbar, Typography} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
-import {Outlet} from "react-router-dom";
+import {Link, Outlet} from "react-router-dom";
 import LogoutButton from "../components/auth/LogoutButton";
 import Box from "@mui/material/Box";
-
 import {useAuth} from "../hooks/AuthProvider";
+import Grid from "@mui/material/Grid2";
 
 const MasterLayout = () => {
-    const auth = useAuth()
+    const auth = useAuth();
     return (
         <>
             <Container disableGutters maxWidth={false} >
@@ -25,6 +25,22 @@ const MasterLayout = () => {
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                             TestVar Flashcards
                         </Typography>
+                        {
+                            auth.isAuthenticated &&
+                            <Grid container sx={{pl: 2, pr: 5}}>
+                                <Link to={{pathname: `/sets`}}>
+                                    <Button secondary>
+                                        Home
+                                    </Button>
+                                </Link>
+                                <Link to={{pathname: `/users/${auth.userId}/sets`}}>
+                                    <Button secondary>
+                                        My Flashcard Sets
+                                    </Button>
+                                </Link>
+                            </Grid>
+                        }
+
                         {
                             auth.isAuthenticated &&
                             <>
@@ -45,4 +61,5 @@ const MasterLayout = () => {
         </>
     );
 };
+
 export default MasterLayout;

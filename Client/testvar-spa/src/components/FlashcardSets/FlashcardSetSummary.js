@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import Typography from "@mui/material/Typography";
 import {Link} from "react-router-dom";
 
-const FlashcardSetSummary = ({setId, name, count}) => {
+const FlashcardSetSummary = ({set}) => {
 
     const [hoverState, setHoverState] = useState(false);
     function toggleHover() {
@@ -11,7 +11,7 @@ const FlashcardSetSummary = ({setId, name, count}) => {
     }
 
     return (
-        <Link to={{ pathname: `/sets/${setId}`}} style={{ textDecoration: 'none' }}>
+        <Link to={{ pathname: `/sets/${set.id}`}} style={{ textDecoration: 'none' }}>
             <Box sx={{
                 alignItems: 'center',
                 mt: 1, p: 1,
@@ -23,11 +23,14 @@ const FlashcardSetSummary = ({setId, name, count}) => {
             }}
                  onMouseEnter={toggleHover}
                  onMouseLeave={toggleHover}>
-                <Typography variant="body1" gutterBottom color={"textPrimary"}>
-                    {name}
-                </Typography>
+                <Box display={'flex'}>
+                    <Typography variant="body1" gutterBottom color={"textPrimary"} sx={{ flexGrow: 1 }}>
+                        {set.name}
+                    </Typography>
+                </Box>
+
                 <Typography variant="subtitle1" color={"textSecondary"}>
-                    {count} Questions
+                    {set.cards?.count} Questions
                 </Typography>
             </Box>
         </Link>

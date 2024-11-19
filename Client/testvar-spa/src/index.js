@@ -1,6 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider,} from "react-router-dom";
+import ReactDOM from 'react-dom/client'
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
@@ -8,27 +7,6 @@ import '@fontsource/roboto/700.css';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import FlashcardSetIndex from './components/FlashcardSets/flashcard-set-index';
-import FlashcardSetDisplay from './components/FlashcardSets/flashcard-set-display';
-import RouterErrorPage from "./pages/router/router-error-page";
-
-const router = createBrowserRouter([
-    {
-        path: "/",
-        element: <App />,
-        errorElement: <RouterErrorPage />,
-        children: [
-            {
-                index: true,
-                element: <FlashcardSetIndex />
-            },
-            {
-                path: "sets/:setId",
-                element: <FlashcardSetDisplay />,
-            }
-        ]
-    }
-]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

@@ -1,32 +1,25 @@
 import { useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import PageTitle from "../common/PageTitle";
+import PageTitle from "../../components/common/PageTitle";
 import * as React from "react";
 import Grid from "@mui/material/Grid2";
-import FlashCard from "./FlashCard";
-import {getUser} from "../../services/AuthService";
+import FlashCard from "../../components/FlashcardSets/FlashCard";
 import {getFlashcardSet} from "../../api/FlashcardSetApi";
+import {useAuth} from "../../hooks/AuthProvider";
 
-const FlashcardSeDisplay = () => {
+const FlashcardSetDisplay = () => {
     let { setId } = useParams();
+    const auth = useAuth();
     const [flashcardSet, setFlashcardSets] = useState([]);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
 
     async function fetchData() {
-        const user = await getUser();
-        const accessToken = user?.access_token;
-
-        setUser(user);
-
-        if (accessToken) {
-            setIsAuthenticated(true);
-            const data = await getFlashcardSet(accessToken, setId);
-            setFlashcardSets(data);
-        }
-
-        setIsLoading(false);
+       if (auth.token) {
+           const data = await getFlashcardSet(auth.token, setId);
+           
+           setFlashcardSets(data);
+       }
+       setIsLoading(false);
     }
 
     useEffect(() => {
@@ -49,4 +42,4 @@ const FlashcardSeDisplay = () => {
         </>
     )
 }
-export default FlashcardSeDisplay;
+export default FlashcardSetDisplay;

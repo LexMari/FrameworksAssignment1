@@ -1,56 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
+    <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+            <meta http-equiv="X-Clacks-Overhead" content="GNU Terry Pratchett" />
 
-    <title>@ViewData["Title"]</title>
+            <title>@ViewData["Title"]</title>
+            <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+            <link rel="stylesheet" href="/css/theme.min.css">
+            @if (IsSectionDefined("Styles"))
+            {
+                @await RenderSectionAsync("Styles", required: false)
+            }
+        </head>
 
-    <link rel="shortcut icon" href="./favicon.ico">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<body class="footer-offset bg-dark">
 
-    @if (IsSectionDefined("Styles"))
-    {
-        @await RenderSectionAsync("Styles", required: false)
-    }
+    <main id="content" role="main" class="main">
+        @RenderBody()
+    </main>
+
+    <!-- Page Footer -->
+    @await Html.PartialAsync("~/Views/Shared/_Footer.cshtml")
+
+    <!-- JS Global -->
     <environment names="Development">
-        <link rel="stylesheet" href="/vendor/icon-set/style.css">
-        <link rel="stylesheet" href="/css/theme.min.css">
+        <script src="/lib/jquery/jquery.js"></script>
+        <script src="/lib/bootstrap/js/bootstrap.bundle.js"></script>
     </environment>
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="/vendor/icon-set/style.css">
-        <link rel="stylesheet" href="/css/theme.min.css">
+        <script src="/lib/jquery/jquery.min.js"></script>
+        <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
     </environment>
-
-</head>
-
-<body class="footer-offset">
-
-<main id="content" role="main" class="main">
-    @RenderBody()
-</main>
-
-<!-- Page Footer -->
-@await Html.PartialAsync("~/Views/Shared/_Footer.cshtml")
-
-<!-- JS Global -->
-<environment names="Development">
-    <script src="/lib/jquery/jquery.js"></script>
-    <script src="/lib/bootstrap/js/bootstrap.bundle.js"></script>
-</environment>
-<environment names="Staging,Production">
-    <script src="/lib/jquery/jquery.min.js"></script>
-    <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-</environment>
-<!-- JS Plugins -->
-@await RenderSectionAsync("pagePlugins", required: false)
-<!-- JS Theme -->
-<script src="/js/theme.min.js"></script>
-<!-- JS Page -->
-@await RenderSectionAsync("pageScripts", required: false)
-<!-- IE Support -->
-<script>
+    @await RenderSectionAsync("pagePlugins", required: false)
+    @await RenderSectionAsync("pageScripts", required: false)
+    <!-- IE Support -->
+    <script>
         if (/MSIE \d|Trident.*rv:/.test(navigator.userAgent)) document.write('<script src="../assets/vendor/babel-polyfill/polyfill.min.js"><\/script>');
     </script>
 </body>

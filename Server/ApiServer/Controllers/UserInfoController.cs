@@ -8,17 +8,19 @@ using OpenIddict.Server.AspNetCore;
 
 namespace ApiServer.Controllers;
 
-public class UserinfoController : Controller
+[Authorize(AuthenticationSchemes = 
+    OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)]
+public class UserInfoController : Controller
 {
     private readonly ApiContext _dbContext;
 
-    public UserinfoController(ApiContext dbContext)
+    public UserInfoController(ApiContext dbContext)
         => _dbContext = dbContext;
-
-    [Authorize(AuthenticationSchemes = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)]
+    
     [HttpGet("~/connect/userinfo")]
     [HttpPost("~/connect/userinfo")]
     [Produces("application/json")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public async Task<IActionResult> Userinfo()
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == User.Identity!.Name);

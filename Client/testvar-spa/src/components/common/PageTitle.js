@@ -16,7 +16,7 @@ const PageTitle = ({title, sx, children}) => {
                 bgcolor: 'success.main',
                 ...sx
             }}>
-                <Typography variant="h5" component="div" sx={{ flexGrow: 1 }} >{title}</Typography>
+                <Typography variant="h5" component="div" sx={{ flexGrow: 1 }}>{title}</Typography>
                 <Box sx={{flexShrink: 1}}>
                     {children}
                 </Box>

@@ -7,6 +7,9 @@ using ApiServer.Domain.Entities;
 using ApiServer.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
+using OpenIddict.Server.AspNetCore;
+using OpenIddict.Validation.AspNetCore;
 
 namespace ApiServer.Api.Users.Controllers;
 
@@ -15,6 +18,7 @@ namespace ApiServer.Api.Users.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/users")]
+[Authorize(AuthenticationSchemes = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)]
 public class UsersController : Controller
 {
     private ILogger<FlashcardSetController> _logger;
@@ -66,6 +70,7 @@ public class UsersController : Controller
     [Produces("application/json")]
     [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(Error),StatusCodes.Status400BadRequest)]
+    [AllowAnonymous]
     public async Task<IActionResult> CreateUser(
         [FromBody] UserRequest createUser,
         CancellationToken cancellationToken)
