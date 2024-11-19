@@ -11,6 +11,7 @@ import FlashcardSeDisplay from "../src/components/flashcardsets/flashcard-set-di
 import EmptyLayout from "./layouts/empty-layout";
 import AuthProvider from "./hooks/AuthProvider";
 import UserFlashcardSetIndex from "./pages/users/user-flashcardset-index.page";
+import TestLayout from "./layouts/test-layout"
 
 const darkTheme = createTheme({
     palette: {
@@ -30,7 +31,7 @@ export default function App() {
                         <Route element={<EmptyLayout />}>
                             <Route path={'/'} element={<UnAuthenticated />} />
                         </Route>
-                        <Route element={<MasterLayout />}>
+                        <Route element={<TestLayout />}>
                             <Route path={'/sets'} element={
                                 <ProtectedRoute redirectPath='/'>
                                     <FlashcardSetIndex />

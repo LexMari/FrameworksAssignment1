@@ -7,11 +7,14 @@ import '@fontsource/roboto/700.css';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import {StyledEngineProvider} from "@mui/material";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <App/>
+        <StyledEngineProvider injectFirst>
+            <App/>
+        </StyledEngineProvider>
     </React.StrictMode>
 );
 
