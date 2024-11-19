@@ -4,9 +4,12 @@ import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid2";
 import Box from "@mui/material/Box";
 import {Button, Divider} from "@mui/material";
+import { useAuth } from "../../hooks/AuthProvider";
 
-function UnAuthenticated({ authenticated }) {
-    if (authenticated) {
+function UnAuthenticated() {
+    const auth = useAuth();
+    
+    if (auth.isAuthenticated) {
         return <Navigate to='/sets' replace />;
     }
 

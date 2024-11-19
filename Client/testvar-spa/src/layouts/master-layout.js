@@ -4,7 +4,10 @@ import {Outlet} from "react-router-dom";
 import LogoutButton from "../components/auth/LogoutButton";
 import Box from "@mui/material/Box";
 
-const MasterLayout = (isAuthenticated, user) => {
+import {useAuth} from "../hooks/AuthProvider";
+
+const MasterLayout = () => {
+    const auth = useAuth()
     return (
         <>
             <Container disableGutters maxWidth={false} >
@@ -23,14 +26,14 @@ const MasterLayout = (isAuthenticated, user) => {
                             TestVar Flashcards
                         </Typography>
                         {
-                            isAuthenticated &&
+                            auth.isAuthenticated &&
                             <>
                                 <Box sx={{ color: 'info.dark'}}>Welcome</Box>
-                                <Box sx={{ ml: 1, mr: 4, fontWeight: 'bold', color: 'info.main'}}></Box>
+                                <Box sx={{ ml: 1, mr: 4, fontWeight: 'bold', color: 'info.main'}}>{auth.username}</Box>
                             </>
                         }
                         {
-                            isAuthenticated &&
+                            auth.isAuthenticated &&
                             <>
                                 <LogoutButton />
                             </>

@@ -1,12 +1,15 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { handleOAuthCallback, isAuthenticated } from "../../services/AuthService"
+import { getUser, handleOAuthCallback, isAuthenticated } from "../../services/AuthService"
+import { useAuth } from "../../hooks/AuthProvider";
 
-function OAuthCallback({setIsAuthenticated}) {
+function OAuthCallback() {
     
     const isProcessed = useRef(false);
     const navigate = useNavigate();
 
+    const auth = useAuth();
+    
     useEffect(() => {
         async function processOAuthResponse() {
             
@@ -22,8 +25,8 @@ function OAuthCallback({setIsAuthenticated}) {
             try {
                 const currentUrl = window.location.href;
                 await handleOAuthCallback(currentUrl);
-
-                setIsAuthenticated(await isAuthenticated());
+                auth.loginAction(await getUser());
+                
                 navigate("/sets");
             } catch (error) {
                 console.error("Error processing OAuth callback:", error);

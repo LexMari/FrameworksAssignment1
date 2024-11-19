@@ -53,7 +53,7 @@ const FlashCard = ({card}) => {
             <Divider></Divider>
             <Box onClick={toggleReveal}>
                 <Typography
-                    variant={"body2"}
+                    variant={"body1"}
                     sx={{
                         p: 2,
                         textAlign: "center",
@@ -69,6 +69,9 @@ const FlashCard = ({card}) => {
                     sx={{
                         p: 2,
                         textAlign: 'center',
+                        border: 0,
+                        borderBottomRightRadius: 4,
+                        borderBottomLeftRadius: 4,
                         visibility: isRevealed ? 'visible' : 'hidden',
                         display: isRevealed ? 'block' : 'none',
                         bgcolor: getBorderColour(card.difficulty.toLowerCase())

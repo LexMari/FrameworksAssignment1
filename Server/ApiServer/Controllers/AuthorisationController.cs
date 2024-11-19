@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
 using System.Security.Claims;
-
+using ApiServer.Infrastructure;
 using ApiServer.Identity;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
 
@@ -21,6 +22,7 @@ public class AuthorisationController : Controller
     private readonly IOpenIddictApplicationManager _applicationManager;
     private readonly IOpenIddictScopeManager _scopeManager;
     private readonly AuthorisationService _authService;
+    private readonly ApiContext _dbContext;
 
 
     #region Constructor
@@ -33,17 +35,20 @@ public class AuthorisationController : Controller
     /// <param name="applicationManager"></param>
     /// <param name="scopeManager"></param>
     /// <param name="authService"></param>
+    /// <param name="dbContext"></param>
     public AuthorisationController(
         ILogger<AuthorisationController> logger,
         IConfiguration configuration,
         IOpenIddictApplicationManager applicationManager,
         IOpenIddictScopeManager scopeManager,
-        AuthorisationService authService)
+        AuthorisationService authService,
+        ApiContext dbContext)
     {
         _logger = logger;
         _applicationManager = applicationManager;
         _scopeManager = scopeManager;
         _authService = authService;
+        _dbContext = dbContext;
         _configuration = configuration;
     }
 
@@ -53,7 +58,7 @@ public class AuthorisationController : Controller
     [HttpGet("~/connect/authorize")]
     [HttpPost("~/connect/authorize")]
     [ApiExplorerSettings(IgnoreApi = true)]
-    public async Task<IActionResult> Authorize()
+    public async Task<IActionResult> Authorize(CancellationToken cancellationToken)
     {
         var request = HttpContext.GetOpenIddictServerRequest() ??
                       throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
@@ -79,6 +84,11 @@ public class AuthorisationController : Controller
         
         var userId = result.Principal.FindFirst(ClaimTypes.Email)!.Value;
 
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == userId, cancellationToken);
+        var role = "User";
+        if (user is not null || user.IsAdministrator)
+            role = "Administrator";
+
         var identity = new ClaimsIdentity(
             authenticationType: TokenValidationParameters.DefaultAuthenticationType,
             nameType: OpenIddictConstants.Claims.Name,
@@ -87,7 +97,7 @@ public class AuthorisationController : Controller
         identity.SetClaim(OpenIddictConstants.Claims.Subject, userId)
             .SetClaim(OpenIddictConstants.Claims.Email, userId)
             .SetClaim(OpenIddictConstants.Claims.Name, userId)
-            .SetClaims(OpenIddictConstants.Claims.Role, new List<string> { "user", "admin" }.ToImmutableArray());
+            .SetClaims(OpenIddictConstants.Claims.Role, new List<string> { role }.ToImmutableArray());
 
         identity.SetScopes(request.GetScopes());
         identity.SetResources(await _scopeManager.ListResourcesAsync(identity.GetScopes()).ToListAsync());
@@ -104,7 +114,7 @@ public class AuthorisationController : Controller
     /// <exception cref="InvalidOperationException"></exception>
     [HttpPost("~/connect/token")]
     [ApiExplorerSettings(IgnoreApi = true)]
-    public async Task<IActionResult> Exchange()
+    public async Task<IActionResult> Exchange(CancellationToken cancellationToken)
     {
         var request = HttpContext.GetOpenIddictServerRequest() ??
                       throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
@@ -129,6 +139,11 @@ public class AuthorisationController : Controller
                 }));
         }
 
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == userId, cancellationToken);
+        var role = "User";
+        if (user is not null || user.IsAdministrator)
+            role = "Administrator";
+
         var identity = new ClaimsIdentity(result.Principal.Claims,
             authenticationType: TokenValidationParameters.DefaultAuthenticationType,
             nameType: OpenIddictConstants.Claims.Name,
@@ -137,7 +152,7 @@ public class AuthorisationController : Controller
         identity.SetClaim(OpenIddictConstants.Claims.Subject, userId)
             .SetClaim(OpenIddictConstants.Claims.Email, userId)
             .SetClaim(OpenIddictConstants.Claims.Name, userId)
-            .SetClaims(OpenIddictConstants.Claims.Role, new List<string> { "user", "admin" }.ToImmutableArray());
+            .SetClaims(OpenIddictConstants.Claims.Role, new List<string> { role }.ToImmutableArray());
 
         identity.SetDestinations(c => AuthorisationService.GetDestinations(identity, c));
 

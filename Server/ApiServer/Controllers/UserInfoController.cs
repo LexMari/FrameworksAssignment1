@@ -51,10 +51,9 @@ public class UserinfoController : Controller
             ;
         }
 
-        if (User.HasScope(OpenIddictConstants.Permissions.Scopes.Roles))
-        {
-            claims[OpenIddictConstants.Claims.Role] = user.IsAdministrator ? "Administrator" : "User";
-        }
+        claims[OpenIddictConstants.Claims.Username] = user.Username;
+        claims[OpenIddictConstants.Claims.Nickname] = user.Id;
+        claims[OpenIddictConstants.Claims.Role] = user.IsAdministrator ? "Administrator" : "User";
 
         return Ok(claims);
     }
