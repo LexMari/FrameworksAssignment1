@@ -39,7 +39,7 @@ public class User
     // Default Constructor
     public User()
     {
-        Id = -1;
+        Id = default;
         Username = string.Empty;
         PasswordHash = string.Empty;
         PasswordSalt = string.Empty;

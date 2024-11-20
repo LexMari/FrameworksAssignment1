@@ -1,3 +1,5 @@
+import {User} from "oidc-client-ts";
+
 const apiBaseUrl = "https://localhost:7222/api/users";
 
 export async function getUsers(token) {
@@ -15,17 +17,23 @@ export async function getUsers(token) {
     return response.json();
 }
 
-export async function createUser(token, userData) {
+export async function createUser(userdata) {
     const options = {
         method: 'POST',
+        body: JSON.stringify(userdata),
         headers: {
-            'Authorization': `Bearer ${token}`
+            "Content-type": "application/json; charset=UTF-8"
         }
     };
 
     const response = await fetch(apiBaseUrl, options);
     if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        if (response.status === 400) {
+            const error = await response.json();
+            throw new Error(error.message);
+        }
+        else
+            throw new Error(`Error: ${response.status}`);
     }
     return response.json();
 }

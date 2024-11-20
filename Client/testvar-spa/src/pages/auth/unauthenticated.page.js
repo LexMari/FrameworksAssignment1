@@ -55,7 +55,7 @@ function UnAuthenticated() {
                     >
                         Login
                     </Button>
-                    <Link to="#" style={{ textDecoration: 'none' }}>
+                    <Link to="/register" style={{ textDecoration: 'none' }}>
                         <Typography
                             variant="subtitle1"
                             sx={{

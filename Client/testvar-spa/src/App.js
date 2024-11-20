@@ -10,6 +10,7 @@ import EmptyLayout from "./components/layouts/empty-layout";
 import AuthProvider from "./hooks/AuthProvider";
 import UserFlashcardSetIndex from "./pages/users/user-flashcardset-index.page";
 import DrawerLayout from "./components/layouts/drawer-layout";
+import Register from "./pages/register/register.page";
 
 const darkTheme = createTheme({
     palette: {
@@ -27,6 +28,7 @@ export default function App() {
                     <Routes>
                         <Route element={<EmptyLayout />}>
                             <Route path={'/'} element={<UnAuthenticated />} />
+                            <Route path={'/register'} element={<Register />} />
                         </Route>
                         <Route element={<DrawerLayout />}>
                             <Route path={'/sets'} element={
