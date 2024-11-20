@@ -69,7 +69,16 @@ public class FlashcardSetController : Controller
         [FromBody] FlashcardSetData createCommand,
         CancellationToken cancellationToken)
     {
-        var user = await _context.Users.FirstAsync(cancellationToken);
+
+        var username = HttpContext.User.Identity!.Name;
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username, cancellationToken);
+
+        if (user is null)
+        {
+            _logger.LogError("Non existent user [{username}]", username);
+            var error = new Error("Cannot find user record [" + username + "]");
+            return NotFound(error);
+        }
         
         var flashcardSet = new FlashcardSet(createCommand.Name, user.Id);
         createCommand.Cards.ForEach(x => flashcardSet.AddCard(x.Question, x.Answer, x.Difficulty));

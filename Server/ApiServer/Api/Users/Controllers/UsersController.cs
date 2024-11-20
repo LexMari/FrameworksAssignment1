@@ -152,7 +152,7 @@ public class UsersController : Controller
     }
     
     /// <summary>
-    /// Delete the flashcard set with the passed ID
+    /// Delete the user with the passed ID
     /// </summary>
     /// <param name="userId">The ID of the user</param>
     /// <param name="cancellationToken"></param>

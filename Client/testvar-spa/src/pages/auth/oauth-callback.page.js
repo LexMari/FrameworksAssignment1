@@ -13,9 +13,6 @@ function OAuthCallback() {
     useEffect(() => {
         async function processOAuthResponse() {
             
-            // this is needed, because React.StrictMode makes component rerender
-            // second time the auth code that is in req.url here is invalid,
-            // so we want it to execute one time only.
             if (isProcessed.current) {
                 return;
             }

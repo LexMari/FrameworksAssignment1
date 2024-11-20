@@ -1,13 +1,16 @@
 import React, {useState} from "react";
 import Box from '@mui/material/Box'
 import Typography from "@mui/material/Typography";
+import Grid from "@mui/material/Grid2";
 import {Divider} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const FlashCard = ({card}) => {
+const FlashCard = ({card, allowEdit = false, defaultReveal = false, editCardHandler, deleteCardHandler}) => {
+    const [isRevealed, setIsRevealed] = useState(defaultReveal);
 
-    const [isRevealed, setIsRevealed] = useState(false);
     function toggleReveal() {
-        console.log("click");
         setIsRevealed(!isRevealed);
     }
 
@@ -17,6 +20,14 @@ const FlashCard = ({card}) => {
         if (diffiiculty === "medium")
             return "warning.main";
         return "success.main";
+    }
+
+    function handleEditClick() {
+        editCardHandler(card);
+    }
+
+    function handleDeleteClick() {
+        deleteCardHandler(card);
     }
 
     return (
@@ -29,17 +40,44 @@ const FlashCard = ({card}) => {
             borderRadius: 2,
             borderColor: getBorderColour(card.difficulty.toLowerCase())
         }}>
-            <Typography
-                variant={"subtitle1"}
-                sx={{
-                    p: 0.5,
-                    textAlign: "center",
-                    textTransform: 'capitalize',
-                    color: getBorderColour(card.difficulty.toLowerCase())
-                }}
-            >
-                {card.difficulty}
-            </Typography>
+            <Grid container direction={"row"} justifyContent={'space-between'}>
+                <Grid item  size={1}  sx={{textAlign: "left"}}></Grid>
+                <Grid item  size={10}>
+                    <Typography
+                        variant={"subtitle1"}
+                        sx={{
+                            p: 0.5,
+                            textAlign: "center",
+                            textTransform: 'capitalize',
+                            color: getBorderColour(card.difficulty.toLowerCase())
+                        }}
+                    >
+                        {card.difficulty}
+                    </Typography>
+                </Grid>
+                <Grid item size={1} sx={{textAlign: "right"}}>
+                    {
+                        allowEdit &&
+                        <>
+                            <IconButton
+                                size="small"
+                                title="Edit this card"
+                                onClick={handleEditClick}
+                            >
+                                <EditIcon fontSize="small"/>
+                            </IconButton>
+                            <IconButton
+                                size="small"
+                                title="Delete this card"
+                                onClick={handleDeleteClick}
+                            >
+                                <DeleteIcon fontSize="small"/>
+                            </IconButton>
+                        </>
+                    }
+                </Grid>
+            </Grid>
+
             <Divider></Divider>
             <Typography
                 variant={"h6"}

@@ -6,10 +6,12 @@ import PageTitle from "../../components/common/PageTitle";
 import FlashcardSetSummary from "../../components/flashcardsets/FlashcardSetSummary";
 import {getUserFlashcardSets} from "../../api/UserApi";
 import {useAuth} from "../../hooks/AuthProvider";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import {Button} from "@mui/material";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import AddIcon from '@mui/icons-material/Add';
+import IconButton from "@mui/material/IconButton";
 
 const UserFlashcardSetIndex = () => {
     let { userId } = useParams();
@@ -40,9 +42,11 @@ const UserFlashcardSetIndex = () => {
                         <Typography variant={"h6"} color={"textPrimary"} fontWeight={"bold"} display={"inline-flex" } sx={{ml: 1, mr:3}}>{auth.username}</Typography>
                     </Grid>
                     <Grid item size="auto"  textAlign='right'>
-                        <Button variant={"outlined"} secondary startIcon={<AddIcon />} title={"Create new flashcard set"}>
-                            Create Set
-                        </Button>
+                        <Link to="/sets/create">
+                            <Button variant={"outlined"} secondary startIcon={<AddIcon />} title={"Create new flashcard set"}>
+                                Create Set
+                            </Button>
+                        </Link>
                     </Grid>
                 </Grid>
             </PageTitle>

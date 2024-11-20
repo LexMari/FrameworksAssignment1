@@ -39,7 +39,6 @@ const FlashcardSeDisplay = () => {
                         </Grid>
                     )
                 })}
-
             </Grid>
         </>
     )

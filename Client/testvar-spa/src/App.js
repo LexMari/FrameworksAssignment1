@@ -4,13 +4,14 @@ import UnAuthenticated from './pages/auth/unauthenticated.page';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import OAuthCallback from './pages/auth/oauth-callback.page';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import FlashcardSetIndex from "../src/pages/flashcardsets/flashcard-set-index.page";
-import FlashcardSeDisplay from "../src/pages/flashcardsets/flashcard-set-display.page";
+import FlashcardSetIndex from "./pages/flashcardsets/flashcard-set-index.page";
+import FlashcardSeDisplay from "./pages/flashcardsets/flashcard-set-display.page";
 import EmptyLayout from "./components/layouts/empty-layout";
 import AuthProvider from "./hooks/AuthProvider";
 import UserFlashcardSetIndex from "./pages/users/user-flashcardset-index.page";
 import DrawerLayout from "./components/layouts/drawer-layout";
 import Register from "./pages/register/register.page";
+import FlashcardSetCreate from "./pages/flashcardsets/flashcard-set-create.page";
 
 const darkTheme = createTheme({
     palette: {
@@ -34,6 +35,11 @@ export default function App() {
                             <Route path={'/sets'} element={
                                 <ProtectedRoute redirectPath='/'>
                                     <FlashcardSetIndex />
+                                </ProtectedRoute>
+                            } />
+                            <Route path={'/sets/create'} element={
+                                <ProtectedRoute redirectPath='/'>
+                                    <FlashcardSetCreate />
                                 </ProtectedRoute>
                             } />
                             <Route path={'/sets/:setId'} element={
