@@ -64,7 +64,7 @@ const FlashcardSetEdit = () => {
         setIsValid(flashcardSet.cards.length > 0 && flashcardSet.name && flashcardSet.name.trim().length > 0);
     }
 
-    function AddCard() {
+    function addCard() {
         setDisplayAdd(true);
     }
     function AddCardCancel() {
@@ -112,7 +112,7 @@ const FlashcardSetEdit = () => {
                     startIcon={<AddIcon />}
                     title={"Add a flashcard"}
                     sx={{mr: 2}}
-                    onClick={AddCard}
+                    onClick={addCard}
                     disabled={displayAdd || editCardId}
                 >
                     Add Card
@@ -174,7 +174,7 @@ const FlashcardSetEdit = () => {
                     />
                 </Grid>
             </Grid>
-            <Grid container spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 3 }}>
+            <Grid container spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 3, justifyContent: "center" }}>
                 {
                     displayAdd &&
                     <Grid item size={12}>

@@ -13,7 +13,6 @@ import PageTitle from "../../components/common/PageTitle";
 import FlashCard from "../../components/flashcardsets/FlashCard";
 import FlashCardCreate from "../../components/flashcardsets/FlashCardCreate";
 import FlashCardEdit from "../../components/flashcardsets/FlashCardEdit";
-import {createUser} from "../../api/UserApi";
 import {createFlashcardSet} from "../../api/FlashcardSetApi";
 
 const initialSet = {
@@ -57,8 +56,8 @@ const FlashcardSetCreate = () => {
         validateSet();
     }
     function AddCardSave(data) {
-        let newCards = flashcardSet.cards
-        newCards = [...newCards, {id: randomId(), question: data.question, answer: data.answer, difficulty: data.difficulty}]
+        let newCards = flashcardSet.cards;
+        newCards = [...newCards, {id: randomId(), question: data.question, answer: data.answer, difficulty: data.difficulty}];
         setFlashcardSet({...flashcardSet, cards: newCards});
         setDisplayAdd(false);
         validateSet();
@@ -83,7 +82,7 @@ const FlashcardSetCreate = () => {
     }
 
     function DeleteCard(card) {
-        const newCards = flashcardSet.filter((obj) => obj.id !== card.id);
+        const newCards = flashcardSet.cards.filter((obj) => obj.id !== card.id);
         setFlashcardSet({...flashcardSet, cards: newCards});
         validateSet();
     }
@@ -159,7 +158,7 @@ const FlashcardSetCreate = () => {
                     />
                 </Grid>
             </Grid>
-            <Grid container spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 3 }}>
+            <Grid container spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 3, justifyContent: "center" }}>
                 {
                     displayAdd &&
                     <Grid item size={12}>

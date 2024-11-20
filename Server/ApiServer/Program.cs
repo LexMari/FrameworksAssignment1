@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using ApiServer.Identity;
 using ApiServer.Infrastructure;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -100,6 +101,11 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
+    using (var context = scope.ServiceProvider.GetService<ApiContext>())
+    {
+        context.Database.Migrate();
+    }
+    
     var seeder = scope.ServiceProvider.GetRequiredService<ClientsSeeder>();
     seeder.AddClients().GetAwaiter().GetResult();
     seeder.AddScopes().GetAwaiter().GetResult();

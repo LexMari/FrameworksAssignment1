@@ -50,7 +50,7 @@ const UserFlashcardSetIndex = () => {
                     </Grid>
                 </Grid>
             </PageTitle>
-            <Grid container maxWidth={true} spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 1 }}>
+            <Grid container maxWidth={true} spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 1}}>
                 {flashcardSets.map((_, index) => {
                     return (
                         <Grid item size={{ xs: 6, md: 4 }} key={index}>

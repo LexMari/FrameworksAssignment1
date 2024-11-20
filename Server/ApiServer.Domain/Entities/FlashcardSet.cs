@@ -16,13 +16,16 @@ public class FlashcardSet
     /// <summary>
     /// Name or title of flashcard set
     /// </summary>
-    public string Name { get; set; }
+    public string Name { get; private set; }
     
     /// <summary>
     /// User that created the flashcard set
     /// </summary>
     [JsonIgnore]
-    public int UserId { get; set; }
+    public int UserId { get; private set; }
+    
+    [JsonIgnore]
+    public User User { get; private set; }
     
     /// <summary>
     /// Creation time

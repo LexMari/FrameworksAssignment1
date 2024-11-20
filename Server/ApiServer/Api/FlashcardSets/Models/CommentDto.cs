@@ -10,6 +10,8 @@ public class CommentDto
     public string Comment { get; private set; }
     
     public User? Author { get; private set; }
+    
+    public DateTime CreatedAt { get; private set; }
 
     /// <summary>
     /// Constructor
@@ -19,5 +21,6 @@ public class CommentDto
     {
         Comment = comment.CommentText;
         Author = comment.Author;
+        CreatedAt = comment.CreatedAt;
     }
 }

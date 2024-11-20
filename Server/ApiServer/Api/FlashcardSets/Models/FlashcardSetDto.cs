@@ -11,6 +11,7 @@ public class FlashcardSetDto
     public int Id { get; private set; }
     public string Name { get; set; }
     public IReadOnlyCollection<FlashCard> Cards { get; private set; }
+    public User? User { get; private set; }
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     
@@ -26,6 +27,7 @@ public class FlashcardSetDto
         Id = set.Id;
         Name = set.Name;
         Cards = set.Cards;
+        User = set.User;
         CreatedAt = set.CreatedAt;
         UpdatedAt = set.UpdatedAt;
 

@@ -111,6 +111,7 @@ public class FlashcardSetController : Controller
     {
         var flashcardSet = await _context.FlashcardSets
             .Include(x => x.Cards)
+            .Include(x => x.User)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.Id == setId, cancellationToken);
         
