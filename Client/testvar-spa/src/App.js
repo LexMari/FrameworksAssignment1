@@ -12,6 +12,7 @@ import UserFlashcardSetIndex from "./pages/users/user-flashcardset-index.page";
 import DrawerLayout from "./components/layouts/drawer-layout";
 import Register from "./pages/register/register.page";
 import FlashcardSetCreate from "./pages/flashcardsets/flashcard-set-create.page";
+import FlashcardSetEdit from "./pages/flashcardsets/flashcard-set-edit.page"
 
 const darkTheme = createTheme({
     palette: {
@@ -45,6 +46,11 @@ export default function App() {
                             <Route path={'/sets/:setId'} element={
                                 <ProtectedRoute redirectPath='/'>
                                     <FlashcardSeDisplay />
+                                </ProtectedRoute>
+                            } />
+                            <Route path={'/sets/:setId/edit'} element ={
+                                <ProtectedRoute redirectPath='/'>
+                                    <FlashcardSetEdit />
                                 </ProtectedRoute>
                             } />
                             <Route path={'/users/:userId/sets'} element={

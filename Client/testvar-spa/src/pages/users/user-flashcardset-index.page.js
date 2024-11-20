@@ -54,7 +54,7 @@ const UserFlashcardSetIndex = () => {
                 {flashcardSets.map((_, index) => {
                     return (
                         <Grid item size={{ xs: 6, md: 4 }} key={index}>
-                            <FlashcardSetSummary set={_} />
+                            <FlashcardSetSummary set={_} allowEdit={true}/>
                         </Grid>
                     );
                 })}

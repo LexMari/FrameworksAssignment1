@@ -41,8 +41,8 @@ const FlashCard = ({card, allowEdit = false, defaultReveal = false, editCardHand
             borderColor: getBorderColour(card.difficulty.toLowerCase())
         }}>
             <Grid container direction={"row"} justifyContent={'space-between'}>
-                <Grid item  size={1}  sx={{textAlign: "left"}}></Grid>
-                <Grid item  size={10}>
+                <Grid item  size={2}  sx={{textAlign: "left"}}></Grid>
+                <Grid item  size={8}>
                     <Typography
                         variant={"subtitle1"}
                         sx={{
@@ -55,7 +55,7 @@ const FlashCard = ({card, allowEdit = false, defaultReveal = false, editCardHand
                         {card.difficulty}
                     </Typography>
                 </Grid>
-                <Grid item size={1} sx={{textAlign: "right"}}>
+                <Grid item size={2} sx={{textAlign: "right"}}>
                     {
                         allowEdit &&
                         <>
