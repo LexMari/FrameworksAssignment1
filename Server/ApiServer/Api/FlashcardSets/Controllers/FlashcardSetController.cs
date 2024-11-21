@@ -233,7 +233,7 @@ public class FlashcardSetController : Controller
     [ProducesResponseType(typeof(Comment), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddComment(int setId, 
-        [FromBody] string commentText, 
+        [FromBody] CommentRequest commentRequest, 
         CancellationToken cancellationToken)
     {
         var flashcardSet = await _context.FlashcardSets
@@ -249,7 +249,7 @@ public class FlashcardSetController : Controller
 
         var user = await _context.Users.FirstAsync(cancellationToken);
 
-        var comment = new Comment(commentText, flashcardSet, user);
+        var comment = new Comment(commentRequest.Comment, flashcardSet, user);
         _context.Comments.Add(comment);
         await _context.SaveChangesAsync(cancellationToken);
 

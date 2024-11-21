@@ -82,6 +82,24 @@ export async function updateFlashcardSet(token, data) {
             "Content-type": "application/json; charset=UTF-8"
         }
     };
+
+    const response = await fetch(url, options);
+    if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+    }
+    return response.json();
+}
+
+export async function addFlashcardSetComment(token, setId, comment) {
+    const url = `${apiBaseUrl}/${setId}/comment`;
+    const options = {
+        method: 'POST',
+        body: JSON.stringify({comment: comment}),
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    };
     
     const response = await fetch(url, options);
     if (!response.ok) {

@@ -32,7 +32,6 @@ public class Comment
     /// <summary>
     /// Creation timestamp
     /// </summary>
-    [JsonIgnore]
     public DateTime CreatedAt { get; set; }
     
     #region Constructors

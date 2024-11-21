@@ -4,13 +4,15 @@ import PageTitle from "../../components/common/PageTitle";
 import * as React from "react";
 import Grid from "@mui/material/Grid2";
 import FlashCard from "../../components/flashcardsets/FlashCard";
-import {getFlashcardSet} from "../../api/FlashcardSetApi";
+import {addFlashcardSetComment, createFlashcardSet, getFlashcardSet} from "../../api/FlashcardSetApi";
 import {useAuth} from "../../hooks/AuthProvider";
 import {Alert, Badge, Button, Chip, Divider, Stack, Tab, Tabs} from "@mui/material";
 import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
 import FlashcardSetComment from "../../components/flashcardsets/FlashcardSetComment";
 import FlashcardSetInformation from "../../components/flashcardsets/FlashcardSetInformation";
+import AddCommentIcon from "@mui/icons-material/AddComment";
+import AddComment from "../../components/flashcardsets/AddComment";
 
 function FlashcardSetTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -44,13 +46,15 @@ function a11yProps(index) {
 const FlashcardSeDisplay = () => {
     let { setId } = useParams();
     const auth = useAuth();
-    const [flashcardSet, setFlashcardSets] = useState([]);
+    const [flashcardSet, setFlashcardSet] = useState([]);
+    const [commentOpen, setCommentOpen] = useState(false);
+    const [commentError, setCommentError] = useState();
     const [isLoading, setIsLoading] = useState(true);
 
     async function fetchData() {
         if (auth.token) {
             const data = await getFlashcardSet(auth.token, setId);
-            setFlashcardSets(data);
+            setFlashcardSet(data);
         }
         setIsLoading(false);
     }
@@ -65,10 +69,43 @@ const FlashcardSeDisplay = () => {
         setSelectedTab(newValue);
     };
 
+    function addComment() {
+        setCommentError();
+        setCommentOpen(true);
+        setSelectedTab(1);
+    }
+    function addCommentCancel() {
+        setCommentError();
+        setCommentOpen(false);
+    }
+
+    function addCommentSave(comment) {
+        addFlashcardSetComment(auth.token, flashcardSet.id, comment).then((result) => {
+            let newComments = flashcardSet.comments ?? [];
+            newComments = [...newComments,  {
+                comment: result.comment,
+                created_at: result.created_at,
+                author: result.author
+            }];
+            setFlashcardSet({...flashcardSet, comments: newComments});
+            setCommentOpen(false);
+        }).catch((e) => {
+            setCommentError(e);
+        });
+    }
+
     return (!isLoading &&
         <>
             <PageTitle title={flashcardSet.name}>
-                <Button size={"large"} variant={"outlined"} secondary>Comment</Button>
+                <Button
+                    size={"large"}
+                    variant={"outlined"}
+                    disable={commentOpen}
+                    startIcon={<AddCommentIcon />}
+                    onClick={addComment}
+                >
+                    Add comment
+                </Button>
             </PageTitle>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={selectedTab} onChange={handleChange}>
@@ -91,6 +128,16 @@ const FlashcardSeDisplay = () => {
             <FlashcardSetTabPanel value={selectedTab} index={1}>
                 <Grid container spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 3, justifyContent: "center" }}>
                     {
+                        commentOpen &&
+                        <Grid item size={{lg:12,  xl: 8}} justifyContent="center" alignItems="center">
+                            <AddComment
+                                saveHandler={addCommentSave}
+                                cancelHandler={addCommentCancel}
+                                error={commentError}
+                            />
+                        </Grid>
+                    }
+                    {
                         (!flashcardSet.comments || flashcardSet.comments?.length < 1) &&
                         <Grid item size={12}>
                             <Alert variant="outlined" severity="info">
@@ -100,11 +147,11 @@ const FlashcardSeDisplay = () => {
                     }
                     {
                         (flashcardSet.comments && flashcardSet.comments?.length > 0) &&
-                        <Grid item size={{lg:12,  xl: 6}}>
+                        <Grid item size={{lg:12,  xl: 8}}>
                             <Stack divider={<Divider orientation="horizontal" flexItem/>}>
                                 {flashcardSet.comments?.map((_, index) => {
                                     return (
-                                        <FlashcardSetComment comment={_} />
+                                        <FlashcardSetComment comment={_} id={`comment-${index}`} />
                                     )
                                 })}
                             </Stack>
