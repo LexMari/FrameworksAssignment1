@@ -9,9 +9,8 @@ import {useAuth} from "../../hooks/AuthProvider";
 import {Alert, Badge, Button, Chip, Divider, Stack, Tab, Tabs} from "@mui/material";
 import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
-import Typography from "@mui/material/Typography";
-import {formatTimestamp} from "../../utils/dateTime";
 import FlashcardSetComment from "../../components/flashcardsets/FlashcardSetComment";
+import FlashcardSetInformation from "../../components/flashcardsets/FlashcardSetInformation";
 
 function FlashcardSetTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -75,7 +74,7 @@ const FlashcardSeDisplay = () => {
                 <Tabs value={selectedTab} onChange={handleChange}>
                     <Tab label="Flashcards" {...a11yProps(0)} />
                     <Tab label="Comments" {...a11yProps(1)} />
-                    <Tab label="Details" {...a11yProps(2)} />
+                    <Tab label="Information" {...a11yProps(2)} />
                 </Tabs>
             </Box>
             <FlashcardSetTabPanel value={selectedTab} index={0}>
@@ -101,7 +100,7 @@ const FlashcardSeDisplay = () => {
                     }
                     {
                         (flashcardSet.comments && flashcardSet.comments?.length > 0) &&
-                        <Grid item size={{xs: 12, sm: 6}}>
+                        <Grid item size={{lg:12,  xl: 6}}>
                             <Stack divider={<Divider orientation="horizontal" flexItem/>}>
                                 {flashcardSet.comments?.map((_, index) => {
                                     return (
@@ -114,21 +113,7 @@ const FlashcardSeDisplay = () => {
                 </Grid>
             </FlashcardSetTabPanel>
             <FlashcardSetTabPanel value={selectedTab} index={2}>
-                <Stack divider={<Divider orientation="horizontal" flexItem/>}>
-                    <Box sx={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                        <Typography variant={"body2"} color={"secondary"} textAlign={"right"} sx={{p: 2, width: 1/2}}>Owner</Typography>
-                        <Typography variant={"body1"} fontWeight={"bold"} sx={{p: 2, width: 1/2}}>{flashcardSet.user.username}</Typography>
-                    </Box>
-                    <Box sx={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                        <Typography variant={"body2"} color={"secondary"} textAlign={"right"} sx={{p: 2, width: 1/2}}>Created At</Typography>
-                        <Typography variant={"body1"} fontWeight={"bold"} sx={{p: 2, width: 1/2}}>{formatTimestamp(flashcardSet.created_at)}</Typography>
-                    </Box>
-                    <Box sx={{display: "flex", justifyContent: "center", alignItems: "center"}}>
-                        <Typography variant={"body2"} color={"secondary"} textAlign={"right"} sx={{p: 2, width: 1/2}}>Updated At At</Typography>
-                        <Typography variant={"body1"} fontWeight={"bold"} sx={{p: 2, width: 1/2}}>{formatTimestamp(flashcardSet.updated_at)}</Typography>
-                    </Box>
-                </Stack>
-                <Divider orientation="horizontal" flexItem/>
+                <FlashcardSetInformation set={flashcardSet} />
             </FlashcardSetTabPanel>
 
         </>
