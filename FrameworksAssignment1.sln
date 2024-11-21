@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiServer.Infrastructure", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiServer", "Server\ApiServer\ApiServer.csproj", "{A0651BF0-B6BE-4765-A6F8-6254458B7D6B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiServer.Domain.UnitTests", "serverTests\ApiServer.Domain.UnitTests\ApiServer.Domain.UnitTests.csproj", "{EC7DFA05-F6BC-42AE-AE67-C4786ACAAF70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{A0651BF0-B6BE-4765-A6F8-6254458B7D6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0651BF0-B6BE-4765-A6F8-6254458B7D6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0651BF0-B6BE-4765-A6F8-6254458B7D6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC7DFA05-F6BC-42AE-AE67-C4786ACAAF70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC7DFA05-F6BC-42AE-AE67-C4786ACAAF70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC7DFA05-F6BC-42AE-AE67-C4786ACAAF70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC7DFA05-F6BC-42AE-AE67-C4786ACAAF70}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{211FAC16-2AD5-40D2-800F-6CBFCBCAE950} = {179828F9-759C-4D43-8C89-4B84236B0D12}
