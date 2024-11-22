@@ -73,7 +73,6 @@ export async function updateFlashcardSet(token, data) {
             }
         })
     }
-    
     const options = {
         method: "PUT",
         body: JSON.stringify(flashcardSet),
@@ -100,7 +99,7 @@ export async function addFlashcardSetComment(token, setId, comment) {
             "Content-type": "application/json; charset=UTF-8"
         }
     };
-    
+
     const response = await fetch(url, options);
     if (!response.ok) {
         throw new Error(`Error: ${response.status}`);

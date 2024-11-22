@@ -8,7 +8,7 @@ import CancelIcon from '@mui/icons-material/Close';
 import Grid from "@mui/material/Grid2";
 
 const FlashCardCreate = ({addCardHandler, cancelAddHandler}) => {
-
+    
     const [card, setCard] = useState( {question: "", answer: "", difficulty: "Medium"});
     const [validQuestion, setValidQuestion] = useState(true);
     const [validAnswer, setValidAnswer] = useState(true);

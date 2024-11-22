@@ -3,9 +3,6 @@ using ApiServer.Domain.Entities;
 using ApiServer.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using ApiServer.Api.FlashcardSets.Models;
 using ApiServer.Api.FlashcardSets.Models;
 using OpenIddict.Validation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
@@ -76,8 +73,8 @@ public class FlashcardSetController : Controller
         if (user is null)
         {
             _logger.LogError("Non existent user [{username}]", username);
-            var error = new Error("Cannot find user record [" + username + "]");
-            return NotFound(error);
+            var error = new Error("Cannot find current user [" + username + "]");
+            return BadRequest(error);
         }
         
         var flashcardSet = new FlashcardSet(createCommand.Name, user.Id);
@@ -232,30 +229,40 @@ public class FlashcardSetController : Controller
     [Produces("application/json")]
     [ProducesResponseType(typeof(Comment), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddComment(int setId, 
         [FromBody] CommentRequest commentRequest, 
         CancellationToken cancellationToken)
     {
+        var username = HttpContext.User.Identity!.Name;
+        _logger.LogDebug("User [{username}] requested POST /sets/{setId}/comment", username, setId);
+        
         var flashcardSet = await _context.FlashcardSets
-            .Include(x => x.Cards)
+            .Include(x  => x.Cards)
             .AsSplitQuery()
-            .FirstOrDefaultAsync(x=> x.Id == setId, cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == setId, cancellationToken);
 
         if (flashcardSet is null)
         {
             var error = new Error($"Cannot find Flashcard set with ID [{setId}]");
             return NotFound(error);
         }
-
-        var user = await _context.Users.FirstAsync(cancellationToken);
-
+        
+        var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username, cancellationToken);
+        if (user is null)
+        {
+            _logger.LogError("Unknown user [{username}]", username);
+            var error = new Error($"Invalid username {username}");
+            return BadRequest(error);
+        }
+        
         var comment = new Comment(commentRequest.Comment, flashcardSet, user);
         _context.Comments.Add(comment);
         await _context.SaveChangesAsync(cancellationToken);
-
+        
         return CreatedAtAction(
-            nameof(GetFlashcardSet),
-            new { setId = flashcardSet.Id },
+            nameof(GetFlashcardSet), 
+            new {setId = flashcardSet.Id},
             comment);
     }
 

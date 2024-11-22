@@ -149,7 +149,8 @@ const FlashcardSeDisplay = () => {
                         (flashcardSet.comments && flashcardSet.comments?.length > 0) &&
                         <Grid item size={{lg:12,  xl: 8}}>
                             <Stack divider={<Divider orientation="horizontal" flexItem/>}>
-                                {flashcardSet.comments?.map((_, index) => {
+                                {flashcardSet.comments?.sort((a,b) => a.created_at > b.created_at ? -1 : 1)
+                                    .map((_, index) => {
                                     return (
                                         <FlashcardSetComment comment={_} id={`comment-${index}`} />
                                     )

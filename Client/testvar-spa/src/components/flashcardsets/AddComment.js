@@ -11,6 +11,7 @@ const AddComment = ({saveHandler, cancelHandler, error}) => {
     const [comment, setComment] = useState( "");
     const [wasTouched, setWasTouched] = useState( false);
     const [validComment, setValidComment] = useState(true);
+    
     function validateComment() {
         setValidComment(comment.trim().length > 0);
         setWasTouched(true);

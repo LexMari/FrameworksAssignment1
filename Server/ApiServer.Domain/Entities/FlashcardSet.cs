@@ -42,6 +42,13 @@ public class FlashcardSet
     /// </summary>
     private readonly List<FlashCard> _cards;
     public IReadOnlyCollection<FlashCard> Cards => _cards;
+
+    /// <summary>
+    ///  The sets that make up a collection
+    /// </summary>
+    private readonly List<Collection> _collections;
+    [JsonIgnore] 
+    public IReadOnlyCollection<Collection> Collections => _collections;
     
     #endregion
     
@@ -66,6 +73,8 @@ public class FlashcardSet
         Name = string.Empty;
         UserId = default;
         _cards = new List<FlashCard>();
+        _collections = new List<Collection>();
+        _collections = new List<Collection>();
         CreatedAt = DateTime.UtcNow;
         UpdatedAt = DateTime.UtcNow;
     }
