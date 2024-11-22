@@ -13,6 +13,9 @@ import DrawerLayout from "./components/layouts/drawer-layout";
 import Register from "./pages/register/register.page";
 import FlashcardSetCreate from "./pages/flashcardsets/flashcard-set-create.page";
 import FlashcardSetEdit from "./pages/flashcardsets/flashcard-set-edit.page"
+import UserCollectionIndex from "./pages/users/user-collection-index.page";
+import UserCollectionDisplay from "./pages/users/user-collection-display.page";
+import CollectionIndex from "./pages/collections/collection-index.page";
 
 const darkTheme = createTheme({
     palette: {
@@ -53,9 +56,24 @@ export default function App() {
                                     <FlashcardSetEdit />
                                 </ProtectedRoute>
                             } />
+                            <Route path={'/collections'} element={
+                                <ProtectedRoute redirectPath='/'>
+                                    <CollectionIndex />
+                                </ProtectedRoute>
+                            } />
                             <Route path={'/users/:userId/sets'} element={
                                 <ProtectedRoute redirectPath='/'>
                                     <UserFlashcardSetIndex />
+                                </ProtectedRoute>
+                            } />
+                            <Route path={'/users/:userId/collections'} element={
+                                <ProtectedRoute redirectPath='/'>
+                                    <UserCollectionIndex />
+                                </ProtectedRoute>
+                            } />
+                            <Route path={'/users/:userId/collections/:collectionId'} element={
+                                <ProtectedRoute redirectPath='/'>
+                                    <UserCollectionDisplay />
                                 </ProtectedRoute>
                             } />
                         </Route>

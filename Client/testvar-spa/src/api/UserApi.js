@@ -1,5 +1,3 @@
-import {User} from "oidc-client-ts";
-
 const apiBaseUrl = "https://localhost:7222/api/users";
 
 export async function getUsers(token) {
@@ -53,3 +51,36 @@ export async function getUserFlashcardSets(userId, token) {
     }
     return response.json();
 }
+
+export async function getUserCollections(userId, token) {
+    const collectionsUrl = `${apiBaseUrl}/${userId}/collections`
+    const options = {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    };
+
+    const response = await fetch(collectionsUrl, options);
+    if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+    }
+    return response.json();
+}
+
+export async function getUserCollection(userId, collectionId, token) {
+    const collectionUrl = `${apiBaseUrl}/${userId}/collections/${collectionId}`;
+    const options = {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    };
+
+    const response = await fetch(collectionUrl, options);
+    if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+    }
+    return response.json();
+}
+

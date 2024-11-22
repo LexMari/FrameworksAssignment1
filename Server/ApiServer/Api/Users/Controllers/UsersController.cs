@@ -318,8 +318,9 @@ public class UsersController : Controller
         _logger.LogDebug("User [{username}] requested GET /users/{userId}/collections/{collectionId}", username, userId, collectionId);
 
         var collection = await _context.Collections   
-            .Include(x => x.FlashcardSets)
             .Include(x => x.User)
+            .Include(x => x.FlashcardSets)
+            .ThenInclude(x => x.Cards)
             .AsSplitQuery()
             .FirstOrDefaultAsync(x => x.UserId == userId && x.Id == collectionId, cancellationToken);
             

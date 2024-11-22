@@ -19,7 +19,13 @@ const SortService = {
         if (sort.direction === 'asc')
             return sortAsc(data, sort.field);
         else
-            return sortDsc(data, sort.field)
+            return sortDsc(data, sort.field);
+    },
+    sortCollections: function(data, sort) {
+        if (sort.direction === 'asc')
+            return sortAsc(data, sort.field);
+        else 
+            return sortDsc(data, sort.field);
     }
 }
 export default SortService;

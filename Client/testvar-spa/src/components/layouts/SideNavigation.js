@@ -12,6 +12,7 @@ import Divider from "@mui/material/Divider";
 import PeopleIcon from "@mui/icons-material/People";
 import SettingsIcon from "@mui/icons-material/Settings";
 import * as React from "react";
+import InventoryIcon from '@mui/icons-material/Inventory';
 
 const SideNavigation = () => {
     const auth = useAuth();
@@ -27,6 +28,14 @@ const SideNavigation = () => {
                         <ListItemText primary='Home' />
                     </ListItemButton>
                 </ListItem>
+                <ListItem key='collections' disablePadding component={Link} to={{pathname: `/collections`}} style={{ color: '#FFF' }}>
+                    <ListItemButton secondary>
+                        <ListItemIcon secondary>
+                            <InventoryIcon />
+                        </ListItemIcon>
+                        <ListItemText primary='All Collections' />
+                    </ListItemButton>
+                </ListItem>
                 <ListItem key='usersets' disablePadding component={Link} to={{pathname: `/users/${auth.userId}/sets`}} style={{ color: '#FFF' }}>
                     <ListItemButton secondary>
                         <ListItemIcon>
@@ -35,7 +44,7 @@ const SideNavigation = () => {
                         <ListItemText primary='My Flashcard Sets' />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key='collections' disablePadding>
+                <ListItem key='usercollections' disablePadding component={Link} to={{pathname: `/users/${auth.userId}/collections`}} style={{ color: '#FFF' }}>
                     <ListItemButton>
                         <ListItemIcon>
                             <BookmarksIcon />
