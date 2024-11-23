@@ -58,7 +58,7 @@ const SideNavigation = () => {
                 <>
                     <Divider />
                     <List>
-                        <ListItem key='user' disablePadding>
+                        <ListItem key='user' disablePadding component={Link} to={{pathname: `/users`}} style={{ color: '#FFF'}}>
                             <ListItemButton>
                                 <ListItemIcon secondary>
                                     <PeopleIcon />

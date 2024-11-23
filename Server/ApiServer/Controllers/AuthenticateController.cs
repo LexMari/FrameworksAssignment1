@@ -76,8 +76,7 @@ public class AuthenticateController : Controller
             {
                 return Unauthorized();
             }
-
-
+            
             var claims = new List<Claim>()
             {
                 new Claim(OpenIddictConstants.Claims.Subject, user.Username),

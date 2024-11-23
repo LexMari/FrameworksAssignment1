@@ -16,6 +16,7 @@ import FlashcardSetEdit from "./pages/flashcardsets/flashcard-set-edit.page"
 import UserCollectionIndex from "./pages/users/user-collection-index.page";
 import UserCollectionDisplay from "./pages/users/user-collection-display.page";
 import CollectionIndex from "./pages/collections/collection-index.page";
+import UserIndex from "./pages/users/user-index.page";
 
 const darkTheme = createTheme({
     palette: {
@@ -74,6 +75,11 @@ export default function App() {
                             <Route path={'/users/:userId/collections/:collectionId'} element={
                                 <ProtectedRoute redirectPath='/'>
                                     <UserCollectionDisplay />
+                                </ProtectedRoute>
+                            } />
+                            <Route path={'/users'} element={
+                                <ProtectedRoute redirectPath='/sets' adminOny={true}>
+                                    <UserIndex />
                                 </ProtectedRoute>
                             } />
                         </Route>

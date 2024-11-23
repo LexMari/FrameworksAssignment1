@@ -62,7 +62,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
   /sets/{setId}:
     parameters:
       - name: setId
@@ -97,12 +97,17 @@ paths:
                               example: "I love this set!"
                             author:
                               $ref: "#/components/schemas/User"
+                             
+                      
+                            
+
+                
         "404":
           description: "The flashcard set was not found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
     put:
       summary: "Update a flashcard set by ID"
       tags:
@@ -125,7 +130,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
     delete:
       summary: "Delete a flashcard set by ID"
       tags:
@@ -138,7 +143,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
   /set/{setID}/comment:
     parameters:
       - name: setID
@@ -173,7 +178,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
   /sets/{setId}/cards:
     parameters:
       - name: setId
@@ -207,7 +212,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
   /users:
     get:
       summary: "Get all users"
@@ -232,14 +237,14 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: "#/components/schemas/User"
-                - type: object
-                  properties:
-                    password:
-                      type: "string"
-                      format: "password"
-                      example: "password"
-                      nullable: true
+              - $ref: "#/components/schemas/User"
+              - type: object
+                properties:     
+                  password:
+                    type: "string"
+                    format: "password"
+                    example: "password"
+                    nullable: true
       responses:
         "201":
           description: "The created user"
@@ -252,7 +257,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
   /users/{userId}:
     parameters:
       - name: userId
@@ -277,7 +282,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
     put:
       summary: "Update a user by ID"
       tags:
@@ -289,14 +294,14 @@ paths:
           application/json:
             schema:
               allOf:
-                - $ref: "#/components/schemas/User"
-                - type: object
-                  properties:
-                    password:
-                      type: "string"
-                      format: "password"
-                      example: "password"
-                      nullable: true
+              - $ref: "#/components/schemas/User"
+              - type: object
+                properties:     
+                  password:
+                    type: "string"
+                    format: "password"
+                    example: "password"
+                    nullable: true
       responses:
         "200":
           description: "The updated user"
@@ -309,7 +314,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
     delete:
       summary: "Delete a user by ID"
       tags:
@@ -322,7 +327,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
   /users/{userID}/sets:
     get:
       summary: "Get all flashcard sets created by a user"
@@ -350,7 +355,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
   /users/{userID}/collections:
     get:
       summary: "Get all flashcard set collections created by a user"
@@ -364,7 +369,13 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/Collection"
+                  type: "object"
+                  properties:
+                    comment:
+                      type: "string"  
+                      description: "The user's comment on the set"
+                    set:
+                      $ref: "#/components/schemas/FlashcardSet"
   /users/{userID}/collections/{collectionID}:
     parameters:
       - name: userID
@@ -389,13 +400,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Collection"
+                type: "object"
+                properties:
+                  comment:
+                    type: "string"  
+                    description: "The user's comment on the set"
+                  set:
+                    $ref: "#/components/schemas/FlashcardSet"
+                  user:
+                    $ref: "#/components/schemas/User"  
         "404":
           description: "The flashcard set collection was not found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
     put:
       summary: "Update a flashcard set collection by ID"
       tags:
@@ -409,41 +428,40 @@ paths:
               properties:
                 comment:
                   type: "string"
-                  nullable: false
                   example: "I love this set!"
-                sets:
-                  type: "array"
-                  nullable: true
-                  items:
-                    type: "number"
-                    description: "The IDs of member flashcards"
-                    example: 1
-      
       responses:
         "200":
           description: "The updated flashcard set collection"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Collection"
+                type: "object"
+                properties:
+                  comment:
+                    type: "string"  
+                    description: "The user's comment on the set"
+                  set:
+                    $ref: "#/components/schemas/FlashcardSet"
+                  user:
+                    $ref: "#/components/schemas/User"  
         "404":
           description: "The flashcard set collection was not found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
         "401":
           description: "You are not authorized ('logged in') to update this collection"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
         "403":
           description: "You are not allowed to update this collection"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
     delete:
       summary: "Delete a flashcard set collection by ID"
       tags:
@@ -456,19 +474,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
         "401":
           description: "You are not authorized ('logged in') to delete this collection"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
         '403':
           description: "You are not allowed to delete this collection"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
   /collections:
     get:
       summary: "Get all flashcard set collections"
@@ -482,7 +500,15 @@ paths:
               schema:
                 type: "array"
                 items:
-                  $ref: "#/components/schemas/Collection"
+                  type: "object"
+                  properties:
+                    comment:
+                      type: "string"  
+                      description: "The user's comment on the set"
+                    set:
+                      $ref: "#/components/schemas/FlashcardSet"
+                    User:
+                      $ref: "#/components/schemas/User"  
     post:
       summary: "Create a new flashcard set collection"
       tags:
@@ -492,17 +518,15 @@ paths:
         content:
           application/json:
             schema:
-              properties:
-                comment:
-                  type: "string"
-                  nullable: false
-                  example: "I love this set!"
-                sets:
-                  type: "array"
-                  nullable: true
-                  items:
+              type: "array"
+              items:
+                type: "object"
+                properties:
+                  comment:
+                    type: "string"
+                    example: "I love this set!"
+                  setID:
                     type: "number"
-                    description: "The IDs of member flashcards"
                     example: 1
 
       responses:
@@ -511,13 +535,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Collection"
+                type: "object"
+                properties:
+                  comment:
+                    type: "string"  
+                    description: "The user's comment on the set"
+                  set:
+                    $ref: "#/components/schemas/FlashcardSet"
+                  user:
+                    $ref: "#/components/schemas/User"  
         "404":
           description: "The flashcard set was not found"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: "#/components/schemas/Error"
   /collections/random:
     get:
       summary: "Redirect to a random flashcard set collection"
@@ -536,8 +568,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
-
+                $ref: "#/components/schemas/Error"
+                  
 
 components:
   schemas:
@@ -574,21 +606,12 @@ components:
           type: "string"
           format: "date-time"
           example: "2024-10-15T12:00:00Z"
-    ProblemDetails:
+    Error:
       type: "object"
       properties:
-        title:
+        message:
           type: "string"
           nullable: false
-          description: "Summary of the problem"
-        status:
-          type: "number"
-          nullable: false
-          description: "HTTP status code"
-        detail:
-          type: "string"
-          nullable: true
-          description: "Additional problem details"
     Difficulty:
       type: "string"
       enum:
@@ -618,20 +641,7 @@ components:
           example: "I love this set!"
         set:
           $ref: "#/components/schemas/FlashcardSet"
+          nullable: true
         author:
           $ref: "#/components/schemas/User"
-    Collection:
-      type: "object"
-      properties:
-        id:
-          type: "number"
-          example: 1
-        comment:
-          type: "string"
-          example: "I like these sets"
-        owner:
-          $ref: "#/components/schemas/User"
-        sets:
-          type: "array"
-          items:
-            $ref: "#/components/schemas/FlashcardSet"
+          nullable: true

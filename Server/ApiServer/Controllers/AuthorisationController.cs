@@ -141,7 +141,7 @@ public class AuthorisationController : Controller
 
         var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == userId, cancellationToken);
         var role = "User";
-        if (user is not null || user.IsAdministrator)
+        if (user is not null && user.IsAdministrator)
             role = "Administrator";
 
         var identity = new ClaimsIdentity(result.Principal.Claims,

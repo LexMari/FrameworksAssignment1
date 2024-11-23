@@ -24,7 +24,7 @@ const AuthProvider = ({ children }) => {
             setUsername(user.profile?.username);
             setUserId(user.profile?.nickname);
             setIsAdmin(role === "Administrator");
-            loadUserCollections();
+            //loadUserCollections(user.profile?.nickname, accessToken);
         }
         else
         {
@@ -46,7 +46,7 @@ const AuthProvider = ({ children }) => {
         setIsAdmin(false);
     };
 
-    const loadUserCollections = () => {
+    const loadUserCollections = (userId, token) => {
         getUserCollections(userId, token).then((result) => {
             var data = result.map((_) => {
                 return {id: _?.id, comment: _?.comment};

@@ -1,5 +1,5 @@
+using System.Transactions;
 using ApiServer.Api.Collections.Models;
-using ApiServer.Api.Common.Models;
 using ApiServer.Api.Users.Models;
 using ApiServer.Domain.Entities;
 using ApiServer.Infrastructure;
@@ -50,7 +50,7 @@ public class UsersController : Controller
     [ProducesResponseType(typeof(List<User>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetUsers(CancellationToken cancellationToken)
     {
-        var username = HttpContext.User.Identity!.Name;
+        var username = HttpContext.User.Identity!.Name ?? "UNKNOWN";
         _logger.LogDebug("User [{username}] requested GET /users", username);
         
         var userData = await _context.Users
@@ -73,7 +73,7 @@ public class UsersController : Controller
     [Route("")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(User), StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [AllowAnonymous]
     public async Task<IActionResult> CreateUser(
         [FromBody] UserRequest createUser,
@@ -99,9 +99,12 @@ public class UsersController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to create users");
-            var error = new Error("Unable to create the user record");
-            return BadRequest(error);
+            _logger.LogError(ex, "Failed to create user");
+            return Problem(
+                title: "Failed to create user.",
+                detail: ex.Message,
+                statusCode: StatusCodes.Status400BadRequest
+            );
         }
     }
 
@@ -119,20 +122,21 @@ public class UsersController : Controller
     [Route("{userId:int}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUser(int userId, CancellationToken cancellationToken)
     {
         var username = HttpContext.User.Identity!.Name;
         _logger.LogDebug("User [{username}] requested GET /users/{userId}", username, userId);
         
-        var user = await _context.Users
-            .FindAsync(userId, cancellationToken);
-
+        var user = await _context.Users.FindAsync(userId, cancellationToken);
         if (user is null)
         {
             _logger.LogError("Cannot find User with ID [{userId}]", userId);
-            var error = new Error("Cannot find User with ID [" + userId + "]");
-            return NotFound(error);
+            return Problem(
+                title: "User not found",
+                detail: $"Cannot find User with ID [{userId}]",
+                statusCode: StatusCodes.Status404NotFound
+            );
         }
         
         return Ok(user);
@@ -150,8 +154,8 @@ public class UsersController : Controller
     [Route("{userId:int}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Error), StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUser(int userId, 
         [FromBody] UserRequest updateUser,
         CancellationToken cancellationToken)
@@ -159,14 +163,15 @@ public class UsersController : Controller
         var username = HttpContext.User.Identity!.Name;
         _logger.LogDebug("User [{username}] requested PUT /users/{userId}", username, userId);
 
-        var user = await _context.Users
-            .FindAsync(userId, cancellationToken);
-
+        var user = await _context.Users.FindAsync(userId, cancellationToken);
         if (user is null)
         {
             _logger.LogError("Cannot find User with ID [{userId}]", userId);
-            var error = new Error("Cannot find User with ID [" + userId + "]");
-            return NotFound(error);
+            return Problem(
+                title: "User not found",
+                detail: $"Cannot find User with ID [{userId}]",
+                statusCode: StatusCodes.Status404NotFound
+            );
         }
         
         // Get the current user
@@ -175,12 +180,14 @@ public class UsersController : Controller
             currentUser.Id != userId &&
             !currentUser.IsAdministrator)
         {
-            _logger.LogError("Only an administrator or the user themself may perform an update {userId}", userId);
-            var error = new Error("Only an administrator or the user themself may perform an update [" + userId + "]");
-            return BadRequest(error);
+            return Problem(
+                title: "Update not permitted",
+                detail: $"Only an administrator or the user themself may perform an update [{userId}]",
+                statusCode: StatusCodes.Status403Forbidden
+            );
         }
-        var isAdmin = (currentUser!.IsAdministrator && updateUser.Admin);
         
+        var isAdmin = (currentUser!.IsAdministrator && updateUser.Admin);
         user.Update(updateUser.Username, updateUser.Password, isAdmin);
         await _context.SaveChangesAsync(cancellationToken);
         
@@ -196,8 +203,8 @@ public class UsersController : Controller
     [HttpDelete]
     [Route("{userId:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(Error), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> DeleteUser(int userId, CancellationToken cancellationToken)
     {
         var username = HttpContext.User.Identity!.Name;
@@ -207,18 +214,31 @@ public class UsersController : Controller
         if (currentUser is null || !currentUser.IsAdministrator)
         {
             _logger.LogError("Only an administrator can delete a user [{userId}]", userId);
-            return Forbid();
+            return Problem(
+                title: "User deletion not permitted",
+                detail: $"Only an administrator can delete a user [{userId}]",
+                statusCode: StatusCodes.Status403Forbidden
+            );
         }
         
         var user = await _context.Users.FindAsync(userId, cancellationToken);
         if (user is null)
         {
             _logger.LogError("Cannot find User with ID [{userId}]", userId);
-            var error = new Error("Cannot find User with ID [" + userId + "]");
-            return NotFound(error);
+            return Problem(
+                title: "User not found",
+                detail: $"Cannot find User with ID [{userId}]",
+                statusCode: StatusCodes.Status404NotFound
+            );
         }
 
-        /* TODO: Remove collections for this user */
+        using var ts = new TransactionScope();
+        
+        // Remove any collections
+        var collections = await _context.Collections
+            .Where(x => x.UserId == userId)
+            .ToListAsync(cancellationToken);
+        _context.Collections.RemoveRange(collections);
         
         // Remove any flashcard sets (and comments)
         var sets = await _context.FlashcardSets
@@ -228,6 +248,8 @@ public class UsersController : Controller
         
         _context.Users.Remove(user);
         await _context.SaveChangesAsync(cancellationToken);
+        
+        ts.Complete();
         return new NoContentResult();
     }
     
@@ -245,18 +267,21 @@ public class UsersController : Controller
     [Route("{userId:int}/sets")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(List<FlashcardSet>), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Error), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserFlashcardSets(int userId, CancellationToken cancellationToken)
     {
-        var username = HttpContext.User.Identity!.Name;
+        var username = HttpContext.User.Identity!.Name ?? "UNKNOWN";
         _logger.LogDebug("User [{username}] requested GET /users/{userId}/sets", username, userId);
         
         var user = await _context.Users.FindAsync(userId, cancellationToken);
         if (user is null)
         {
             _logger.LogError("Cannot find User with ID [{userId}]", userId);
-            var error = new Error("Cannot find User with ID [" + userId + "]");
-            return NotFound(error);
+            return Problem(
+                title: "User not found",
+                detail: $"Cannot find User with ID [{userId}]",
+                statusCode: StatusCodes.Status404NotFound
+            );
         }
         
         var sets = await _context.FlashcardSets
@@ -269,7 +294,7 @@ public class UsersController : Controller
     
     #endregion
     
-    #region #region /users/{userId}/collections route actions
+    #region /users/{userId}/collections route actions
     
     /// <summary>
     /// Get all flashcard set collections for the specified user account
@@ -279,11 +304,23 @@ public class UsersController : Controller
     [Route("{userId}/collections")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Collection), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUsers(int userId,
         CancellationToken cancellationToken)
     {
-        var username = HttpContext.User.Identity!.Name;
+        var username = HttpContext.User.Identity!.Name ?? "UNKOWN";
         _logger.LogDebug("User [{username}] requested GET /users/{userId}/collections", username, userId);
+        
+        var user = await _context.Users.FindAsync(userId, cancellationToken);
+        if (user is null)
+        {
+            _logger.LogError("Cannot find User with ID [{userId}]", userId);
+            return Problem(
+                title: "User not found",
+                detail: $"Cannot find User with ID [{userId}]",
+                statusCode: StatusCodes.Status404NotFound
+            );
+        }
         
         var userData = await _context.Collections
             .Include(x => x.User)
@@ -349,7 +386,7 @@ public class UsersController : Controller
     [Route("{userId}/collections/{collectionId:int}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Collection), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateCollection(int userId, int collectionId,
@@ -423,7 +460,7 @@ public class UsersController : Controller
     [Route("{userId}/collections/{collectionId:int}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Collection), StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(Error), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateCollection(int userId, int collectionId, CancellationToken cancellationToken)
