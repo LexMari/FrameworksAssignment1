@@ -3,13 +3,8 @@ import Grid from '@mui/material/Grid2';
 import {useEffect, useState} from "react";
 import SortService from "../../services/SortService";
 import PageTitle from "../../components/common/PageTitle";
-import {getUserCollections} from "../../api/UserApi";
 import {useAuth} from "../../hooks/AuthProvider";
-import {Link, useParams} from "react-router-dom";
-import {Alert, Button} from "@mui/material";
-import Typography from "@mui/material/Typography";
-import AddIcon from '@mui/icons-material/Add';
-import BookmarksIcon from "@mui/icons-material/Bookmarks";
+import {Alert} from "@mui/material";
 import CollectionSummary from "../../components/collections/CollectionSummary";
 import {getCollections} from "../../api/CollectionsApi";
 

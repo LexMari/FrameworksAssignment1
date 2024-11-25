@@ -6,8 +6,9 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import Grid from "@mui/material/Grid2";
 import QuizIcon from "@mui/icons-material/Quiz";
+import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
 
-const FlashcardSetSummary = ({set, allowEdit = false, editCallback}) => {
+const FlashcardSetSummary = ({set, allowEdit = false, editCallback, allowRemove = false, removeCallback}) => {
     const [hoverState, setHoverState] = useState(false);
 
     function toggleHover() {
@@ -49,6 +50,21 @@ const FlashcardSetSummary = ({set, allowEdit = false, editCallback}) => {
                                 }}
                             >
                                 <EditIcon fontSize="small"/>
+                            </IconButton>
+                        }
+                        {
+                            allowRemove && 
+                            <IconButton 
+                                size="small"
+                                color={"info"}
+                                title="Remove from collection"
+                                onClick={e => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    removeCallback(set.id);
+                                }}
+                            >
+                              <BookmarkRemoveIcon fontSize="small"/>  
                             </IconButton>
                         }
                     </Box>

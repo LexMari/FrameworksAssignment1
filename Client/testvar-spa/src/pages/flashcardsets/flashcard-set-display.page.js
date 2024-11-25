@@ -13,6 +13,8 @@ import FlashcardSetComment from "../../components/flashcardsets/FlashcardSetComm
 import FlashcardSetInformation from "../../components/flashcardsets/FlashcardSetInformation";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import AddComment from "../../components/flashcardsets/AddComment";
+import SaveIcon from "@mui/icons-material/Save";
+import AddToCollection from "../../components/collections/AddToCollection";
 
 function FlashcardSetTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -49,6 +51,7 @@ const FlashcardSeDisplay = () => {
     const [flashcardSet, setFlashcardSet] = useState([]);
     const [commentOpen, setCommentOpen] = useState(false);
     const [commentError, setCommentError] = useState();
+    const [collectionOpen, setCollectionOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     async function fetchData() {
@@ -94,19 +97,46 @@ const FlashcardSeDisplay = () => {
         });
     }
 
+    function addToCollection() {
+        setCollectionOpen(true);
+    }
+
+    function addToCollectionCancel() {
+        setCollectionOpen(false);
+    }
+
     return (!isLoading &&
         <>
             <PageTitle title={flashcardSet.name}>
+                { auth.userCollections?.length > 0 &&
+                    <Button
+                        variant={"outlined"}
+                        startIcon={<SaveIcon />}
+                        title={"Create the flashcard set"}
+                        sx={{mr: 2}}
+                        disabled={commentOpen || collectionOpen }
+                        onClick={addToCollection}
+                    >
+                        Add to collection
+                    </Button>
+                }
                 <Button
                     size={"large"}
                     variant={"outlined"}
-                    disabled={commentOpen}
+                    disabled={commentOpen || collectionOpen }
                     startIcon={<AddCommentIcon />}
                     onClick={addComment}
                 >
                     Add comment
                 </Button>
             </PageTitle>
+            {
+                collectionOpen &&
+                <AddToCollection
+                    setId={flashcardSet.id}
+                    cancelHandler={addToCollectionCancel}
+                />
+            }
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={selectedTab} onChange={handleChange}>
                     <Tab label="Flashcards" {...a11yProps(0)} />

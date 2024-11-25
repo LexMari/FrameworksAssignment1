@@ -3,7 +3,7 @@ import {useAuth} from "../../hooks/AuthProvider";
 import {useEffect, useState} from "react";
 import PageTitle from "../../components/common/PageTitle";
 import * as React from "react";
-import {getUserCollection} from "../../api/UserApi";
+import {getUserCollection, updateUserCollection} from "../../api/UserApi";
 import Grid from "@mui/material/Grid2";
 import {Alert, Divider, Typography} from "@mui/material";
 import FlashcardSetSummary from "../../components/flashcardsets/FlashcardSetSummary";
@@ -12,6 +12,7 @@ const UserCollectionDisplay = () => {
     let { userId, collectionId } = useParams();
     const auth = useAuth();
     const [collection, setCollection] = useState([]);
+    const [error, setError] = useState();
     const [isLoading, setIsLoading] = useState(true);
 
     async function fetchData() {
@@ -25,6 +26,22 @@ const UserCollectionDisplay = () => {
     useEffect(() => {
         fetchData();
     }, [isLoading, userId, collectionId]);
+
+    function handleRemove(setId) {
+        const updatedSets = collection?.sets
+            .filter(x => x.id !== setId);
+        const updateCollection = {
+            id: collection.id,
+            comment: collection.comment,
+            sets: updatedSets.map((_) => { return _.id;})
+        }
+        updateUserCollection(auth.userId, updateCollection, auth.token).then((result) => {
+            setCollection({...collection, sets: updatedSets});
+            auth.loadUserCollections(auth.userId, auth.token);
+        }).catch((e) => {
+            setError(e);
+        });
+    }
 
     return (!isLoading &&
         <>
@@ -41,6 +58,14 @@ const UserCollectionDisplay = () => {
                 </Grid>
                 <Divider />
                 {
+                    error &&
+                    <Alert variant="outlined" severity="error">
+                        <Typography component={"span"} variant={"body1"} fontWeight={"bold"}>
+                            {error.message}
+                        </Typography>
+                    </Alert>
+                }
+                {
                     (collection?.sets.length < 1) &&
                     <Grid size={12}>
                         <Alert variant="outlined" severity="info">
@@ -52,7 +77,13 @@ const UserCollectionDisplay = () => {
                     collection?.sets.map((_, index) => {
                         return (
                             <Grid size={{ xs: 6, md: 4 }} key={index}>
-                                <FlashcardSetSummary set={_} />
+                                { collection?.user.id === auth.userId &&
+                                    <FlashcardSetSummary set={_} allowRemove={true} removeCallback={handleRemove} />
+                                }
+                                { collection?.user.id !== auth.userId &&
+                                    <FlashcardSetSummary set={_} allowRemove={false} />
+                                }
+
                             </Grid>
                         );
                     })}

@@ -7,7 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import BookmarksIcon from "@mui/icons-material/Bookmarks";
 import Grid from "@mui/material/Grid2";
 
-const CollectionSummary = ({collection, showCurator = false, allowDelete = false}) => {
+const CollectionSummary = ({collection, showCurator = false, allowDelete = false, deleteCallback}) => {
     const [hoverState, setHoverState] = useState(false);
 
     function toggleHover() {
@@ -43,6 +43,11 @@ const CollectionSummary = ({collection, showCurator = false, allowDelete = false
                             <IconButton
                                 size="small"
                                 title="Delete flashcard set collection"
+                                onClick={e => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                deleteCallback(collection?.id);
+                            }}
                             >
                                 <DeleteIcon fontSize="small"/>
                             </IconButton>

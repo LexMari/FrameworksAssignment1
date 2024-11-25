@@ -33,9 +33,11 @@ const FlashcardSetIndex = () => {
         <>
             <PageTitle title={`Flashcard Sets`}>
                 <Link to="/sets/create">
-                    <Button variant={"outlined"} secondary startIcon={<AddIcon />} title={"Create new flashcard set"}>
-                        Create Set
-                    </Button>
+                    <Link to="/sets/create">
+                        <Button variant={"outlined"} secondary startIcon={<AddIcon />} title={"Create new flashcard set"}>
+                            Create Set
+                        </Button>
+                    </Link>
                 </Link>
             </PageTitle>
             <Grid container maxWidth={true} spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 1 }}>

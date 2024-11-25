@@ -7,7 +7,7 @@ import CancelIcon from "@mui/icons-material/Close";
 import {useState} from "react";
 import Typography from "@mui/material/Typography";
 
-const AddComment = ({saveHandler, cancelHandler, error}) => {
+const CollectionCreate = ({saveHandler, cancelHandler, error}) => {
     const [comment, setComment] = useState( "");
     const [wasTouched, setWasTouched] = useState( false);
     const [validComment, setValidComment] = useState(true);
@@ -16,6 +16,7 @@ const AddComment = ({saveHandler, cancelHandler, error}) => {
         setValidComment(comment.trim().length > 0);
         setWasTouched(true);
     }
+    
     function isValid() { return validComment && wasTouched; }
 
     function saveCommentClick() {
@@ -27,16 +28,16 @@ const AddComment = ({saveHandler, cancelHandler, error}) => {
             <Grid container spacing={1} justify="space-between">
                 <Grid size={8}>
                     <TextField
-                        id="comment"
-                        label="Comment"
+                        id="collection-name"
+                        label="Name"
                         required
                         fullWidth
                         multiline
                         maxRows={4}
                         value={comment}
                         error={!validComment}
-                        helperText={validComment ? '' : 'A comment is required'}
-                        placeholder={"Enter a comment"}
+                        helperText={validComment ? '' : 'A collection name is required'}
+                        placeholder={"Enter the name for the collection"}
                         onChange={e => {
                             setComment(e.target.value);
                             validateComment();
@@ -54,7 +55,7 @@ const AddComment = ({saveHandler, cancelHandler, error}) => {
                         onClick={saveCommentClick}
                         startIcon={<SaveIcon />}
                     >
-                        Add comment
+                        Add collection
                     </Button>
                     <Button
                         variant={"outlined"}
@@ -78,4 +79,5 @@ const AddComment = ({saveHandler, cancelHandler, error}) => {
         </Box>
     );
 };
-export default AddComment;
+
+export default CollectionCreate;

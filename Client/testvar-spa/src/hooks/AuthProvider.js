@@ -23,7 +23,7 @@ const AuthProvider = ({ children }) => {
             setUsername(user.profile?.username);
             setUserId(user.profile?.nickname);
             setIsAdmin(role === "Administrator");
-            
+            loadUserCollections(user.profile?.nickname, accessToken);
         }
         else
         {
@@ -47,19 +47,15 @@ const AuthProvider = ({ children }) => {
 
     const loadUserCollections = (userId, token) => {
         getUserCollections(userId, token).then((result) => {
-            var data = result.map((_) => {
-                return {id: _?.id, comment: _?.comment};
-            });
-            setUserCollections(data);
+            setUserCollections(result);
         }).catch((e) => {
-            console.log(e.message);
-            setUserId([]);
+            setUserCollections([]);
         });
     }
 
     return (
         <AuthContext.Provider
-            value={{isAuthenticated, user, token, username, userId, isAdmin, loginAction, logoutAction, loadUserCollections}}>
+            value={{isAuthenticated, user, token, username, userId, isAdmin, userCollections, loginAction, logoutAction, loadUserCollections}}>
             {children}
         </AuthContext.Provider>
     );

@@ -47,7 +47,8 @@ export async function deleteUser(userId, token) {
 
     const response = await fetch(deleteUrl, options);
     if (response.status !== 204) {
-        throw new Error(`Error: ${response.status}`);
+        const problemDetail = response.json()
+        throw new Error(`Error: ${problemDetail.detail}`);
     }
 }
 
@@ -64,7 +65,8 @@ export async function getUserFlashcardSets(userId, token) {
 
     const response = await fetch(userSetsUrl, options);
     if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        const problemDetail = response.json()
+        throw new Error(`Error: ${problemDetail.detail}`);
     }
     return response.json();
 }
@@ -80,7 +82,8 @@ export async function getUserCollections(userId, token) {
 
     const response = await fetch(collectionsUrl, options);
     if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        const problemDetail = response.json()
+        throw new Error(`Error: ${problemDetail.detail}`);
     }
     return response.json();
 }
@@ -96,8 +99,45 @@ export async function getUserCollection(userId, collectionId, token) {
 
     const response = await fetch(collectionUrl, options);
     if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+        const problemDetail = response.json()
+        throw new Error(`Error: ${problemDetail.detail}`);
     }
     return response.json();
+}
+
+
+export async function updateUserCollection(userId, collection, token) {
+    const updateUrl = `${apiBaseUrl}/${userId}/collections/${collection.id}`;
+    const options = {
+        method: 'PUT',
+        body: JSON.stringify(collection),
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    };
+
+    const response = await fetch(updateUrl, options);
+    if (!response.ok) {
+        const problemDetail = response.json()
+        throw new Error(`Error: ${problemDetail.detail}`);
+    }
+    return response.json();
+}
+
+export async function deleteUserCollection(userId, collectionId, token) {
+    const collectionUrl = `${apiBaseUrl}/${userId}/collections/${collectionId}`;
+    const options = {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    };
+
+    const response = await fetch(collectionUrl, options);
+    if (response.status !== 204) {
+        const problemDetail = response.json()
+        throw new Error(`Error: ${problemDetail.detail}`);
+    }
 }
 
