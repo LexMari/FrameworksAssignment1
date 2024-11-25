@@ -92,22 +92,21 @@ public class FlashcardSetController : Controller
             );
         }
         
-        // Check daily limit --> Ignore if Admin or the limit value is absent or zero or less
+        
         var setting = await _context.ApiSettings.FindAsync(LimitSettingKey);
         if (setting is not null && setting.IntegerValue > 0 && !user.IsAdministrator)
         {
             var limit = setting.IntegerValue;
             
             var createdCount = _context.FlashcardSets.Count(x =>
-                x.UserId == user.Id &&
                 x.CreatedAt.Date == DateTime.Today);
             
             if (createdCount >= limit)
             {
-                _logger.LogError("User has reached the daily limit for flashcard set creation [{username}] - {limit} sets", username, limit);
+                _logger.LogError("The daily limit for flashcard set creation has been reached [{username}] - {limit} sets", username, limit);
                 return Problem(
                     title: "Flashcard set limit reached",
-                    detail: $"You have reached the maximum number of flashcard sets allowed today [{limit}]",
+                    detail: $"The maximum number of flashcard sets that can be created today has been reached [{limit}]",
                     statusCode: StatusCodes.Status429TooManyRequests
                 );
             }
