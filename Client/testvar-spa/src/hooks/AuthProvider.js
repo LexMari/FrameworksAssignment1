@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useContext, createContext } from "react";
-import {getUser} from "../services/AuthService";
-import {getUserCollections, getUserCollection} from "../api/UserApi";
+import {getUserCollections} from "../api/UserApi";
 
 const AuthContext = createContext();
 
@@ -24,7 +23,7 @@ const AuthProvider = ({ children }) => {
             setUsername(user.profile?.username);
             setUserId(user.profile?.nickname);
             setIsAdmin(role === "Administrator");
-            //loadUserCollections(user.profile?.nickname, accessToken);
+            
         }
         else
         {

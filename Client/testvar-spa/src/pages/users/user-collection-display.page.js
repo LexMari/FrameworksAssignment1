@@ -31,7 +31,7 @@ const UserCollectionDisplay = () => {
             <PageTitle title="Flashcard Set Collection">
             </PageTitle>
             <Grid container spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 3, justifyContent: "center" }}>
-                <Grid item size={12} sx={{border: 1, borderRadius: 2, borderColor: 'primary.main', p:2, display: 'flex', alignItems: 'end'}}>
+                <Grid size={12} sx={{border: 1, borderRadius: 2, borderColor: 'primary.main', p:2, display: 'flex', alignItems: 'end'}}>
                     <Typography variant={"h4"} sx={{ flexGrow: 1 }}>
                         {collection?.comment}
                     </Typography>
@@ -42,7 +42,7 @@ const UserCollectionDisplay = () => {
                 <Divider />
                 {
                     (collection?.sets.length < 1) &&
-                    <Grid item size={12}>
+                    <Grid size={12}>
                         <Alert variant="outlined" severity="info">
                             No flashcard sets have been added to this collection
                         </Alert>
@@ -51,7 +51,7 @@ const UserCollectionDisplay = () => {
                 {
                     collection?.sets.map((_, index) => {
                         return (
-                            <Grid item size={{ xs: 6, md: 4 }} key={index}>
+                            <Grid size={{ xs: 6, md: 4 }} key={index}>
                                 <FlashcardSetSummary set={_} />
                             </Grid>
                         );

@@ -18,7 +18,7 @@ function RegistrationForm({user, onSubmit, onChangeUsername, onChangePassword, e
                 </Alert>
             }
             <Grid container component="form" columns={1} spacing={2} sx={{ml: 2, mr: 2, mb: 2}} onSubmit={onSubmit}>
-                <Grid item size={{xs: 12, sm: 6}}>
+                <Grid size={{xs: 12, sm: 6}}>
                     <TextField
                         required
                         fullWidth
@@ -30,7 +30,7 @@ function RegistrationForm({user, onSubmit, onChangeUsername, onChangePassword, e
                         placeholder="Enter a username"
                     />
                 </Grid>
-                <Grid item size={{xs: 12, sm: 6}}>
+                <Grid size={{xs: 12, sm: 6}}>
                     <TextField
                         required
                         fullWidth
@@ -42,7 +42,7 @@ function RegistrationForm({user, onSubmit, onChangeUsername, onChangePassword, e
                         placeholder="Enter a password"
                     />
                 </Grid>
-                <Grid item size={{xs: 12, sm: 6}}>
+                <Grid size={{xs: 12, sm: 6}}>
                     <Box sx={{ display: "flex", justifyContent:"space-between"}}>
                         <Button variant={"outlined"} type={"submit"}>Register</Button>
                         <Link to="/">

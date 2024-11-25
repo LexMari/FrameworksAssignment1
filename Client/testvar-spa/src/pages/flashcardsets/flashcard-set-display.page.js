@@ -4,9 +4,9 @@ import PageTitle from "../../components/common/PageTitle";
 import * as React from "react";
 import Grid from "@mui/material/Grid2";
 import FlashCard from "../../components/flashcardsets/FlashCard";
-import {addFlashcardSetComment, createFlashcardSet, getFlashcardSet} from "../../api/FlashcardSetApi";
+import {addFlashcardSetComment, getFlashcardSet} from "../../api/FlashcardSetApi";
 import {useAuth} from "../../hooks/AuthProvider";
-import {Alert, Badge, Button, Chip, Divider, Stack, Tab, Tabs} from "@mui/material";
+import {Alert, Button, Divider, Stack, Tab, Tabs} from "@mui/material";
 import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
 import FlashcardSetComment from "../../components/flashcardsets/FlashcardSetComment";
@@ -100,7 +100,7 @@ const FlashcardSeDisplay = () => {
                 <Button
                     size={"large"}
                     variant={"outlined"}
-                    disable={commentOpen}
+                    disabled={commentOpen}
                     startIcon={<AddCommentIcon />}
                     onClick={addComment}
                 >
@@ -129,7 +129,7 @@ const FlashcardSeDisplay = () => {
                 <Grid container spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 3, justifyContent: "center" }}>
                     {
                         commentOpen &&
-                        <Grid item size={{lg:12,  xl: 8}} justifyContent="center" alignItems="center">
+                        <Grid size={{lg:12,  xl: 8}} justifyContent="center" alignItems="center">
                             <AddComment
                                 saveHandler={addCommentSave}
                                 cancelHandler={addCommentCancel}
@@ -139,7 +139,7 @@ const FlashcardSeDisplay = () => {
                     }
                     {
                         (!flashcardSet.comments || flashcardSet.comments?.length < 1) &&
-                        <Grid item size={12}>
+                        <Grid size={12}>
                             <Alert variant="outlined" severity="info">
                                 This flashcard set has no comments at this time
                             </Alert>
@@ -147,14 +147,14 @@ const FlashcardSeDisplay = () => {
                     }
                     {
                         (flashcardSet.comments && flashcardSet.comments?.length > 0) &&
-                        <Grid item size={{lg:12,  xl: 8}}>
+                        <Grid size={{lg:12,  xl: 8}}>
                             <Stack divider={<Divider orientation="horizontal" flexItem/>}>
                                 {flashcardSet.comments?.sort((a,b) => a.created_at > b.created_at ? -1 : 1)
                                     .map((_, index) => {
-                                    return (
-                                        <FlashcardSetComment comment={_} id={`comment-${index}`} />
-                                    )
-                                })}
+                                        return (
+                                            <FlashcardSetComment comment={_} key={`comment-${index}`} />
+                                        )
+                                    })}
                             </Stack>
                         </Grid>
                     }

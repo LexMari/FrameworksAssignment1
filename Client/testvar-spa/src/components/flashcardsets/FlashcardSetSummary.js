@@ -1,14 +1,13 @@
 import React, {useState} from "react";
 import Box from '@mui/material/Box'
 import Typography from "@mui/material/Typography";
-import {Link, useNavigate} from "react-router-dom";
+import {Link} from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
-import Grid from "@mui/material/Grid";
+import Grid from "@mui/material/Grid2";
 import QuizIcon from "@mui/icons-material/Quiz";
 
-const FlashcardSetSummary = ({set, allowEdit = false}) => {
+const FlashcardSetSummary = ({set, allowEdit = false, editCallback}) => {
     const [hoverState, setHoverState] = useState(false);
 
     function toggleHover() {
@@ -30,24 +29,27 @@ const FlashcardSetSummary = ({set, allowEdit = false}) => {
                   onMouseEnter={toggleHover}
                   onMouseLeave={toggleHover}
             >
-                <Grid item flexShrink={1} sx={{p:2}}>
+                <Grid flexShrink={1} sx={{p:2}}>
                     <QuizIcon color={hoverState ? 'primary' : 'action'} fontSize={"large"} />
                 </Grid>
-                <Grid item flexGrow={1}>
+                <Grid flexGrow={1}>
                     <Box display={'flex'}>
                         <Typography variant="h6" gutterBottom color={"text.primary"} sx={{ flexGrow: 1 }}>
                             {set.name}
                         </Typography>
                         {
                             allowEdit &&
-                            <Link to={{pathname: `/sets/${set.id}/edit`}}>
-                                <IconButton
-                                    size="small"
-                                    title="Edit flashcard set"
-                                >
-                                    <EditIcon fontSize="small"/>
-                                </IconButton>
-                            </Link>
+                            <IconButton
+                                size="small"
+                                title="Edit flashcard set"
+                                onClick={e => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    editCallback(set.id);
+                                }}
+                            >
+                                <EditIcon fontSize="small"/>
+                            </IconButton>
                         }
                     </Box>
 

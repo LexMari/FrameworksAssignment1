@@ -6,16 +6,15 @@ import PageTitle from "../../components/common/PageTitle";
 import FlashcardSetSummary from "../../components/flashcardsets/FlashcardSetSummary";
 import {getUserFlashcardSets} from "../../api/UserApi";
 import {useAuth} from "../../hooks/AuthProvider";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {Button} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import AddIcon from '@mui/icons-material/Add';
-import IconButton from "@mui/material/IconButton";
 
 const UserFlashcardSetIndex = () => {
     let { userId } = useParams();
     const auth = useAuth();
+    const navigate = useNavigate();
     const [flashcardSets, setFlashcardSets] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [sort] = useState({ field: 'created_at', direction: 'desc' });
@@ -33,15 +32,20 @@ const UserFlashcardSetIndex = () => {
         fetchData();
     }, [isLoading, sort]);
 
+    function editCallback(setId) {
+        const url = `/sets/${setId}/edit`
+        navigate(url)
+    }
+
     return (
         <>
             <PageTitle title={`My Flashcard Sets`}>
                 <Grid container spacing={1} justifyContent="space-between">
-                    <Grid item size="grow">
+                    <Grid size="grow">
                         <Typography variant={"h6"} color={"textSecondary"} display={"inline-flex"}>Created by</Typography>
                         <Typography variant={"h6"} color={"textPrimary"} fontWeight={"bold"} display={"inline-flex" } sx={{ml: 1, mr:3}}>{auth.username}</Typography>
                     </Grid>
-                    <Grid item size="auto"  textAlign='right'>
+                    <Grid size="auto"  textAlign='right'>
                         <Link to="/sets/create">
                             <Button variant={"outlined"} secondary startIcon={<AddIcon />} title={"Create new flashcard set"}>
                                 Create Set
@@ -53,8 +57,8 @@ const UserFlashcardSetIndex = () => {
             <Grid container maxWidth={true} spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 1}}>
                 {flashcardSets.map((_, index) => {
                     return (
-                        <Grid item size={{ xs: 6, md: 4 }} key={index}>
-                            <FlashcardSetSummary set={_} allowEdit={true}/>
+                        <Grid size={{ xs: 6, md: 4 }} key={index}>
+                            <FlashcardSetSummary set={_} allowEdit={true} editCallback={editCallback} />
                         </Grid>
                     );
                 })}

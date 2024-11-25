@@ -147,7 +147,7 @@ const FlashcardSetEdit = () => {
                 </Alert>
             }
             <Grid container sx={{ display: 'flex', ml: 3, mr: 3, mt: 3, justifyContent: "center", alignContent: "top" }}>
-                <Grid item size={{xs: 12, sm:6}}>
+                <Grid size={{xs: 12, sm:6}}>
                     <Typography variant={"body1"} color={"primary"} sx={{mb: 1, pl: 1, fontWeight: "bold"}}>
                         Flashcard Set Name
                     </Typography>
@@ -177,7 +177,7 @@ const FlashcardSetEdit = () => {
             <Grid container spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 3, justifyContent: "center" }}>
                 {
                     displayAdd &&
-                    <Grid item size={12}>
+                    <Grid size={12}>
                         <FlashCardCreate
                             addCardHandler={AddCardSave}
                             cancelAddHandler={AddCardCancel} />
@@ -185,7 +185,7 @@ const FlashcardSetEdit = () => {
                 }
                 {
                     (flashcardSet.cards.length === 0) &&
-                    <Grid item size={12}>
+                    <Grid size={12}>
                         <Alert variant="outlined" severity="info">
                             No flashcards to display
                         </Alert>

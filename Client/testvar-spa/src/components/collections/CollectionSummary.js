@@ -30,10 +30,10 @@ const CollectionSummary = ({collection, showCurator = false, allowDelete = false
                   onMouseLeave={toggleHover}
             >
 
-                <Grid item flexShrink={1} sx={{p:2}}>
+                <Grid flexShrink={1} sx={{p:2}}>
                     <BookmarksIcon color={hoverState ? 'primary' : 'action'} fontSize={"large"} />
                 </Grid>
-                <Grid item flexGrow={1}>
+                <Grid flexGrow={1}>
                     <Box display={'flex'}>
                         <Typography variant="h6" gutterBottom color={"text.primary"} sx={{ flexGrow: 1 }}>
                             {collection?.comment}

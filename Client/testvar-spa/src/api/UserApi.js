@@ -36,6 +36,23 @@ export async function createUser(userdata) {
     return response.json();
 }
 
+export async function deleteUser(userId, token) {
+    const deleteUrl = `${apiBaseUrl}/${userId}`
+    const options = {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+        }
+    };
+
+    const response = await fetch(deleteUrl, options);
+    if (response.status !== 204) {
+        throw new Error(`Error: ${response.status}`);
+    }
+}
+
+
+
 export async function getUserFlashcardSets(userId, token) {
     const userSetsUrl = `${apiBaseUrl}/${userId}/sets`
     const options = {

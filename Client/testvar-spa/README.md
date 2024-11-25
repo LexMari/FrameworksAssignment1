@@ -10,3 +10,8 @@ this client application uses the `oidc-auth-ts` library to handle the authentica
 processes.
 
 The implementation of both parts is based on the following source article https://andreyka26.com/oauth-authorization-code-react-client-pt1-openIddict
+
+### To run this project
+
+Firstly, ensure you are running ApiServer on https, then cd into the client/testvar-spa directory and run 'npm start'
+the client requires the API server to be running.

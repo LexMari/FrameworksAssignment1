@@ -21,7 +21,7 @@ function UnAuthenticated() {
             alignItems="center"
             sx={{ minHeight: '100vh', mt: 3 }}
         >
-            <Grid item offset={{sm: 0, md: 1}} size={{sm: 12, md: 6, xl: 4 }} p={1}>
+            <Grid offset={{sm: 0, md: 1}} size={{sm: 12, md: 6, xl: 4 }} p={1}>
                 <Box sx={{
                     display: "flex",
                     flexDirection: 'column',

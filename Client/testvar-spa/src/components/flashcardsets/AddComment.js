@@ -25,7 +25,7 @@ const AddComment = ({saveHandler, cancelHandler, error}) => {
     return (
         <Box sx={{mb: 2, p: 2, border: 1, borderRadius: 2}}>
             <Grid container spacing={1} justify="space-between">
-                <Grid item size={8}>
+                <Grid size={8}>
                     <TextField
                         id="comment"
                         label="Comment"
@@ -44,7 +44,7 @@ const AddComment = ({saveHandler, cancelHandler, error}) => {
                         onBlur={validateComment}
                     />
                 </Grid>
-                <Grid item size={4} sx={{textAlign: "center", alignContent: "center"}}>
+                <Grid size={4} sx={{textAlign: "center", alignContent: "center"}}>
                     <Button
                         variant={"outlined"}
                         sx={{mr:2}}

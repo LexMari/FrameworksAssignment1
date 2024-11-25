@@ -12,11 +12,12 @@ import UserFlashcardSetIndex from "./pages/users/user-flashcardset-index.page";
 import DrawerLayout from "./components/layouts/drawer-layout";
 import Register from "./pages/register/register.page";
 import FlashcardSetCreate from "./pages/flashcardsets/flashcard-set-create.page";
-import FlashcardSetEdit from "./pages/flashcardsets/flashcard-set-edit.page"
+import FlashcardSetEdit from "./pages/flashcardsets/flashcard-set-edit.page";
 import UserCollectionIndex from "./pages/users/user-collection-index.page";
 import UserCollectionDisplay from "./pages/users/user-collection-display.page";
 import CollectionIndex from "./pages/collections/collection-index.page";
 import UserIndex from "./pages/users/user-index.page";
+import {ConfirmProvider} from "material-ui-confirm";
 
 const darkTheme = createTheme({
     palette: {
@@ -31,60 +32,62 @@ export default function App() {
         <ThemeProvider theme={darkTheme}>
             <BrowserRouter>
                 <AuthProvider>
-                    <Routes>
-                        <Route element={<EmptyLayout />}>
-                            <Route path={'/'} element={<UnAuthenticated />} />
-                            <Route path={'/register'} element={<Register />} />
-                        </Route>
-                        <Route element={<DrawerLayout />}>
-                            <Route path={'/sets'} element={
-                                <ProtectedRoute redirectPath='/'>
-                                    <FlashcardSetIndex />
-                                </ProtectedRoute>
-                            } />
-                            <Route path={'/sets/create'} element={
-                                <ProtectedRoute redirectPath='/'>
-                                    <FlashcardSetCreate />
-                                </ProtectedRoute>
-                            } />
-                            <Route path={'/sets/:setId'} element={
-                                <ProtectedRoute redirectPath='/'>
-                                    <FlashcardSeDisplay />
-                                </ProtectedRoute>
-                            } />
-                            <Route path={'/sets/:setId/edit'} element ={
-                                <ProtectedRoute redirectPath='/'>
-                                    <FlashcardSetEdit />
-                                </ProtectedRoute>
-                            } />
-                            <Route path={'/collections'} element={
-                                <ProtectedRoute redirectPath='/'>
-                                    <CollectionIndex />
-                                </ProtectedRoute>
-                            } />
-                            <Route path={'/users/:userId/sets'} element={
-                                <ProtectedRoute redirectPath='/'>
-                                    <UserFlashcardSetIndex />
-                                </ProtectedRoute>
-                            } />
-                            <Route path={'/users/:userId/collections'} element={
-                                <ProtectedRoute redirectPath='/'>
-                                    <UserCollectionIndex />
-                                </ProtectedRoute>
-                            } />
-                            <Route path={'/users/:userId/collections/:collectionId'} element={
-                                <ProtectedRoute redirectPath='/'>
-                                    <UserCollectionDisplay />
-                                </ProtectedRoute>
-                            } />
-                            <Route path={'/users'} element={
-                                <ProtectedRoute redirectPath='/sets' adminOny={true}>
-                                    <UserIndex />
-                                </ProtectedRoute>
-                            } />
-                        </Route>
-                        <Route path='/oauth/callback' element={<OAuthCallback />} />
-                    </Routes>
+                    <ConfirmProvider>
+                        <Routes>
+                            <Route element={<EmptyLayout />}>
+                                <Route path={'/'} element={<UnAuthenticated />} />
+                                <Route path={'/register'} element={<Register />} />
+                            </Route>
+                            <Route element={<DrawerLayout />}>
+                                <Route path={'/sets'} element={
+                                    <ProtectedRoute redirectPath='/'>
+                                        <FlashcardSetIndex />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path={'/sets/create'} element={
+                                    <ProtectedRoute redirectPath='/'>
+                                        <FlashcardSetCreate />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path={'/sets/:setId'} element={
+                                    <ProtectedRoute redirectPath='/'>
+                                        <FlashcardSeDisplay />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path={'/sets/:setId/edit'} element={
+                                    <ProtectedRoute redirectPath='/'>
+                                        <FlashcardSetEdit />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path={'/collections'} element={
+                                    <ProtectedRoute redirectPath='/'>
+                                        <CollectionIndex />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path={'/users/:userId/sets'} element={
+                                    <ProtectedRoute redirectPath='/'>
+                                        <UserFlashcardSetIndex />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path={'/users/:userId/collections'} element={
+                                    <ProtectedRoute redirectPath='/'>
+                                        <UserCollectionIndex />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path={'/users/:userId/collections/:collectionId'} element={
+                                    <ProtectedRoute redirectPath='/'>
+                                        <UserCollectionDisplay />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path={'/users'} element={
+                                    <ProtectedRoute redirectPath='/sets' adminOny={true}>
+                                        <UserIndex />
+                                    </ProtectedRoute>
+                                } />
+                            </Route>
+                            <Route path='/oauth/callback' element={<OAuthCallback />} />
+                        </Routes>
+                    </ConfirmProvider>
                 </AuthProvider>
             </BrowserRouter>
         </ThemeProvider>

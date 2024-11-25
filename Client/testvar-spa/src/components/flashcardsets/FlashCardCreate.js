@@ -45,7 +45,7 @@ const FlashCardCreate = ({addCardHandler, cancelAddHandler}) => {
                       flexDirection: 'row',
                       alignItems: "center"
                   }}>
-                <Grid item sx={{flexGrow: 1}}>
+                <Grid sx={{flexGrow: 1}}>
                     <TextField
                         id="question"
                         label="Question"
@@ -61,7 +61,7 @@ const FlashCardCreate = ({addCardHandler, cancelAddHandler}) => {
                         onBlur={validateQuestion}
                     />
                 </Grid>
-                <Grid item sx={{flexGrow: 1}}>
+                <Grid sx={{flexGrow: 1}}>
                     <TextField
                         id="answer"
                         label="Answer"
@@ -77,7 +77,7 @@ const FlashCardCreate = ({addCardHandler, cancelAddHandler}) => {
                         onBlur={validateAnswer}
                     />
                 </Grid>
-                <Grid item sx={{flexGrow: 1}}>
+                <Grid sx={{flexGrow: 1}}>
                     <TextField
                         id="outlined-select-currency"
                         select
@@ -94,7 +94,7 @@ const FlashCardCreate = ({addCardHandler, cancelAddHandler}) => {
                         ))}
                     </TextField>
                 </Grid>
-                <Grid item>
+                <Grid>
                     <IconButton
                         sx={{ml:2}}
                         disabled={!isValid()}

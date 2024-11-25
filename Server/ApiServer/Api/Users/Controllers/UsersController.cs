@@ -232,7 +232,7 @@ public class UsersController : Controller
             );
         }
 
-        using var ts = new TransactionScope();
+        using var ts = _context.Database.BeginTransaction();
         
         // Remove any collections
         var collections = await _context.Collections
@@ -248,8 +248,9 @@ public class UsersController : Controller
         
         _context.Users.Remove(user);
         await _context.SaveChangesAsync(cancellationToken);
+
+        await ts.CommitAsync(cancellationToken);
         
-        ts.Complete();
         return new NoContentResult();
     }
     
