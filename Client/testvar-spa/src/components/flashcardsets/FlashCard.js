@@ -6,29 +6,38 @@ import {Divider} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {useConfirm} from "material-ui-confirm";
 
 const FlashCard = ({card, allowEdit = false, defaultReveal = false, editCardHandler, deleteCardHandler}) => {
+    const confirm = useConfirm();
     const [isRevealed, setIsRevealed] = useState(defaultReveal);
+    const [deleting, setDeleting] = useState(false);
 
     function toggleReveal() {
         setIsRevealed(!isRevealed);
     }
 
-    function getBorderColour(diffiiculty) {
-        if (diffiiculty === "hard")
+    function getBorderColour(difficulty) {
+        if (difficulty === "hard")
             return "error.main";
-        if (diffiiculty === "medium")
+        if (difficulty === "medium")
             return "warning.main";
         return "success.main";
     }
 
-    function handleEditClick() {
+    function onEditClick() {
         editCardHandler(card);
     }
 
-    function handleDeleteClick() {
-        deleteCardHandler(card);
-    }
+    const onDeleteClick = () => {
+        setDeleting(true)
+        confirm({ description: `Do you wish to delete this card?`})
+            .then(() => {
+                setDeleting(false);
+                deleteCardHandler(card);
+            })
+            .catch(() => setDeleting(false));
+    };
 
     return (
         <Box sx={{
@@ -36,6 +45,7 @@ const FlashCard = ({card, allowEdit = false, defaultReveal = false, editCardHand
             flexDirection: 'column',
             alignContent: 'stretch',
             alignItems: 'stretch',
+            backgroundColor: deleting ? "text.disabled" : "",
             border: 1,
             borderRadius: 2,
             borderColor: getBorderColour(card.difficulty.toLowerCase())
@@ -62,14 +72,14 @@ const FlashCard = ({card, allowEdit = false, defaultReveal = false, editCardHand
                             <IconButton
                                 size="small"
                                 title="Edit this card"
-                                onClick={handleEditClick}
+                                onClick={onEditClick}
                             >
                                 <EditIcon fontSize="small"/>
                             </IconButton>
                             <IconButton
                                 size="small"
                                 title="Delete this card"
-                                onClick={handleDeleteClick}
+                                onClick={onDeleteClick}
                             >
                                 <DeleteIcon fontSize="small"/>
                             </IconButton>
