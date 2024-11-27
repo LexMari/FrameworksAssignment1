@@ -98,10 +98,11 @@ public class UsersController : Controller
         }
         catch (Exception ex)
         {
+            _context.ChangeTracker.Clear();
             _logger.LogError(ex, "Failed to create user");
             return Problem(
                 title: "Failed to create user.",
-                detail: ex.Message,
+                detail: ex.InnerException?.Message ?? ex.Message,
                 statusCode: StatusCodes.Status400BadRequest
             );
         }
@@ -153,6 +154,7 @@ public class UsersController : Controller
     [Route("{userId:int}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(User), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateUser(int userId, 
@@ -185,12 +187,24 @@ public class UsersController : Controller
                 statusCode: StatusCodes.Status403Forbidden
             );
         }
-        
-        var isAdmin = (currentUser!.IsAdministrator && updateUser.Admin);
-        user.Update(updateUser.Username, updateUser.Password, isAdmin);
-        await _context.SaveChangesAsync(cancellationToken);
-        
-        return Ok(user);
+
+        try
+        {
+            var isAdmin = (currentUser!.IsAdministrator && updateUser.Admin);
+            user.Update(updateUser.Username, updateUser.Password, isAdmin);
+            await _context.SaveChangesAsync(cancellationToken);
+            return Ok(user);
+        }
+        catch (Exception ex)
+        {
+            _context.ChangeTracker.Clear();
+            _logger.LogError(ex, "Failed to update user");
+            return Problem(
+                title: "Failed to update user",
+                detail: ex.InnerException?.Message ?? ex.Message,
+                statusCode: StatusCodes.Status400BadRequest
+            );
+        }
     }
     
     /// <summary>
@@ -416,7 +430,7 @@ public class UsersController : Controller
         {
             _logger.LogError("Attempt to update flashcard set not made by owner [{username}]", username);
             return Problem(
-                title: "User not authenticated.",
+                title: "User not authenticated",
                 detail: $"User '{username}' is not a valid user.",
                 statusCode: StatusCodes.Status401Unauthorized
             );
@@ -463,7 +477,7 @@ public class UsersController : Controller
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> UpdateCollection(int userId, int collectionId, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteCollection(int userId, int collectionId, CancellationToken cancellationToken)
     {
         var username = HttpContext.User.Identity!.Name;
         _logger.LogDebug("User [{username}] requested DELETE /users/{userId}/collections/{collectionId}", username, userId, collectionId);

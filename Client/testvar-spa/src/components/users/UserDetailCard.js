@@ -8,6 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import {useAuth} from "../../hooks/AuthProvider";
 import {useConfirm} from "material-ui-confirm";
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 const UserDetailCard = ({user, allowEdit = false, onEdit = {},  onDelete = {}}) => {
     const auth = useAuth();
@@ -25,48 +26,55 @@ const UserDetailCard = ({user, allowEdit = false, onEdit = {},  onDelete = {}}) 
     };
 
     return (
-        <Grid container
-              sx={{
-                  alignItems: 'center',
-                  mt: 1, p: 1,
-                  borderRadius: 1,
-                  border: 2,
-                  borderColor: hoverState ? 'primary.main' : 'text.secondary',
-                  boxShadow: 1,
-                  bgColor: 'secondary.main'
-              }}
-              onMouseEnter={toggleHover}
-              onMouseLeave={toggleHover}
+        <Grid
+            container
+            sx={{
+                alignItems: 'center',
+                mt: 1,
+                p: 1,
+                borderRadius: 1,
+                border: 2,
+                borderColor: hoverState ? 'primary.main' : 'text.secondary',
+                boxShadow: 1,
+                bgColor: 'secondary.main'
+            }}
+            onMouseEnter={toggleHover}
+            onMouseLeave={toggleHover}
         >
-            <Grid flexShrink={1} sx={{p:2}}>
-                <PersonIcon color={hoverState ? 'primary' : 'action'} fontSize={"large"} />
+            <Grid flexShrink={1} sx={{ p: 2 }}>
+                {
+                    user.admin &&
+                    <SupervisorAccountIcon color={hoverState ? 'primary' : 'action'} fontSize={"large"} />
+                }
+                {
+                    !user.admin &&
+                    <PersonIcon color={hoverState ? 'primary' : 'action'} fontSize={"large"} />
+                }
             </Grid>
             <Grid flexGrow={1}>
                 <Box display={'flex'}>
                     <Typography variant="h6" gutterBottom color={"text.primary"} sx={{ flexGrow: 1 }}>
                         {user?.username}
                     </Typography>
-                    {
-                        allowEdit &&
+                    {allowEdit && (
                         <>
                             <IconButton
                                 size="small"
                                 title="Edit user"
                             >
-                                <EditIcon fontSize="small"/>
+                                <EditIcon fontSize="small" />
                             </IconButton>
                         </>
-                    }
-                    {
-                        allowEdit && auth.userId !== user.id &&
+                    )}
+                    {allowEdit && auth.userId !== user.id && (
                         <IconButton
                             size="small"
                             title="Delete user"
                             onClick={() => onDeleteClick(user)}
                         >
-                            <DeleteIcon fontSize="small"/>
+                            <DeleteIcon fontSize="small" />
                         </IconButton>
-                    }
+                    )}
                 </Box>
             </Grid>
         </Grid>

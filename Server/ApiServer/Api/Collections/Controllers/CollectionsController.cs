@@ -118,6 +118,7 @@ public class CollectionsController : Controller
         }
         catch (Exception ex)
         {
+            _context.ChangeTracker.Clear();
             _logger.LogError(ex, "Failed to create flashcard set collection");
             return Problem(
                 title: "Failed to create flashcard set collection.",

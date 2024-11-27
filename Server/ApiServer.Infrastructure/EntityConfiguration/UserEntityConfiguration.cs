@@ -21,8 +21,10 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(50)
             .IsUnicode(false)
             .IsRequired();
-                
-        builder.HasAlternateKey(c => c.Username);
+
+        builder.HasIndex(c => c.Username)
+            .HasDatabaseName("UX_Users_Username")
+            .IsUnique();
 
         builder.Property(x => x.PasswordHash)
             .HasMaxLength(128)

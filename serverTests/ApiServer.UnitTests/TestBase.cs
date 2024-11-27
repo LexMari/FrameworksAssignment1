@@ -10,16 +10,11 @@ public class TestBase
 {
     
     protected IServiceProvider _provider;
-#pragma warning disable NUnit1032
-    
-    protected ApiContext _context;
-#pragma warning restore NUnit1032
     
     [SetUp]
     public void BaseSetUp()
     {
         _provider = TestHelpers.GetServices();
-        _context = _provider.GetRequiredService<ApiContext>();
     }
     
     protected ClaimsPrincipal GetStudentPrincipal()
@@ -59,11 +54,5 @@ public class TestBase
         var fakeClaimsPrincipal = new ClaimsPrincipal(fakeIdentity);
         
         return fakeClaimsPrincipal;
-    }
-    
-    [OneTimeTearDown]
-    protected void TearDown()
-    {
-        _context.Dispose();
     }
 }

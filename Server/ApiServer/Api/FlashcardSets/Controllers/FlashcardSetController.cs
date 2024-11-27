@@ -125,6 +125,7 @@ public class FlashcardSetController : Controller
         }
         catch (Exception ex)
         {
+            _context.ChangeTracker.Clear();
             _logger.LogError(ex, "Failed to create flashcard set");
             return Problem(
                 title: "Failed to create flashcard set.",
