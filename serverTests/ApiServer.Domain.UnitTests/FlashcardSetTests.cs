@@ -4,57 +4,76 @@ using Shouldly;
 
 namespace ApiServer.Domain.UnitTests;
 
-public class FlashCardTests
+public class FlashcardSetTests
 {
     [Test]
-    public void Constructor_Should_InitializeAttributes()
+    public void Constructor_Should_InitialiseAttributes()
     {
         // Arrange
-        var flashcardSet = new FlashcardSet("Test Set", 10);
-        string question = "What is the capital of France?";
-        string answer = "Paris";
-        Difficulty difficulty = Difficulty.Medium;
+        string setName = "SET_NAME";
+        int userId = 3;
 
         // Act
-        var flashCard = new FlashCard(flashcardSet, question, answer, difficulty);
+        var flashcardSet = new FlashcardSet(setName, userId);
 
         // Assert
-        flashCard.FlashcardSet.ShouldBe(flashcardSet);
-        flashCard.FlashcardSetId.ShouldBe(flashcardSet.Id);
-        flashCard.Question.ShouldBe(question);
-        flashCard.Answer.ShouldBe(answer);
-        flashCard.Difficulty.ShouldBe(difficulty);
+        flashcardSet.Id.ShouldBe(default);
+        flashcardSet.Name.ShouldBe(setName);
+        flashcardSet.UserId.ShouldBe(userId);
+        flashcardSet.Cards.Count.ShouldBe(0);
+        flashcardSet.CreatedAt.ShouldBeLessThan(DateTime.Now);
     }
 
     [Test]
-    public void Constructor_Should_TrimInputValues()
+    public void Update_Should_UpdateName()
     {
         // Arrange
-        var flashcardSet = new FlashcardSet("Test Set", 10);
-        string question = "  What is 2 + 2?  ";
-        string answer = "  4  ";
-        Difficulty difficulty = Difficulty.Easy;
-
+        var flashcardSet = new FlashcardSet("STARTING_NAME", 3);
+        var initialUpdatedAt = flashcardSet.UpdatedAt;
+        
         // Act
-        var flashCard = new FlashCard(flashcardSet, question, answer, difficulty);
-
+        var updatedName = "CHANGED_NAME";
+        flashcardSet.Update(updatedName);
+        
         // Assert
-        flashCard.Question.ShouldBe("What is 2 + 2?");
-        flashCard.Answer.ShouldBe("4");
-        flashCard.Difficulty.ShouldBe(difficulty);
+        flashcardSet.Name.ShouldBe(updatedName);
+        flashcardSet.UpdatedAt.ShouldBeGreaterThanOrEqualTo(initialUpdatedAt);
     }
-
+    
     [Test]
-    public void DefaultConstructor_Should_InitializeDefaultValues()
+    public void AddCard_Should_AddACard()
     {
+        // Arrange
+        var flashcardSet = new FlashcardSet("STARTING_NAME", 3);
+        flashcardSet.Cards.Count.ShouldBe(0);
+        
         // Act
-        var flashCard = new FlashCard();
-
+        const string question = "QUESTION";
+        const string answer = "ANSWER";
+        var difficulty = Difficulty.Easy;
+        
+        flashcardSet.AddCard(question, answer, difficulty);
+        
         // Assert
-        flashCard.Question.ShouldBe(string.Empty);
-        flashCard.Answer.ShouldBe(string.Empty);
-        flashCard.Difficulty.ShouldBeNull();
-        flashCard.FlashcardSetId.ShouldBe(0);
-        flashCard.FlashcardSet.ShouldBeNull();
+        flashcardSet.Cards.Count.ShouldBe(1);
+    }
+    
+    [Test]
+    public void ClearCards_Should_DeleteAllCards()
+    {
+        // Arrange
+        var flashcardSet = new FlashcardSet("STARTING_NAME", 3);
+        const string question = "QUESTION";
+        const string answer = "ANSWER";
+        var difficulty = Difficulty.Easy;
+        flashcardSet.AddCard(question, answer, difficulty);
+        
+        flashcardSet.Cards.Count.ShouldBe(1);
+
+        // Act
+        flashcardSet.ClearCards();
+        
+        // Assert
+        flashcardSet.Cards.Count.ShouldBe(0);
     }
 }

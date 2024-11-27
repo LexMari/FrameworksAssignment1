@@ -1,13 +1,11 @@
-openapi: 3.0.0
+﻿openapi: 3.0.0
 info:
   title: TestVar - Flashcards API
-  description: "A revolutionaly REST API for flashcards"
+  description: "A revolutionary REST API for flashcards"
   version: 1.0.0
 servers:
-  - url: http://localhost:3000/api
+  - url: http://localhost:7222/api
     description: Development server
-  - url: http://testvar.difcsi.hu/api
-    description: Reference server
 paths:
   /:
     get:
@@ -20,11 +18,7 @@ paths:
           content:
             application/json:
               schema:
-                type: "object"
-                properties:
-                  version:
-                    type: "string"
-                    example: "1.0.0"
+                - $ref: "#/components/schemas/ApiVersion"
   /sets:
     get:
       summary: "Get all flashcard sets"
@@ -133,6 +127,41 @@ paths:
       responses:
         "204":
           description: "The flashcard set was deleted"
+        "404":
+          description: "The flashcard set was not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+  /set/{setID}/comment:
+    parameters:
+      - name: setID
+        in: path
+        required: true
+        description: "The ID of the flashcard set"
+        schema:
+          type: "string"
+    post:
+      summary: "Comment on a flashcard set, by the current user"
+      tags:
+        - "FlashCard Sets"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                comment:
+                  type: "string"
+                  example: "I love this set!"
+      responses:
+        "201":
+          description: "The created comment"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
         "404":
           description: "The flashcard set was not found"
           content:
@@ -541,6 +570,12 @@ paths:
 
 components:
   schemas:
+    ApiVersion:
+      type: "object"
+      properties:
+        version:
+          type: "string"
+          example: "1.0.0"
     FlashCard:
       type: "object"
       properties:

@@ -1,4 +1,3 @@
-using System.Transactions;
 using ApiServer.Api.Collections.Models;
 using ApiServer.Api.Users.Models;
 using ApiServer.Domain.Entities;

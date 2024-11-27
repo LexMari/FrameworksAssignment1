@@ -1,4 +1,3 @@
-using ApiServer.Api.Common.Models;
 using ApiServer.Api.FlashcardSets.Models;
 using ApiServer.Domain.Entities;
 using ApiServer.Infrastructure;

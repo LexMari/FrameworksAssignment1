@@ -18,8 +18,6 @@ const AddToCollection = ({setId, saveHandler, cancelHandler}) => {
     const [selected, setSelected] = useState(null);
     const [error, setError] = useState();
 
-    function isValid() { return selected; }
-
     function handleCancelClick() {
         cancelHandler();
     }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ApiServer.Api.Common.Models;
 
 namespace ApiServer.Api.Common.Controllers;
 
@@ -35,10 +36,10 @@ public class HomeController : Controller
     [HttpGet]
     [Route("")]
     [Produces("application/json")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiVersion), StatusCodes.Status200OK)]
     public IActionResult GetApiVersion()
     {
-        var result = new { version = _configuration.GetValue<string>("Version") };
+        var result = new ApiVersion() { Version = _configuration.GetValue<string>("Version") };
         return Ok(result);
     }
 }

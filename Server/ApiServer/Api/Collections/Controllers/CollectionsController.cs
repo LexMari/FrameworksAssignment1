@@ -1,5 +1,4 @@
-﻿using ApiServer.Api.Common.Models;
-using ApiServer.Api.Collections.Models;
+﻿using ApiServer.Api.Collections.Models;
 using ApiServer.Api.Users.Controllers;
 using ApiServer.Domain.Entities;
 using ApiServer.Infrastructure;
