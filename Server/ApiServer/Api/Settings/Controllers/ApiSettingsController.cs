@@ -37,7 +37,7 @@ public class ApiSettingsController : Controller
     [Route("")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(List<ApiSetting>), StatusCodes.Status200OK)]
-    public async Task<IActionResult>  GetFlashcardSets(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetSettings(CancellationToken cancellationToken)
     {
         var username = HttpContext.User.Identity!.Name ?? "UNKNOWN";
         _logger.LogDebug("User [{username}] requested GET /settings", username);
@@ -53,12 +53,12 @@ public class ApiSettingsController : Controller
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("")]
+    [Route("key:string")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(ApiSetting), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetFlashcardSets([FromBody] ApiSetting settingData, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateSettings(string key, [FromBody] ApiSetting settingData, CancellationToken cancellationToken)
     {
         var username = HttpContext.User.Identity!.Name;
         _logger.LogDebug("User [{username}] requested PUT /settings", username);

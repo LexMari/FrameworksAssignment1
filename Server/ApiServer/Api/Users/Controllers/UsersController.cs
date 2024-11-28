@@ -424,17 +424,8 @@ public class UsersController : Controller
                 statusCode: StatusCodes.Status404NotFound
             );
         }
-        
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username, cancellationToken);
-        if (user is null)
-        {
-            _logger.LogError("Attempt to update flashcard set not made by owner [{username}]", username);
-            return Problem(
-                title: "User not authenticated",
-                detail: $"User '{username}' is not a valid user.",
-                statusCode: StatusCodes.Status401Unauthorized
-            );
-        }
+
+        var user = await _context.Users.FirstAsync(x => x.Username == username, cancellationToken);
 
         if (collection.UserId != user.Id)
         {
@@ -474,7 +465,6 @@ public class UsersController : Controller
     [Route("{userId}/collections/{collectionId:int}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Collection), StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteCollection(int userId, int collectionId, CancellationToken cancellationToken)
@@ -496,22 +486,13 @@ public class UsersController : Controller
             );
         }
         
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username, cancellationToken);
-        if (user is null)
-        {
-            _logger.LogError("Attempt to update flashcard set not made by owner [{username}]", username);
-            return Problem(
-                title: "User not authenticated",
-                detail: $"User '{username}' is not a valid user",
-                statusCode: StatusCodes.Status401Unauthorized
-            );
-        }
+        var user = await _context.Users.FirstAsync(x => x.Username == username, cancellationToken);
 
         if (collection.UserId != user.Id)
         {
             _logger.LogError("User '{username}' is not allowed to update this collection [{collectionId}]", username, collectionId);
             return Problem(
-                title: "Authenticated user is not authorized",
+                title: "Deletion of collection not permitted",
                 detail: $"User '{username}' is not allowed to delete this collection.",
                 statusCode: StatusCodes.Status403Forbidden
             );    

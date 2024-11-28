@@ -679,7 +679,7 @@ public class UsersControllerTests : TestBase
         {
             User = GetAdminPrincipal()
         };
-        var collection = await CollectionDataHelpers.AddCollection(_context);
+        var collection = await CollectionDataHelpers.AddAdminUserCollection(_context);
         var initialUpdate = collection.UpdatedAt;
         var keepSetId = collection.FlashcardSets.First().Id;
         var removeSetId = collection.FlashcardSets.Last().Id;
@@ -731,7 +731,7 @@ public class UsersControllerTests : TestBase
         {
             User = GetStudentPrincipal()
         };
-        var collection = await CollectionDataHelpers.AddCollection(_context);
+        var collection = await CollectionDataHelpers.AddAdminUserCollection(_context);
         var updateRequest = CollectionDataHelpers.GetCollectionRequest();
             
         // Act
@@ -763,7 +763,7 @@ public class UsersControllerTests : TestBase
         {
             User = GetAdminPrincipal()
         };
-        var collection = await CollectionDataHelpers.AddCollection(_context);
+        var collection = await CollectionDataHelpers.AddAdminUserCollection(_context);
         var updateRequest = CollectionDataHelpers.GetCollectionRequest();
             
         // Act
@@ -789,21 +789,81 @@ public class UsersControllerTests : TestBase
     [NonParallelizable]
     public async Task DeleteCollection_Should_ReturnNoContent_AfterDeletion()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetAdminPrincipal()
+        };
+        var collection = await CollectionDataHelpers.AddAdminUserCollection(_context);
+        var collectionId = collection.Id;
+
+        var collectionCount = await _context.Collections.CountAsync(CancellationToken.None);
+
+        // Act
+        var result = await controller.DeleteCollection(collection.UserId, collection.Id, CancellationToken.None);
+
+        // Assert
+        result.ShouldBeOfType(typeof(NoContentResult));
+        collectionCount.ShouldBeGreaterThan(await _context.Collections.CountAsync(CancellationToken.None));
+        _context.Collections.Any(x => x.Id == collectionId).ShouldBeFalse();
     }
     
     [Test]
     [NonParallelizable]
     public async Task DeleteCollection_Should_Return403Response_WhenNotCollectionOwner()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetStudentPrincipal()
+        };
+        var collection = await CollectionDataHelpers.AddAdminUserCollection(_context);
+            
+        // Act
+        var result = await controller.DeleteCollection(collection.UserId, collection.Id, CancellationToken.None);
+        
+        // Assert
+        result.ShouldBeOfType(typeof(ObjectResult));
+        var objectResult = result as ObjectResult;
+
+        objectResult.ShouldNotBeNull();
+        objectResult.StatusCode.ShouldBe(403);
+        objectResult.Value.ShouldBeOfType<ProblemDetails>();
+
+        var problemResult = objectResult.Value as ProblemDetails;
+        problemResult.ShouldNotBeNull();
+        problemResult.Title.ShouldBe("Deletion of collection not permitted");
+        problemResult.Detail.ShouldNotBeEmpty();
     }
     
     [Test]
     [NonParallelizable]
     public async Task DeleteCollection_Should_Return404Response_WhenTheCollectionIsNotFound()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetAdminPrincipal()
+        };
+        
+        // Act
+        var result = await controller.DeleteCollection(1, 99999, CancellationToken.None);
+
+        // Assert
+        result.ShouldBeOfType(typeof(ObjectResult));
+        var objectResult = result as ObjectResult;
+
+        objectResult.ShouldNotBeNull();
+        objectResult.StatusCode.ShouldBe(404);
+        objectResult.Value.ShouldBeOfType<ProblemDetails>();
+
+        var problemResult = objectResult.Value as ProblemDetails;
+        problemResult.ShouldNotBeNull();
+        problemResult.Title.ShouldBe("Flashcard set collection not found");
+        problemResult.Detail.ShouldNotBeEmpty();
     }
     
     #endregion

@@ -18,7 +18,7 @@ public static class CollectionDataHelpers
         return request;
     }
     
-    public static async Task<Collection> AddCollection(ApiContext context)
+    public static async Task<Collection> AddAdminUserCollection(ApiContext context)
     {
         var admin = await context.Users.FirstAsync(x => x.Username == "admin", CancellationToken.None);
         
