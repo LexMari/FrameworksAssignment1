@@ -74,7 +74,7 @@ public class FlashcardSetController : Controller
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status429TooManyRequests)]
     public async Task<IActionResult> CreateFlashcardSet(
-        [FromBody] FlashcardSetData createCommand,
+        [FromBody] FlashcardSetRequest createCommand,
         CancellationToken cancellationToken)
     {
         var username = HttpContext.User.Identity!.Name;
@@ -148,7 +148,7 @@ public class FlashcardSetController : Controller
     [HttpGet]
     [Route("{setId:int}")]
     [Produces("application/json")]
-    [ProducesResponseType(typeof(FlashcardSetDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(FlashcardSetDetailResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetFlashcardSet(int setId,
         CancellationToken cancellationToken)
@@ -177,7 +177,7 @@ public class FlashcardSetController : Controller
             .Where(x => x.FlashcardSetId == setId)
             .ToListAsync(cancellationToken);
         
-        var responseDto = new FlashcardSetDto(flashcardSet, comments);
+        var responseDto = new FlashcardSetDetailResponse(flashcardSet, comments);
         
         return Ok(responseDto);
     }
@@ -193,10 +193,10 @@ public class FlashcardSetController : Controller
     [Route("{setId:int}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(FlashcardSet), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateFlashcardSet(int setId, 
-        [FromBody] FlashcardSetData updateCommand, 
+        [FromBody] FlashcardSetRequest updateCommand, 
         CancellationToken cancellationToken)
     {
         var username = HttpContext.User.Identity!.Name;
@@ -224,7 +224,7 @@ public class FlashcardSetController : Controller
             return Problem(
                 title: "Update not permitted",
                 detail: $"You cannot update a flashcard set that you do not own [{setId}]",
-                statusCode: StatusCodes.Status400BadRequest
+                statusCode: StatusCodes.Status403Forbidden
             );
         }
         
@@ -247,7 +247,7 @@ public class FlashcardSetController : Controller
     [HttpDelete]
     [Route("{setId:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> DeleteFlashcardSet(int setId, CancellationToken cancellationToken)
     {
@@ -274,7 +274,7 @@ public class FlashcardSetController : Controller
             return Problem(
                 title: "Delete not permitted",
                 detail: $"You cannot update a flashcard set that you do not own [{setId}]",
-                statusCode: StatusCodes.Status400BadRequest
+                statusCode: StatusCodes.Status403Forbidden
             );
         }
 

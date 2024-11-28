@@ -5,15 +5,15 @@ namespace ApiServer.Api.FlashcardSets.Models;
 /// <summary>
 /// Data passed into the API to create/update a flashcard
 /// </summary>
-public class FlashcardSetData()
+public class FlashcardSetRequest()
 {
     public string Name { get; set; }
-    public List<FlashCardEntry> Cards { get; set; } = new();
+    public List<FlashCardRequest> Cards { get; set; } = new();
 
     /// <summary>
     /// Internal class for a flashcard
     /// </summary>
-    public class FlashCardEntry()
+    public class FlashCardRequest()
     {
         public string Question { get; set; } = string.Empty;
         public string Answer { get; set;  } = string.Empty;

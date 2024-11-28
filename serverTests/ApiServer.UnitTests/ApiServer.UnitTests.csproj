@@ -30,9 +30,5 @@
     <ItemGroup>
         <None Remove="appsettings.json" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="DataHelpers\" />
-    </ItemGroup>
 
 </Project>

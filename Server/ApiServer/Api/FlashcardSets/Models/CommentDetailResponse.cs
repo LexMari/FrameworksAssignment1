@@ -5,7 +5,7 @@ namespace ApiServer.Api.FlashcardSets.Models;
 /// <summary>
 /// API Response DTO representing a comment
 /// </summary>
-public class CommentDto
+public class CommentDetailResponse
 {
     public string Comment { get; private set; }
     
@@ -17,7 +17,7 @@ public class CommentDto
     /// Constructor
     /// </summary>
     /// <param name="comment"></param>
-    public CommentDto(Comment comment)
+    public CommentDetailResponse(Comment comment)
     {
         Comment = comment.CommentText;
         Author = comment.Author;

@@ -2,6 +2,7 @@ using ApiServer.Api.Users.Controllers;
 using ApiServer.Api.Users.Models;
 using ApiServer.Domain.Entities;
 using ApiServer.Infrastructure;
+using ApiServer.UnitTests.DataHelpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -20,11 +21,19 @@ public class UsersControllerTests : TestBase
     private ApiContext _context;
 #pragma warning restore NUnit1032
     
+    private bool _dataSeeded;
+    
     [SetUp]
-    public void SetUp()
+    public async Task SetUp()
     {
         _logger = new NullLogger<UsersController>();
         _context = _provider.GetRequiredService<ApiContext>();
+        
+        if (!_dataSeeded)
+        {
+            await FlashcardDataHelpers.SeedFlashcardSets(_context);
+            _dataSeeded = true;
+        }
     }
 
     #region Base controller actions
@@ -236,7 +245,7 @@ public class UsersControllerTests : TestBase
 
         // Act
         var updateRequest =  new UserRequest("UPDATE_CHANGE_ADMIN", true, "CHANGED");
-        var result = await controller.UpdateUser(setupUser.Id, updateRequest, CancellationToken.None);
+        var result = await controller.UpdateUser(setupUser!.Id, updateRequest, CancellationToken.None);
         
         // Assert
         result.ShouldBeOfType(typeof(OkObjectResult));
@@ -304,7 +313,7 @@ public class UsersControllerTests : TestBase
 
         // Act
         var updateRequest =  new UserRequest("student", true, "CHANGED");
-        var result = await controller.UpdateUser(setupUser.Id, updateRequest, CancellationToken.None);
+        var result = await controller.UpdateUser(setupUser!.Id, updateRequest, CancellationToken.None);
         
         // Assert
         result.ShouldBeOfType(typeof(ObjectResult));
@@ -340,7 +349,7 @@ public class UsersControllerTests : TestBase
 
         // Act
         var updateRequest =  new UserRequest("UPDATE_CHANGE_STUDENT", false, "CHANGED");
-        var result = await controller.UpdateUser(setupUser.Id, updateRequest, CancellationToken.None);
+        var result = await controller.UpdateUser(setupUser!.Id, updateRequest, CancellationToken.None);
 
         
         // Assert
@@ -406,7 +415,7 @@ public class UsersControllerTests : TestBase
         var userCount = await _context.Users.CountAsync(CancellationToken.None);
  
         // Act
-        var result = await controller.DeleteUser(setupUser.Id, CancellationToken.None);
+        var result = await controller.DeleteUser(setupUser!.Id, CancellationToken.None);
 
         // Assert
         result.ShouldBeOfType(typeof(NoContentResult));
@@ -432,7 +441,7 @@ public class UsersControllerTests : TestBase
         var userCount = await _context.Users.CountAsync(CancellationToken.None);
 
         // Act
-        var result = await controller.DeleteUser(setupUser.Id, CancellationToken.None);
+        var result = await controller.DeleteUser(setupUser!.Id, CancellationToken.None);
 
         // Assert
         result.ShouldBeOfType(typeof(ObjectResult));
@@ -484,16 +493,54 @@ public class UsersControllerTests : TestBase
     
     [Test]
     [NonParallelizable]
-    public async Task GetUserFlashcardSets_Should_ReturnListOfFlashcardSets()
+    public async Task GetUserFlashcardSets_Should_Return200ResponseAndListFlashcardSet()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetStudentPrincipal() 
+        };
+        
+        // Act
+        var result = await controller.GetUserFlashcardSets(1, CancellationToken.None);
+
+        // Assert
+        result.ShouldBeOfType(typeof(OkObjectResult));
+        var objectResult = result as OkObjectResult;
+
+        objectResult.ShouldNotBeNull();
+        objectResult.StatusCode.ShouldBe(200);
+        objectResult.Value.ShouldBeOfType<List<FlashcardSet>>();
+
+        var dataResult = objectResult.Value as List<FlashcardSet>;
+        dataResult.ShouldNotBeNull();
+        dataResult.Count.ShouldBeGreaterThan(0);
     }
     
     [Test]
     [NonParallelizable]
     public async Task GetUserFlashcardSets_Should_Return404Response_WhenUserIdNotFound()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetStudentPrincipal() 
+        };
+        
+        // Act
+        var result = await controller.GetUserFlashcardSets(9999, CancellationToken.None);
+        var objectResult = result as ObjectResult;
+
+        objectResult.ShouldNotBeNull();
+        objectResult.StatusCode.ShouldBe(404);
+        objectResult.Value.ShouldBeOfType<ProblemDetails>();
+
+        var problemResult = objectResult.Value as ProblemDetails;
+        problemResult.ShouldNotBeNull();
+        problemResult.Title.ShouldBe("User not found");
+        problemResult.Detail.ShouldNotBeEmpty();
     }
     
     #endregion

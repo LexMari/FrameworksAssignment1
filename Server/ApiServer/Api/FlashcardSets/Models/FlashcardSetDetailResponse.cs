@@ -6,7 +6,7 @@ namespace ApiServer.Api.FlashcardSets.Models;
 /// <summary>
 /// API Response DTO containing Flashcard set data
 /// </summary>
-public class FlashcardSetDto
+public class FlashcardSetDetailResponse
 {
     public int Id { get; private set; }
     public string Name { get; set; }
@@ -15,14 +15,14 @@ public class FlashcardSetDto
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     
-    public List<CommentDto>? Comments { get; private set; }
+    public List<CommentDetailResponse>? Comments { get; private set; }
 
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="set"></param>
     /// <param name="comments"></param>
-    public FlashcardSetDto(FlashcardSet set, List<Comment> comments)
+    public FlashcardSetDetailResponse(FlashcardSet set, List<Comment> comments)
     {
         Id = set.Id;
         Name = set.Name;
@@ -33,8 +33,8 @@ public class FlashcardSetDto
 
         if (comments.Count > 0)
         {
-            Comments = new List<CommentDto>();
-            comments.ForEach(x => Comments.Add(new CommentDto(x)));
+            Comments = new List<CommentDetailResponse>();
+            comments.ForEach(x => Comments.Add(new CommentDetailResponse(x)));
         }
     }
 }
