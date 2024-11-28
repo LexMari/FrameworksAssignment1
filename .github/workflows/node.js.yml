@@ -27,6 +27,6 @@ jobs:
           cache-dependency-path: Client/testvar-spa/package-lock.json
           cache: 'npm'
       - run: npm ci
-        working-directory: client/testvar-spa
+        working-directory: Client/testvar-spa
       - run: npm test
-        working-directory: client/testvar-spa
+        working-directory: Client/testvar-spa
