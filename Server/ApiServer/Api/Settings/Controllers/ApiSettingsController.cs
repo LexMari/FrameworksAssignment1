@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Validation.AspNetCore;
-namespace ApiServer.Api.ApiSettingController.Controllers;
+namespace ApiServer.Api.Settings.Controllers;
 
 /// <summary>
 /// Administrative settings for the ApiService

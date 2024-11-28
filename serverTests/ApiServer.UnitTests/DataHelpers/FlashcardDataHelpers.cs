@@ -10,22 +10,22 @@ public static class FlashcardDataHelpers
 {
     public static FlashcardSet GetStudentFlashcardSet()
     {
-        var flashcardSet = new FlashcardSet("Student Set", 1);
+        var flashcardSet = new FlashcardSet($"Student Set ${DateTime.UtcNow}", 1);
         
         flashcardSet.AddCard("Card One", "One", Difficulty.Easy);
         flashcardSet.AddCard("Card Two", "Two", Difficulty.Medium);
-        flashcardSet.AddCard("Card Three", "Trhee", Difficulty.Hard);
+        flashcardSet.AddCard("Card Three", "Three", Difficulty.Hard);
         
         return flashcardSet;
     }
     
     public static FlashcardSet GetAdminFlashcardSet()
     {
-        var flashcardSet = new FlashcardSet("Admin Set", 2);
+        var flashcardSet = new FlashcardSet($"Admin Set ${DateTime.UtcNow}", 2);
         
         flashcardSet.AddCard("Card One", "One", Difficulty.Easy);
         flashcardSet.AddCard("Card Two", "Two", Difficulty.Medium);
-        flashcardSet.AddCard("Card Three", "Trhee", Difficulty.Hard);
+        flashcardSet.AddCard("Card Three", "Three", Difficulty.Hard);
 
         return flashcardSet;
     }

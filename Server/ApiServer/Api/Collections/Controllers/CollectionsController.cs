@@ -82,17 +82,8 @@ public class CollectionsController : Controller
     {
         var username = HttpContext.User.Identity!.Name ?? "UNKNOWN";
         _logger.LogDebug("User [{username}] requested POST /collections", username);
-        
-        var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username, cancellationToken);
-        if (user is null)
-        {
-            _logger.LogError("Attempt to update flashcard set not made by owner [{username}]", username);
-            return Problem(
-                title: "User not authenticated.",
-                detail: $"User '{username}' is not a valid user.",
-                statusCode: StatusCodes.Status401Unauthorized
-            );
-        }
+
+        var user = await _context.Users.FirstAsync(x => x.Username == username, cancellationToken);
 
         try
         {
@@ -141,7 +132,7 @@ public class CollectionsController : Controller
     [Route("random")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Collection), StatusCodes.Status302Found)]
-    public async Task<IActionResult> GetCollection(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetRandomCollection(CancellationToken cancellationToken)
     {
         var username = HttpContext.User.Identity!.Name;
         _logger.LogDebug("User [{username}] requested GET /collections/random", username);

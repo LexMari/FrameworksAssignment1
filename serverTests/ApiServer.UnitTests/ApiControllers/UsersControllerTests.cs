@@ -32,6 +32,7 @@ public class UsersControllerTests : TestBase
         if (!_dataSeeded)
         {
             await FlashcardDataHelpers.SeedFlashcardSets(_context);
+            await CollectionDataHelpers.SeedCollections(_context);
             _dataSeeded = true;
         }
     }
@@ -549,16 +550,59 @@ public class UsersControllerTests : TestBase
     
     [Test]
     [NonParallelizable]
-    public async Task GetUserCollections_Should_ReturnListOfCollections()
+    public async Task GetUserCollections_Should_Return200ResponseAndListOfCollections()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetStudentPrincipal()
+        };
+
+        // Act
+        var result = await controller.GetUsers(1, CancellationToken.None);
+
+        // Assert
+        result.ShouldBeOfType(typeof(OkObjectResult));
+        var okResult = result as OkObjectResult;
+
+        okResult.ShouldNotBeNull();
+        okResult.StatusCode.ShouldBe(200);
+        okResult.Value.ShouldBeOfType<List<Collection>>();
+
+        var dataResult = okResult.Value as List<Collection>;
+        dataResult.ShouldNotBeNull();
+        dataResult.Count.ShouldBeGreaterThan(0);
+        dataResult[0].User.ShouldNotBeNull();
+        dataResult[0].FlashcardSets.Count.ShouldBeGreaterThan(0);
     }
     
     [Test]
     [NonParallelizable]
     public async Task GetUserCollections_Should_Return404Response_WhenUserIdNotFound()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetStudentPrincipal()
+        };
+
+        // Act
+        var result = await controller.GetUsers(9999, CancellationToken.None);
+
+        // Assert
+        result.ShouldBeOfType(typeof(ObjectResult));
+        var objectResult = result as ObjectResult;
+
+        objectResult.ShouldNotBeNull();
+        objectResult.StatusCode.ShouldBe(404);
+        objectResult.Value.ShouldBeOfType<ProblemDetails>();
+
+        var problemResult = objectResult.Value as ProblemDetails;
+        problemResult.ShouldNotBeNull();
+        problemResult.Title.ShouldBe("User not found");
+        problemResult.Detail.ShouldNotBeEmpty();
     }
     
     #endregion
@@ -567,37 +611,178 @@ public class UsersControllerTests : TestBase
     
     [Test]
     [NonParallelizable]
-    public async Task GetCollection_Should_ReturnACollections()
+    public async Task GetCollection_Should_Return200ResponseAndCollections()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetStudentPrincipal()
+        };
+        var collection = await _context.Collections.FirstAsync(x => x.UserId == 1, CancellationToken.None);
+
+        // Act
+        var result = await controller.GetCollection(collection.UserId, collection.Id, CancellationToken.None);
+
+        // Assert
+        result.ShouldBeOfType(typeof(OkObjectResult));
+        var okResult = result as OkObjectResult;
+
+        okResult.ShouldNotBeNull();
+        okResult.StatusCode.ShouldBe(200);
+        okResult.Value.ShouldBeOfType<Collection>();
+
+        var dataResult = okResult.Value as Collection;
+        dataResult.ShouldNotBeNull();
+        dataResult.Id.ShouldBe(collection.Id);
+        dataResult.Comment.ShouldNotBeEmpty();
+        dataResult.User.ShouldNotBeNull();
+        dataResult.User.Id.ShouldBe(collection.UserId);
+        dataResult.FlashcardSets.Count.ShouldBeGreaterThan(0);
     }
     
     [Test]
     [NonParallelizable]
     public async Task GetCollection_Should_Return404Response_WhenTheCollectionIsNotFound()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetStudentPrincipal()
+        };
+
+        // Act
+        var result = await controller.GetCollection(1, 9999, CancellationToken.None);
+
+        // Assert
+        result.ShouldBeOfType(typeof(ObjectResult));
+        var objectResult = result as ObjectResult;
+
+        objectResult.ShouldNotBeNull();
+        objectResult.StatusCode.ShouldBe(404);
+        objectResult.Value.ShouldBeOfType<ProblemDetails>();
+
+        var problemResult = objectResult.Value as ProblemDetails;
+        problemResult.ShouldNotBeNull();
+        problemResult.Title.ShouldBe("Flashcard set collection not found");
+        problemResult.Detail.ShouldNotBeEmpty();
     }
     
     [Test]
     [NonParallelizable]
     public async Task UpdateCollection_Should_Return200ResponseAndUpdateCollection()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetAdminPrincipal()
+        };
+        var collection = await CollectionDataHelpers.AddCollection(_context);
+        var initialUpdate = collection.UpdatedAt;
+        var keepSetId = collection.FlashcardSets.First().Id;
+        var removeSetId = collection.FlashcardSets.Last().Id;
+        var ignoreSetId = 9999;
+        
+        var newSet = FlashcardDataHelpers.GetStudentFlashcardSet();
+        _context.FlashcardSets.Add(newSet);
+        await _context.SaveChangesAsync();
+        
+        var updateRequest = CollectionDataHelpers.GetCollectionRequest();
+        updateRequest.Sets.Clear();
+        updateRequest.Sets.Add(keepSetId);
+        updateRequest.Sets.Add(newSet.Id);
+        updateRequest.Sets.Add(ignoreSetId);
+            
+        // Act
+        var result = await controller.UpdateCollection(
+            collection.UserId, collection.Id, 
+            updateRequest, CancellationToken.None);
+
+        // Assert
+        result.ShouldBeOfType(typeof(OkObjectResult));
+        var okResult = result as OkObjectResult;
+
+        okResult.ShouldNotBeNull();
+        okResult.StatusCode.ShouldBe(200);
+        okResult.Value.ShouldBeOfType<Collection>();
+
+        var dataResult = okResult.Value as Collection;
+        dataResult.ShouldNotBeNull();
+        dataResult.Id.ShouldBe(collection.Id);
+        dataResult.Comment.ShouldBe(updateRequest.Comment);
+        dataResult.UpdatedAt.ShouldBeGreaterThan(initialUpdate);
+        
+        dataResult.FlashcardSets.Count.ShouldBe(2);
+        dataResult.FlashcardSets.ShouldContain(x => x.Id == newSet.Id);
+        dataResult.FlashcardSets.ShouldContain(x => x.Id == keepSetId);
+        dataResult.FlashcardSets.ShouldNotContain(x => x.Id == removeSetId);
+        dataResult.FlashcardSets.ShouldNotContain(x => x.Id == ignoreSetId);
     }
     
     [Test]
     [NonParallelizable]
     public async Task UpdateCollection_Should_Return403Response_WhenNotCollectionOwner()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetStudentPrincipal()
+        };
+        var collection = await CollectionDataHelpers.AddCollection(_context);
+        var updateRequest = CollectionDataHelpers.GetCollectionRequest();
+            
+        // Act
+        var result = await controller.UpdateCollection(
+            collection.UserId, collection.Id, 
+            updateRequest, CancellationToken.None);
+        
+        // Assert
+        result.ShouldBeOfType(typeof(ObjectResult));
+        var objectResult = result as ObjectResult;
+
+        objectResult.ShouldNotBeNull();
+        objectResult.StatusCode.ShouldBe(403);
+        objectResult.Value.ShouldBeOfType<ProblemDetails>();
+
+        var problemResult = objectResult.Value as ProblemDetails;
+        problemResult.ShouldNotBeNull();
+        problemResult.Title.ShouldBe("Authenticated user is not authorized");
+        problemResult.Detail.ShouldNotBeEmpty();
     }
     
     [Test]
     [NonParallelizable]
     public async Task UpdateCollection_Should_Return404Response_WhenTheCollectionIsNotFound()
     {
-        throw new NotImplementedException();
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetAdminPrincipal()
+        };
+        var collection = await CollectionDataHelpers.AddCollection(_context);
+        var updateRequest = CollectionDataHelpers.GetCollectionRequest();
+            
+        // Act
+        var result = await controller.UpdateCollection(
+            collection.UserId, 99999, 
+            updateRequest, CancellationToken.None);
+        
+        // Assert
+        result.ShouldBeOfType(typeof(ObjectResult));
+        var objectResult = result as ObjectResult;
+
+        objectResult.ShouldNotBeNull();
+        objectResult.StatusCode.ShouldBe(404);
+        objectResult.Value.ShouldBeOfType<ProblemDetails>();
+
+        var problemResult = objectResult.Value as ProblemDetails;
+        problemResult.ShouldNotBeNull();
+        problemResult.Title.ShouldBe("Flashcard set collection not found");
+        problemResult.Detail.ShouldNotBeEmpty();
     }
     
     [Test]

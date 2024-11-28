@@ -379,7 +379,7 @@ public class UsersController : Controller
         {
             _logger.LogError("Flashcard set collection not found for user ID {userId} [{collectionId}]", userId, collectionId);
             return Problem(
-                title: "Flashcard set collection not found.",
+                title: "Flashcard set collection not found",
                 detail: $"Flashcard set collection not found for user ID {userId} [{collectionId}]",
                 statusCode: StatusCodes.Status404NotFound
             );
@@ -419,7 +419,7 @@ public class UsersController : Controller
         {
             _logger.LogError("Flashcard set collection not found for user ID {userId} [{collectionId}]", userId, collectionId);
             return Problem(
-                title: "Flashcard set collection not found.",
+                title: "Flashcard set collection not found",
                 detail: $"Flashcard set collection not found for user ID {userId} [{collectionId}]",
                 statusCode: StatusCodes.Status404NotFound
             );
@@ -440,7 +440,7 @@ public class UsersController : Controller
         {
             _logger.LogError("User '{username}' is not allowed to update this collection [{collectionId}]", username, collectionId);
             return Problem(
-                title: "Authenticated user is not authorized.",
+                title: "Authenticated user is not authorized",
                 detail: $"User '{username}' is not allowed to update this collection.",
                 statusCode: StatusCodes.Status403Forbidden
             );    
@@ -490,7 +490,7 @@ public class UsersController : Controller
         {
             _logger.LogError("Flashcard set collection not found for user ID {userId} [{collectionId}]", userId, collectionId);
             return Problem(
-                title: "Flashcard set collection not found.",
+                title: "Flashcard set collection not found",
                 detail: $"Flashcard set collection not found for user ID {userId} [{collectionId}]",
                 statusCode: StatusCodes.Status404NotFound
             );
@@ -501,8 +501,8 @@ public class UsersController : Controller
         {
             _logger.LogError("Attempt to update flashcard set not made by owner [{username}]", username);
             return Problem(
-                title: "User not authenticated.",
-                detail: $"User '{username}' is not a valid user.",
+                title: "User not authenticated",
+                detail: $"User '{username}' is not a valid user",
                 statusCode: StatusCodes.Status401Unauthorized
             );
         }
@@ -511,7 +511,7 @@ public class UsersController : Controller
         {
             _logger.LogError("User '{username}' is not allowed to update this collection [{collectionId}]", username, collectionId);
             return Problem(
-                title: "Authenticated user is not authorized.",
+                title: "Authenticated user is not authorized",
                 detail: $"User '{username}' is not allowed to delete this collection.",
                 statusCode: StatusCodes.Status403Forbidden
             );    

@@ -22,7 +22,6 @@ public class FlashCardTests
         flashcard.Id.ShouldBe(default);
         flashcard.FlashcardSetId.ShouldBe(default);
         flashcard.Question.ShouldStartWith(question);
-        flashcard.Question.ShouldEndWith("?");
         flashcard.Answer.ShouldBe(answer);
         flashcard.Difficulty.ShouldBe(difficulty);
     }

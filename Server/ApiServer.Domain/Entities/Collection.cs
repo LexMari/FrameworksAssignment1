@@ -19,9 +19,9 @@ public class Collection
     /// User who made the comment
     /// </summary>
     [JsonIgnore]
-    public int? UserId { get; private set; }
+    public int UserId { get; private set; }
     [JsonPropertyName("user")]
-    public User? User { get; private set; }
+    public User User { get; private set; }
     
     /// <summary>
     /// Creation timestamp
