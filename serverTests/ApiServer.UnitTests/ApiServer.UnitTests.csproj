@@ -23,8 +23,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\server\ApiServer.Domain\ApiServer.Domain.csproj" />
-        <ProjectReference Include="..\..\server\ApiServer.Infrastructure\ApiServer.Infrastructure.csproj" />
         <ProjectReference Include="..\..\server\ApiServer\ApiServer.csproj" />
     </ItemGroup>
     <ItemGroup>

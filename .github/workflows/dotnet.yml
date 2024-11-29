@@ -26,12 +26,4 @@ jobs:
         run: dotnet build --no-restore
       - name: Test
         run: dotnet test --no-build --verbosity normal
-      - run: npm ci
-        working-directory: Server/ApiServer.Domain.UnitTests
-      - run: npm test
-        working-directory: Server/ApiServer.Domain.UnitTests
-      - run: npm ci
-        working-directory: Server/ApiServer.UnitTests
-      - run: npm test
-        working-directory: Server/ApiServer.UnitTests
 

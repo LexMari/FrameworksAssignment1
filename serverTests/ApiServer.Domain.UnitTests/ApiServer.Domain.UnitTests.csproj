@@ -25,5 +25,9 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Server\ApiServer.Domain\ApiServer.Domain.csproj" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <None Remove="appsettings.json" />
+    </ItemGroup>
 
 </Project>
