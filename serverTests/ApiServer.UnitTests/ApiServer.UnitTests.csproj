@@ -23,7 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\server\ApiServer\ApiServer.csproj" />
+        <ProjectReference Include="..\..\Server\ApiServer\ApiServer.csproj" />
     </ItemGroup>
     <ItemGroup>
         <None Remove="appsettings.json" />
