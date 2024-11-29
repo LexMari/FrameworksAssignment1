@@ -1,9 +1,9 @@
 import {AppBar, Button, Container, Drawer, IconButton, List, ListItem, Toolbar, Typography} from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import {Link, Outlet} from "react-router-dom";
-import LogoutButton from "../components/auth/LogoutButton";
+import LogoutButton from "../auth/LogoutButton";
 import Box from "@mui/material/Box";
-import {useAuth} from "../hooks/AuthProvider";
+import {useAuth} from "../../hooks/AuthProvider";
 import Grid from "@mui/material/Grid2";
 import { useState } from "react";
 
