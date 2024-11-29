@@ -16,7 +16,10 @@ const FlashcardSetSummary = ({set, allowEdit = false, editCallback, allowRemove 
     }
 
     return (
-        <Link to={{ pathname: `/sets/${set.id}`}} style={{ textDecoration: 'none' }}>
+        <Link 
+            to={{ pathname: `/sets/${set.id}`}}
+            role={"link"}
+            style={{ textDecoration: 'none' }}>
             <Grid container
                   sx={{
                       alignItems: 'center',
@@ -35,13 +38,14 @@ const FlashcardSetSummary = ({set, allowEdit = false, editCallback, allowRemove 
                 </Grid>
                 <Grid flexGrow={1}>
                     <Box display={'flex'}>
-                        <Typography variant="h6" gutterBottom color={"text.primary"} sx={{ flexGrow: 1 }}>
+                        <Typography variant="h6" role={"heading"} gutterBottom color={"text.primary"} sx={{ flexGrow: 1 }}>
                             {set.name}
                         </Typography>
                         {
                             allowEdit &&
                             <IconButton
                                 size="small"
+                                role={"button"}
                                 title="Edit flashcard set"
                                 onClick={e => {
                                     e.preventDefault();
@@ -57,6 +61,7 @@ const FlashcardSetSummary = ({set, allowEdit = false, editCallback, allowRemove 
                             <IconButton 
                                 size="small"
                                 color={"info"}
+                                role={"button"}
                                 title="Remove from collection"
                                 onClick={e => {
                                     e.preventDefault();

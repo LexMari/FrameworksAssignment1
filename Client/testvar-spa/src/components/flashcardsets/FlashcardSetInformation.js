@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import {formatTimestamp} from "../../utils/dateTime";
 import * as React from "react";
 
-const FlashcardSetComment = ({set}) => {
+const FlashcardSetInformation = ({set}) => {
     return (
         <>
             <Stack divider={<Divider orientation="horizontal" flexItem/>}>
@@ -25,4 +25,4 @@ const FlashcardSetComment = ({set}) => {
         </>
     )
 }
-export default  FlashcardSetComment
+export default  FlashcardSetInformation

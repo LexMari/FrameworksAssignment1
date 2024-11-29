@@ -1,5 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { cleanup, render, screen } from '@testing-library/react';
 import PageTitle from "../../../components/common/PageTitle";
+
+afterEach(cleanup);
 
 test("Page Title Test", () => {
     render(
@@ -15,5 +17,5 @@ test("Page Title Test", () => {
     })
     
     const child = screen.getByText(/Child element/i);
-    expect(child).toBeInTheDocument()
+    expect(child).toBeInTheDocument();
 });

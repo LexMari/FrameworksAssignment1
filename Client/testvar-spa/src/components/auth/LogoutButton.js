@@ -4,7 +4,7 @@ import { logout } from '../../services/AuthService'
 
 const LogoutButton = () => {
     return (
-        <Button color="inherit" onClick={() => logout()}>
+        <Button color="inherit" onClick={() => logout()} role={"button"}>
             Log Out
         </Button>
     );
