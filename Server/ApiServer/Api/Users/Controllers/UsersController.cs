@@ -358,7 +358,7 @@ public class UsersController : Controller
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("{userId}/collections/{collectionId:int}")]
+    [Route("{userId}/collections/{collectionId:int}", Name="GetUserCollection")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Collection), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

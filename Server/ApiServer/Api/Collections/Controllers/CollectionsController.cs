@@ -103,8 +103,9 @@ public class CollectionsController : Controller
             await _context.SaveChangesAsync(cancellationToken);
             
             return CreatedAtAction(
-                nameof(UsersController.GetCollection), 
-                new {userId = user.Id, collectionId = collection.Id},
+                actionName: "GetCollection",
+                controllerName: "Users",
+                new { userId = user.Id, collectionId = collection.Id},
                 collection);
         }
         catch (Exception ex)

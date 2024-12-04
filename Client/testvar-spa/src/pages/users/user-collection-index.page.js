@@ -36,7 +36,7 @@ const UserCollectionIndex = () => {
 
     useEffect(() => {
         fetchData();
-    }, [isLoading, sort, collections]);
+    }, [isLoading, sort]);
 
     function addCollection() {
         setCreateError();
@@ -124,7 +124,10 @@ const UserCollectionIndex = () => {
                     collections?.map((_, index) => {
                         return (
                             <Grid size={{ xs: 6, md: 4 }} key={index}>
-                                <CollectionSummary collection={_} allowDelete={true} deleteCallback={handleCollectionDelete} />
+                                <CollectionSummary 
+                                    collection={_} 
+                                    allowDelete={true} 
+                                    deleteCallback={handleCollectionDelete} />
                             </Grid>
                         );
                     })

@@ -5,14 +5,19 @@ import PageTitle from "../../components/common/PageTitle";
 import * as React from "react";
 import {getUserCollection, updateUserCollection} from "../../api/UserApi";
 import Grid from "@mui/material/Grid2";
-import {Alert, Divider, Typography} from "@mui/material";
+import {Alert, Button, Divider, Typography} from "@mui/material";
 import FlashcardSetSummary from "../../components/flashcardsets/FlashcardSetSummary";
+import EditIcon from "@mui/icons-material/Edit";
+import CollectionEdit from "../../components/collections/CollectionEdit";
+import CollectionName from "../../components/collections/CollectionName";
 
 const UserCollectionDisplay = () => {
     let { userId, collectionId } = useParams();
     const auth = useAuth();
     const [collection, setCollection] = useState([]);
+    const [editOpen, setEditOpen] = useState(false);
     const [error, setError] = useState();
+    const [collectionError, setCollectionError] = useState();
     const [isLoading, setIsLoading] = useState(true);
 
     async function fetchData() {
@@ -26,6 +31,32 @@ const UserCollectionDisplay = () => {
     useEffect(() => {
         fetchData();
     }, [isLoading, userId, collectionId]);
+
+    function editCollection(card) {
+        setEditOpen(true);
+    }
+
+    function editCollectionCancel() {
+        setEditOpen(false);
+    }
+
+    function editCollectionSave(comment) {
+        const currentSets = collection?.sets.map((_) => {
+            return _.id;
+        });
+        const updateCollection = {
+            id: collection.id,
+            comment: comment,
+            sets: currentSets
+        }
+        updateUserCollection(auth.userId, updateCollection, auth.token).then((result) => {
+            auth.loadUserCollections(auth.userId, auth.token);
+            setEditOpen(false);
+            setCollection({...collection, comment: updateCollection.comment});
+        }).catch((e) => {
+            setCollectionError(e);
+        });
+    }
 
     function handleRemove(setId) {
         const updatedSets = collection?.sets
@@ -46,16 +77,28 @@ const UserCollectionDisplay = () => {
     return (!isLoading &&
         <>
             <PageTitle title="Flashcard Set Collection">
+                <Grid size="auto" textAlign='right'>
+                    <Button variant={"outlined"}
+                            startIcon={<EditIcon />}
+                            onClick={editCollection}
+                            disabled={editOpen}
+                            title={"Edit this collection name"}>
+                        Edit Collection
+                    </Button>
+                </Grid>
             </PageTitle>
             <Grid container spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 3, justifyContent: "center" }}>
-                <Grid size={12} sx={{border: 1, borderRadius: 2, borderColor: 'primary.main', p:2, display: 'flex', alignItems: 'end'}}>
-                    <Typography variant={"h4"} sx={{ flexGrow: 1 }}>
-                        {collection?.comment}
-                    </Typography>
-                    <Typography variant="body2" color={"text.secondary"} sx={{ flexShrink: 1 }}>
-                        Curated by {collection?.user?.username}
-                    </Typography>
-                </Grid>
+                { !editOpen &&
+                    <CollectionName collection={collection} />
+                }
+                { editOpen &&
+                    <CollectionEdit
+                        collection={collection}
+                        saveHandler={editCollectionSave}
+                        cancelHandler={editCollectionCancel}
+                        error={collectionError}
+                    />
+                }
                 <Divider />
                 {
                     error &&
