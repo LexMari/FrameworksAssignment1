@@ -89,6 +89,16 @@ public class UsersController : Controller
             isAdmin = (currentUser!.IsAdministrator && createUser.Admin);
         }
         
+        if (string.IsNullOrWhiteSpace(createUser.Password))
+        {
+            _logger.LogWarning("Cannot create a new user when a password is not provided");
+            return Problem(
+                title: "Failed to create user",
+                detail: "A password is required to create a new user.",
+                statusCode: StatusCodes.Status400BadRequest
+            );
+        }
+        
         var user = new User(createUser.Username, createUser.Password, isAdmin);
         try
         {
@@ -101,7 +111,7 @@ public class UsersController : Controller
             _context.ChangeTracker.Clear();
             _logger.LogError(ex, "Failed to create user");
             return Problem(
-                title: "Failed to create user.",
+                title: "Failed to create user",
                 detail: ex.InnerException?.Message ?? ex.Message,
                 statusCode: StatusCodes.Status400BadRequest
             );
@@ -191,7 +201,13 @@ public class UsersController : Controller
         try
         {
             var isAdmin = (currentUser!.IsAdministrator && updateUser.Admin);
-            user.Update(updateUser.Username, updateUser.Password, isAdmin);
+            user.Update(updateUser.Username, isAdmin);
+
+            if (!string.IsNullOrWhiteSpace(updateUser.Password))
+            {
+                user.ChangePassword(updateUser.Password);
+            }
+            
             await _context.SaveChangesAsync(cancellationToken);
             return Ok(user);
         }

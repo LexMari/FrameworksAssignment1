@@ -163,7 +163,39 @@ public class UsersControllerTests : TestBase
 
         var problemResult = objectResult.Value as ProblemDetails;
         problemResult.ShouldNotBeNull();
-        problemResult.Title.ShouldBe("Failed to create user.");
+        problemResult.Title.ShouldBe("Failed to create user");
+        problemResult.Detail.ShouldNotBeEmpty();
+    }
+    
+    [Test]
+    [NonParallelizable]
+    public async Task CreateUser_Should_Return400Response_When_PasswordIsMissing()
+    {
+        // Arrange
+        UsersController controller = new UsersController(_logger, _context);
+        controller.ControllerContext.HttpContext = new DefaultHttpContext
+        {
+            User = GetAdminPrincipal() 
+        };
+        
+        var userRequest = new UserRequest("PASSWORD_USER_TEST", true, null);
+        await controller.CreateUser(userRequest, CancellationToken.None);
+        var userCount = await _context.Users.CountAsync(CancellationToken.None);
+        
+        // Act
+        var result = await controller.CreateUser(userRequest, CancellationToken.None);
+        
+        // Assert
+        result.ShouldBeOfType(typeof(ObjectResult));
+        var objectResult = result as ObjectResult;
+        objectResult.ShouldNotBeNull();
+        objectResult.StatusCode.ShouldBe(400);
+        objectResult.Value.ShouldBeOfType<ProblemDetails>();
+        
+        userCount.ShouldBe(await _context.Users.CountAsync(CancellationToken.None));
+        var problemResult = objectResult.Value as ProblemDetails;
+        problemResult.ShouldNotBeNull();
+        problemResult.Title.ShouldBe("Failed to create user");
         problemResult.Detail.ShouldNotBeEmpty();
     }
     

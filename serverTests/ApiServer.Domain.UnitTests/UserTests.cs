@@ -29,7 +29,7 @@ public class UserTests
             testUser.PasswordHash, 
             Convert.FromBase64String(testUser.PasswordSalt)).ShouldBeTrue();
     }
-    
+
     [Test]
     public void Update_Should_UpdateProperties()
     {
@@ -38,18 +38,39 @@ public class UserTests
         string userName = "MY_USERNAME";
         string password = "A_Complex_P@55word";
         var testUser = new User(userId, userName, password, true);
-        
+
         // Act
         string newUsername = "CHANGED_USERNAME";
         string newPassword = "CHANGED_PASSWORD";
-        testUser.Update(newUsername, newPassword, false);
-        
+        testUser.Update(newUsername, false);
+
         // Assert
         testUser.Id.ShouldBe(userId);
         testUser.Username.ShouldBe(newUsername);
         testUser.PasswordHash.ShouldNotBe(string.Empty);
         testUser.PasswordSalt.ShouldNotBe(string.Empty);
         testUser.IsAdministrator.ShouldBeFalse();
+    }
+    
+    [Test]
+    public void ChangePassword_Should_UpdateProperties()
+    {
+        // Arrange
+        int userId = 10;
+        string userName = "MY_USERNAME";
+        string password = "A_Complex_P@55word";
+        var testUser = new User(userId, userName, password, true);
+        
+        // Act
+        string newPassword = "CHANGED_PASSWORD";
+        testUser.ChangePassword(newPassword);
+        
+        // Assert
+        testUser.Id.ShouldBe(userId);
+        testUser.Username.ShouldBe(userName);
+        testUser.PasswordHash.ShouldNotBe(string.Empty);
+        testUser.PasswordSalt.ShouldNotBe(string.Empty);
+        testUser.IsAdministrator.ShouldBeTrue();
         
         User.VerifyPassword(
             newPassword, 

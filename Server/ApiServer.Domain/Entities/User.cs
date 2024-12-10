@@ -88,15 +88,22 @@ public class User
     /// Update the user
     /// </summary>
     /// <param name="username"></param>
-    /// <param name="password"></param>
     /// <param name="isAdministrator"></param>
-    public void Update(string username,
-        string password,
+    public void Update(
+        string username,
         bool isAdministrator)
     {
         Username = username;
         IsAdministrator = isAdministrator;
-        PasswordHash = HashPassword(password, out byte[] salt);
+    }
+    
+    /// <summary>
+    /// Change users password
+    /// </summary>
+    /// <param name="password"></param>
+    public void ChangePassword(string password)
+    {
+    PasswordHash = HashPassword(password, out byte[] salt);
         PasswordSalt = Convert.ToBase64String(salt);
     }
     

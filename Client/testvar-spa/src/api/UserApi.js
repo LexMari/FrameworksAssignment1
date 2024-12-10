@@ -36,6 +36,32 @@ export async function createUser(userdata) {
     return response.json();
 }
 
+export async function updateUser(token, userId, user) {
+    const updateUrl = `${apiBaseUrl}/${userId}`
+    const userData = {
+        username: user.username,
+        admin: user.admin
+    }
+    const options = {
+        method: 'PUT',
+        body: JSON.stringify(userData),
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    };
+    const response = await fetch(updateUrl, options);
+    if (!response.ok) {
+        if ([400, 403, 404].includes(response.status)) {
+            const error = await response.json();
+            throw new Error(error.title);
+        }
+        else
+            throw new Error(`Error: ${response.status}`);
+    }
+    return response.json();
+}
+
 export async function deleteUser(userId, token) {
     const deleteUrl = `${apiBaseUrl}/${userId}`
     const options = {

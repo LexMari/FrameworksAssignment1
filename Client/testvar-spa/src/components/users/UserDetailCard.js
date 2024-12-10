@@ -10,7 +10,7 @@ import {useAuth} from "../../hooks/AuthProvider";
 import {useConfirm} from "material-ui-confirm";
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
-const UserDetailCard = ({user, allowEdit = false, onEdit = {},  onDelete = {}}) => {
+const UserDetailCard = ({user, allowEdit = false, onEdit = {}, editOpen=false, onDelete = {}}) => {
     const auth = useAuth();
     const confirm = useConfirm();
     const [hoverState, setHoverState] = useState(false);
@@ -61,6 +61,8 @@ const UserDetailCard = ({user, allowEdit = false, onEdit = {},  onDelete = {}}) 
                             <IconButton
                                 size="small"
                                 title="Edit user"
+                                disabled={editOpen}
+                                onClick={() => onEdit(user)}
                             >
                                 <EditIcon fontSize="small" />
                             </IconButton>
@@ -70,6 +72,7 @@ const UserDetailCard = ({user, allowEdit = false, onEdit = {},  onDelete = {}}) 
                         <IconButton
                             size="small"
                             title="Delete user"
+                            disabled={editOpen}
                             onClick={() => onDeleteClick(user)}
                         >
                             <DeleteIcon fontSize="small" />

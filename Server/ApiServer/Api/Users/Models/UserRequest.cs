@@ -6,4 +6,4 @@ namespace ApiServer.Api.Users.Models;
 /// <param name="Username"></param>
 /// <param name="Admin"></param>
 /// <param name="Password"></param>
-public record UserRequest(string Username, bool Admin, string Password);
+public record UserRequest(string Username, bool Admin, string? Password);
