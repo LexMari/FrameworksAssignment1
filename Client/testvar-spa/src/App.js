@@ -18,6 +18,7 @@ import UserCollectionDisplay from "./pages/users/user-collection-display.page";
 import CollectionIndex from "./pages/collections/collection-index.page";
 import UserIndex from "./pages/users/user-index.page";
 import {ConfirmProvider} from "material-ui-confirm";
+import SettingsIndex from "./pages/settings/settings-index.page";
 
 const darkTheme = createTheme({
     palette: {
@@ -82,6 +83,11 @@ export default function App() {
                                 <Route path={'/users'} element={
                                     <ProtectedRoute redirectPath='/sets' adminOny={true}>
                                         <UserIndex />
+                                    </ProtectedRoute>
+                                } />
+                                <Route path={'/settings'} element={
+                                    <ProtectedRoute redirectPath='/sets' adminOny={true}>
+                                        <SettingsIndex />
                                     </ProtectedRoute>
                                 } />
                             </Route>

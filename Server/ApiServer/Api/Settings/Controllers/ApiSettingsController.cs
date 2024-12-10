@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Validation.AspNetCore;
+
 namespace ApiServer.Api.Settings.Controllers;
 
 /// <summary>
@@ -16,6 +17,7 @@ public class ApiSettingsController : Controller
 {
     private readonly ILogger<ApiSettingsController> _logger;
     private readonly ApiContext _context;
+    
     #region Constructor
     /// <summary>
     /// Constructor
@@ -28,6 +30,7 @@ public class ApiSettingsController : Controller
         _context = dbContext;
     }
     #endregion
+    
     #region Base /settings routes
     /// <summary>
     /// Get ApiServer settings
@@ -53,7 +56,7 @@ public class ApiSettingsController : Controller
     /// </summary>
     /// <returns></returns>
     [HttpPut]
-    [Route("key:string")]
+    [Route("{key}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(ApiSetting), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -82,7 +85,7 @@ public class ApiSettingsController : Controller
                 settingData.Value);
             return Problem(
                 title: "Invalid setting value",
-                detail: $"Setting [{setting.Id}] expect a value that can be converted to {setting.Type}",
+                detail: $"Setting [{setting.Id}] expects a value that can be converted to {setting.Type}",
                 statusCode: StatusCodes.Status400BadRequest
             );
         }

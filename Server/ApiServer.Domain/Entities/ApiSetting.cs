@@ -33,11 +33,25 @@ public class ApiSetting
     
     #region Readonly Properties
 
-    [JsonIgnore] 
-    public int IntegerValue => int.Parse(Value);
+    [JsonIgnore]
+    public int IntegerValue
+    {
+        get
+        {
+            int.TryParse(Value, out var valueResult);
+            return valueResult;
+        }
+    }
 
-    [JsonIgnore] 
-    public decimal DecimalValue => decimal.Parse(Value);
+    [JsonIgnore]
+    public decimal DecimalValue
+    {
+        get
+        {
+            decimal.TryParse(Value, out var valueResult);
+            return valueResult;
+        }
+    }
 
     #endregion
     

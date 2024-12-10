@@ -51,6 +51,7 @@ const UserIndex = () => {
         updateUser(auth.token, editUserId, user).then((result) => {
             setEditUserId(null);
             setIsLoading(true);
+            setError(undefined);
         }).catch((e) => {
             setError(e);
         });

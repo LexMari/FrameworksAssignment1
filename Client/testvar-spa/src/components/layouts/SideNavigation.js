@@ -66,7 +66,7 @@ const SideNavigation = () => {
                                 <ListItemText secondary='Users' />
                             </ListItemButton>
                         </ListItem>
-                        <ListItem key='settings' disablePadding>
+                        <ListItem key='settings' disablePadding component={Link} to={{ pathname: `/settings`}} style={{ color: '#FFF'}}>
                             <ListItemButton>
                                 <ListItemIcon secondary>
                                     <SettingsIcon />
