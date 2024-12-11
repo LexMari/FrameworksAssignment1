@@ -44,7 +44,7 @@ describe("AddComment Component", () => {
         fireEvent.click(addButton);
 
         expect(mockSaveHandler).toHaveBeenCalledTimes(1);
-        expect(mockSaveHandler).toHaveBeenCalledWith("This is a test comment");
+        expect(mockSaveHandler).toHaveBeenCalledWith("This is a test comment", null);
     });
 
     test("Calls cancelHandler when Cancel button is clicked", () => {

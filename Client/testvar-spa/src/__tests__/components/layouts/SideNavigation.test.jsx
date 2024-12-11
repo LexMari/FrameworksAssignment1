@@ -24,12 +24,12 @@ describe("SideNavigation Component", () => {
         renderSideNavigation({ userId: 1, isAdmin: false });
 
         expect(screen.getByText("Home")).toBeInTheDocument();
-        expect(screen.getByText("All Collections")).toBeInTheDocument();
+        expect(screen.getByText("Collections")).toBeInTheDocument();
         expect(screen.getByText("My Flashcard Sets")).toBeInTheDocument();
         expect(screen.getByText("My Collections")).toBeInTheDocument();
         
         expect(screen.getByText("Home").closest("a")).toHaveAttribute("href", "/sets");
-        expect(screen.getByText("All Collections").closest("a")).toHaveAttribute("href", "/collections");
+        expect(screen.getByText("Collections").closest("a")).toHaveAttribute("href", "/collections");
         expect(screen.getByText("My Flashcard Sets").closest("a")).toHaveAttribute("href", "/users/1/sets");
         expect(screen.getByText("My Collections").closest("a")).toHaveAttribute("href", "/users/1/collections");
     });
