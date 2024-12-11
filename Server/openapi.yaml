@@ -100,7 +100,7 @@ paths:
     put:
       summary: "Update a flashcard set by ID"
       tags:
-        - "FlashCard Sets"
+        - "Flashcard Sets"
       requestBody:
         required: true
         content:
@@ -181,7 +181,7 @@ paths:
     get:
       summary: "Get all flashcards in a set"
       tags:
-        - "FlashCard Sets"
+        - "Flashcard Sets"
       parameters:
         - name: shuffle
           in: query
