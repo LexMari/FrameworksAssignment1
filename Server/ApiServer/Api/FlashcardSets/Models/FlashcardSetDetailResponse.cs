@@ -9,7 +9,8 @@ namespace ApiServer.Api.FlashcardSets.Models;
 public class FlashcardSetDetailResponse
 {
     public int Id { get; private set; }
-    public string Name { get; set; }
+    public string Name { get; private set; }
+    public decimal? Rating { get; private set; }
     public IReadOnlyCollection<FlashCard> Cards { get; private set; }
     public User? User { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -26,6 +27,7 @@ public class FlashcardSetDetailResponse
     {
         Id = set.Id;
         Name = set.Name;
+        Rating = set.Rating.HasValue ? decimal.Round(set.Rating.Value, 1) : null;
         Cards = set.Cards;
         User = set.User;
         CreatedAt = set.CreatedAt;

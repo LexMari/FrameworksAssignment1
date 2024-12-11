@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import * as React from "react";
-import {Alert, Button, TextField} from "@mui/material";
+import {Alert, Button, Rating, TextField} from "@mui/material";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import {useState} from "react";
@@ -9,6 +9,7 @@ import Typography from "@mui/material/Typography";
 
 const AddComment = ({saveHandler, cancelHandler, error}) => {
     const [comment, setComment] = useState( "");
+    const [rating, setRating] = useState(null);
     const [wasTouched, setWasTouched] = useState( false);
     const [validComment, setValidComment] = useState(true);
     
@@ -19,13 +20,13 @@ const AddComment = ({saveHandler, cancelHandler, error}) => {
     function isValid() { return validComment && wasTouched; }
 
     function saveCommentClick() {
-        saveHandler(comment);
+        saveHandler(comment, rating);
     }
 
     return (
         <Box sx={{mb: 2, p: 2, border: 1, borderRadius: 2}}>
             <Grid container spacing={1} justify="space-between">
-                <Grid size={8}>
+                <Grid flexGrow={1}>
                     <TextField
                         id="comment"
                         label="Comment"
@@ -44,7 +45,15 @@ const AddComment = ({saveHandler, cancelHandler, error}) => {
                         onBlur={validateComment}
                     />
                 </Grid>
-                <Grid size={4} sx={{textAlign: "center", alignContent: "center"}}>
+                <Grid flexShrink={1} sx={{alignContent: "top", ml: 1, mr: 1}}>
+                    <Rating
+                        name="comment-rating"
+                        sx={{mt: 2}}
+                        value={rating}
+                        onChange={ (e, newValue) => { setRating(newValue); }}
+                    />
+                </Grid>
+                <Grid flexShrink={1} sx={{textAlign: "center", alignContent: "center"}}>
                     <Button
                         variant={"outlined"}
                         sx={{mr:2}}

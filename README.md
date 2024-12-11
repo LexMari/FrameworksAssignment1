@@ -1,6 +1,7 @@
 # TestVar Flashcard Client Application
 
 The client is build on the React framework and makes use of the Material UI theme for design elements.
+The server is using ASP.NET Core and EntityFramework Core for the API and Database respectively.
 
 ## Authentication
 
@@ -14,4 +15,8 @@ The implementation of both parts is based on the following source article https:
 ### To run this project
 
 Firstly, ensure you are running ApiServer on https, then cd into the client/testvar-spa directory and run 'npm start'
-the client requires the API server to be running.
+the client requires the API server to be running. 
+
+**Important** - the application requires a dev certificate to use HTTPS, this is installed by using the following command 
+`dotnet dev-certs https --check --trust` in the terminal, this certificate applies to the machine, not the project... 
+it may not necessarily need to be run in a specific directory (from memory).

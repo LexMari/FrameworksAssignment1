@@ -89,11 +89,11 @@ export async function updateFlashcardSet(token, data) {
     return response.json();
 }
 
-export async function addFlashcardSetComment(token, setId, comment) {
+export async function addFlashcardSetComment(token, setId, comment, rating) {
     const url = `${apiBaseUrl}/${setId}/comment`;
     const options = {
         method: 'POST',
-        body: JSON.stringify({comment: comment}),
+        body: JSON.stringify({comment: comment, rating: rating}),
         headers: {
             'Authorization': `Bearer ${token}`,
             "Content-type": "application/json; charset=UTF-8"

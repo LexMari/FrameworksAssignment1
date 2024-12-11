@@ -338,7 +338,7 @@ public class UsersController : Controller
     public async Task<IActionResult> GetUsers(int userId,
         CancellationToken cancellationToken)
     {
-        var username = HttpContext.User.Identity!.Name ?? "UNKOWN";
+        var username = HttpContext.User.Identity!.Name;
         _logger.LogDebug("User [{username}] requested GET /users/{userId}/collections", username, userId);
         
         var user = await _context.Users.FindAsync(userId, cancellationToken);

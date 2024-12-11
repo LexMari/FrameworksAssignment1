@@ -6,7 +6,7 @@ import Grid from "@mui/material/Grid2";
 import FlashCard from "../../components/flashcardsets/FlashCard";
 import {addFlashcardSetComment, getFlashcardSet} from "../../api/FlashcardSetApi";
 import {useAuth} from "../../hooks/AuthProvider";
-import {Alert, Button, Divider, Stack, Tab, Tabs} from "@mui/material";
+import {Alert, Button, Divider, Rating, Stack, Tab, Tabs} from "@mui/material";
 import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
 import FlashcardSetComment from "../../components/flashcardsets/FlashcardSetComment";
@@ -82,11 +82,12 @@ const FlashcardSeDisplay = () => {
         setCommentOpen(false);
     }
 
-    function addCommentSave(comment) {
-        addFlashcardSetComment(auth.token, flashcardSet.id, comment).then((result) => {
+    function addCommentSave(comment, rating) {
+        addFlashcardSetComment(auth.token, flashcardSet.id, comment, rating).then((result) => {
             let newComments = flashcardSet.comments ?? [];
             newComments = [...newComments,  {
                 comment: result.comment,
+                rating: result.rating,
                 created_at: result.created_at,
                 author: result.author
             }];
@@ -108,6 +109,8 @@ const FlashcardSeDisplay = () => {
     return (!isLoading &&
         <>
             <PageTitle title={flashcardSet.name}>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <Rating value={flashcardSet.rating} precision={0.1} size="large" readOnly sx={{mr: 3}} />
                 { auth.userCollections?.length > 0 &&
                     <Button
                         variant={"outlined"}
@@ -129,6 +132,7 @@ const FlashcardSeDisplay = () => {
                 >
                     Add comment
                 </Button>
+                </Box>
             </PageTitle>
             {
                 collectionOpen &&

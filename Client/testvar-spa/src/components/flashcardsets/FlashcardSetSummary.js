@@ -7,6 +7,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import Grid from "@mui/material/Grid2";
 import QuizIcon from "@mui/icons-material/Quiz";
 import BookmarkRemoveIcon from '@mui/icons-material/BookmarkRemove';
+import {Rating} from "@mui/material";
 
 const FlashcardSetSummary = ({set, allowEdit = false, editCallback, allowRemove = false, removeCallback}) => {
     const [hoverState, setHoverState] = useState(false);
@@ -74,9 +75,12 @@ const FlashcardSetSummary = ({set, allowEdit = false, editCallback, allowRemove 
                         }
                     </Box>
 
-                    <Typography variant="subtitle1" color={"secondary.main"}>
-                        {set.cards?.length} Questions
-                    </Typography>
+                    <Box display={'flex'}>
+                        <Typography variant="subtitle1" color={"secondary.main"} flexGrow={1}>
+                            {set.cards?.length} Questions
+                        </Typography>
+                        <Rating value={set.rating} size="small" readOnly flexShrink={1} />
+                    </Box>
                 </Grid>
             </Grid>
         </Link>

@@ -63,7 +63,7 @@ public class FlashcardSetController : Controller
     /// </summary>
     /// <param name="createCommand"></param>
     /// <param name="cancellationToken"></param>
-    /// <returns>The created user</returns>
+    /// <returns>The created flashcard set</returns>
     /// <response code="201">Returns the newly created flashcard set</response>
     /// <response code="400">If the flashcard set could not be created</response>
     /// <response code="429">Exceeded limit</response>
@@ -353,6 +353,7 @@ public class FlashcardSetController : Controller
         if (averageRating.HasValue)
         {
             flashcardSet.UpdateRating((decimal)averageRating);
+            await _context.SaveChangesAsync(cancellationToken);
         }
         
         return CreatedAtAction(

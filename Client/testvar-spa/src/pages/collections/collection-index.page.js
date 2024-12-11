@@ -29,7 +29,7 @@ const CollectionIndex = () => {
 
     return (
         <>
-            <PageTitle title={`All Collections`}></PageTitle>
+            <PageTitle title={`Collections`}></PageTitle>
             <Grid container spacing={3} sx={{ display: 'flex', ml: 3, mr: 3, mt: 1}}>
                 {
                     (!collections || collections?.length < 1) &&

@@ -33,9 +33,10 @@ const SideNavigation = () => {
                         <ListItemIcon secondary>
                             <InventoryIcon />
                         </ListItemIcon>
-                        <ListItemText primary='All Collections' />
+                        <ListItemText primary='Collections' />
                     </ListItemButton>
                 </ListItem>
+                <Divider sx={{mt: 2, mb: 2}}/>
                 <ListItem key='usersets' disablePadding component={Link} to={{pathname: `/users/${auth.userId}/sets`}} style={{ color: '#FFF' }}>
                     <ListItemButton secondary>
                         <ListItemIcon>
@@ -56,7 +57,7 @@ const SideNavigation = () => {
             {
                 auth.isAdmin &&
                 <>
-                    <Divider />
+                    <Divider sx={{mt: 2, mb: 2}}/>
                     <List>
                         <ListItem key='user' disablePadding component={Link} to={{pathname: `/users`}} style={{ color: '#FFF'}}>
                             <ListItemButton>
