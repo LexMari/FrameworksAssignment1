@@ -4,7 +4,7 @@ info:
   description: "A revolutionary REST API for flashcards"
   version: 1.0.0
 servers:
-  - url: http://localhost:7222/api
+  - url: http://localhost:7233/api
     description: Development server
 paths:
   /:
@@ -520,6 +520,13 @@ paths:
                 items:
                   $ref: "#/components/schemas/ApiSetting"
   /settings/{key}:
+    parameters:
+      - name: key
+        in: path
+        required: true
+        description: "The API setting key"
+        schema:
+          type: "string"
     put:
       summary: "Update the value of an application setting"
       description: "Only admin users can update settings values"
@@ -550,6 +557,109 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ProblemDetails"
+  /telemetry:
+    get:
+      summary: "Get all telemetry sessions"
+      tags:
+        - "Telemetry"
+      responses:
+        "200":
+          description: "A list of telemetry sessions"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/TelemetrySession"
+    post:
+      summary: "Start a telemetry session"
+      description: "Start measuring the current users time to complete a flashcard set"
+      tags:
+        - "Telemetry"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TelemetrySessionRequest"
+      responses:
+        "201":
+          content:
+            type: "string"
+            example: "c0da7e26-b28b-494e-8496-73ac27d2ced2"
+            description: "A unique telemetry session identifier (GUID)"
+        "404":
+          description: "The flashcard set was not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+  /telemetry/{sessionId}:
+    parameters:
+      - name: sessionId
+        in: path
+        required: true
+        description: "The telemetry session ID"
+        schema:
+          type: "string"
+    get:
+      summary: "Get all telemetry sessions"
+      tags:
+        - "Telemetry"
+      responses:
+        "200":
+          description: "A list of telemetry sessions"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/TelemetrySession"
+        "404":
+          description: "telemetry session not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+    put:
+      summary: "User has completed the quiz associated with the telemetry session"
+      tags:
+        - "Telemetry"
+      requestBody:
+        required: false
+      responses:
+        "201":
+          description: "The completed telemetry session"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TelemetrySession"
+        "404":
+          description: "telemetry session not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+    delete:
+      summary: "User has aborted/cancelled the quiz associated with the telemetry session"
+      tags:
+        - "Telemetry"
+      requestBody:
+        required: false
+      responses:
+        "200":
+          description: "The cancelled telemetry session"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TelemetrySession"
+        "404":
+          description: "telemetry session not found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
+
 
 components:
   schemas:
@@ -744,3 +854,37 @@ components:
         - "String"
         - "Integer"
         - "Decimal"
+    TelemetrySession:
+      type: "object"
+      properties:
+        id:
+          type: "number"
+          example: 1
+        start:
+          type: "string"
+          format: "date-time"
+          example: "2024-10-14T12:00:00Z"
+        end:
+          type: "string"
+          format: "date-time"
+          example: "2024-10-14T12:00:00Z"
+        status:
+          $ref: "#/components/schemas/TelemetrySessionStatus"
+        set:
+          $ref: "#/components/schemas/FlashcardSet"
+        user:
+          $ref: "#/components/schemas/User"
+    TelemetrySessionRequest:
+      type: "object"
+      properties:
+        set_id:
+          type: "number"
+          example: 1
+          description: "The ID of the flashcard set being timed"
+    TelemetrySessionStatus:
+      type: "string"
+      enum:
+        - "Incomplete"
+        - "Completed"
+        - "Aborted"
+      

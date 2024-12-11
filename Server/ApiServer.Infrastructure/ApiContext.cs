@@ -20,6 +20,7 @@ public class ApiContext : DbContext
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Collection> Collections { get; set; }
     public DbSet<ApiSetting> ApiSettings { get; set; }
+    public DbSet<TelemetrySession> TelemetrySessions { get; set; }
     
     #endregion
 
