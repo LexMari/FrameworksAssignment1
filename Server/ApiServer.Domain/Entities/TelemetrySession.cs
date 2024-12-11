@@ -73,7 +73,7 @@ public class TelemetrySession
     {
         if (Status != TelemetrySessionStatus.Incomplete)
         {
-            throw new Exception("Session has been closed");
+            throw new Exception($"Session has already been set as {Status.ToString().ToLower()}");
         }
         
         EndTimestamp = DateTime.Now;
@@ -87,7 +87,7 @@ public class TelemetrySession
     {
         if (Status != TelemetrySessionStatus.Incomplete)
         {
-            throw new Exception("Session has been closed");
+            throw new Exception($"Session has already been set as {Status.ToString().ToLower()}");
         }
         
         EndTimestamp = DateTime.Now;

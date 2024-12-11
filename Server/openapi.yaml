@@ -560,6 +560,7 @@ paths:
   /telemetry:
     get:
       summary: "Get all telemetry sessions"
+      description: "Listing all telemetry sessions is only available to Admin users"
       tags:
         - "Telemetry"
       responses:
@@ -604,6 +605,7 @@ paths:
           type: "string"
     get:
       summary: "Get all telemetry sessions"
+      description: "Fetching a telemetry session is only available to Admin users"
       tags:
         - "Telemetry"
       responses:
@@ -634,6 +636,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TelemetrySession"
+        "400":
+          description: "Telemetry session has already be completed/aborted"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
         "404":
           description: "telemetry session not found"
           content:
@@ -653,6 +661,12 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/TelemetrySession"
+        "400":
+          description: "Telemetry session has already be completed/aborted"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetails"
         "404":
           description: "telemetry session not found"
           content:
