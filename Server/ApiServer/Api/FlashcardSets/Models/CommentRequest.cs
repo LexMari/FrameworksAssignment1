@@ -9,4 +9,9 @@ public class CommentRequest
     /// Comment text
     /// </summary>
     public string Comment { get; set; }
+    
+    /// <summary>
+    /// Rating from 1 - 5 of the flashcard set
+    /// </summary>
+    public int? Rating { get; set; }
 }

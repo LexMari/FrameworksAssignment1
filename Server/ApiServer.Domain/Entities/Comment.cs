@@ -30,6 +30,11 @@ public class Comment
     public User? Author { get; private set; }
     
     /// <summary>
+    /// Review start rating of the flashcard set from 1 - 5
+    /// </summary>
+    public int? Rating { get; private set; }
+    
+    /// <summary>
     /// Creation timestamp
     /// </summary>
     public DateTime CreatedAt { get; set; }
@@ -49,13 +54,16 @@ public class Comment
     /// Constructor with parameters
     /// </summary>
     /// <param name="commentText"></param>
+    /// <param name="rating"></param>
     /// <param name="flashcardSet"></param>
     /// <param name="user"></param>
     public Comment(string commentText,
+        int? rating,
         FlashcardSet flashcardSet,
         User? user) : this()
     {
         CommentText = commentText;
+        Rating = rating;
         FlashcardSetId = flashcardSet.Id;
         AuthorId = user?.Id;
     }

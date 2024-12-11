@@ -293,11 +293,13 @@ public class FlashcardSetController : Controller
     /// </summary>
     /// <returns>The created user</returns>
     /// <response code="201">Returns the newly created flashcard set</response>
+    /// <response code="400">Invalid rating value</response>
     /// <response code="404">The flashcard set was not found</response>
     [HttpPost]
     [Route("{setId:int}/comment")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(Comment), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<IActionResult> AddComment(int setId, 
         [FromBody] CommentRequest commentRequest, 
@@ -330,10 +332,28 @@ public class FlashcardSetController : Controller
                 statusCode: StatusCodes.Status404NotFound
             );
         }
-        
-        var comment = new Comment(commentRequest.Comment, flashcardSet, user);
+
+        if (commentRequest.Rating.HasValue && commentRequest.Rating.Value is < 1 or > 5)
+        {
+            _logger.LogError("Invalid comment rating {Rating} [{setId}]", commentRequest.Rating, setId);
+            return Problem(
+                title: "Invalid rating value",
+                detail: $"Invalid comment rating {commentRequest.Rating} [{setId}]",
+                statusCode: StatusCodes.Status400BadRequest);
+        }
+
+        var comment = new Comment(commentRequest.Comment, commentRequest.Rating, flashcardSet, user);
         _context.Comments.Add(comment);
         await _context.SaveChangesAsync(cancellationToken);
+
+        var averageRating = await _context.Comments
+            .Where(x => x.FlashcardSetId == flashcardSet.Id && x.Rating.HasValue)
+            .AverageAsync(x => x.Rating, cancellationToken);
+
+        if (averageRating.HasValue)
+        {
+            flashcardSet.UpdateRating((decimal)averageRating);
+        }
         
         return CreatedAtAction(
             nameof(GetFlashcardSet), 

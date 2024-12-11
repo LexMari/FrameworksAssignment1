@@ -25,6 +25,9 @@ public class CommentEntityConfiguration : IEntityTypeConfiguration<Comment>
         builder.Property(x => x.AuthorId)
             .IsRequired();
 
+        builder.Property(x => x.Rating)
+            .IsRequired(false);
+
         //Foreign key
         builder.HasOne(x => x.Author)
             .WithMany()

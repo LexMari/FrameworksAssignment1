@@ -62,8 +62,10 @@ public static class FlashcardDataHelpers
         context.FlashcardSets.Add(adminSet);
         await context.SaveChangesAsync();
 
-        context.Comments.Add(new Comment("Comment on student set", studentSet, student));
-        context.Comments.Add(new Comment("Comment on admin set", adminSet, admin));
+        context.Comments.Add(new Comment("Comment on student set", 5, studentSet, student));
+        context.Comments.Add(new Comment("Comment on admin set", 4, adminSet, admin));
+        studentSet.UpdateRating(5);
+        adminSet.UpdateRating(4);
         await context.SaveChangesAsync();
     }
     

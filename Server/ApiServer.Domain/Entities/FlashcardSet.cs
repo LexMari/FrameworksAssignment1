@@ -18,6 +18,8 @@ public class FlashcardSet
     /// </summary>
     public string Name { get; private set; }
     
+    public decimal? Rating { get; private set; }
+    
     /// <summary>
     /// User that created the flashcard set
     /// </summary>
@@ -106,6 +108,15 @@ public class FlashcardSet
     {
         Name = name.Trim();
         UpdatedAt = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Update the average rating of the flashcard set
+    /// </summary>
+    /// <param name="rating"></param>
+    public void UpdateRating(decimal? rating)
+    {
+        Rating = rating;
     }
     
     #endregion
