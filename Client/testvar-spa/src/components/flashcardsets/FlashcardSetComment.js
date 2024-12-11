@@ -13,10 +13,10 @@ const FlashcardSetComment = ({comment}) => {
                     <Typography variant={"subtitle2"} color={"primary"}>Comment</Typography>
                 </Grid>
                 <Grid size={2}>
-                    <Typography variant={"subtitle2"} color={"primary"}>Rating</Typography>
+                    <Typography variant={"subtitle2"} color={"primary"}>Author</Typography>
                 </Grid>
                 <Grid size={1}>
-                    <Typography variant={"subtitle2"} color={"primary"}>Author</Typography>
+                    <Typography variant={"subtitle2"} color={"primary"}>Rating</Typography>
                 </Grid>
                 <Grid size={2}>
                     <Typography variant={"subtitle2"} color={"primary"}>Comment At</Typography>
