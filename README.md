@@ -14,8 +14,11 @@ The implementation of both parts is based on the following source article https:
 
 ### To run this project
 
-Firstly, ensure you are running ApiServer on https, then cd into the client/testvar-spa directory and run 'npm start'
+Firstly, ensure you are running ApiServer on https, then cd into the `client/testvar-spa` directory and run `npm start`
 the client requires the API server to be running. 
+
+**Please note** - (After testing this myself with a zip from the repos) after cd'ing into the `client/testvar-spa` directory and running `npm start` it caused an error of "react scripts is not recognized as a command"
+in the event that this happens, simply run `npm install` and then once this has finished, try again.
 
 **Important** - the application requires a dev certificate to use HTTPS, this is installed by using the following command 
 `dotnet dev-certs https --check --trust` in the terminal, this certificate applies to the machine, not the project... 
